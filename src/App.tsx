@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { Tyre, CartItem, Booking, SearchFilters } from './types';
-import { TYRE_DATABASE } from './data';
+import { useSupabase } from './contexts/SupabaseContext';
 import TyreSearcher from './components/TyreSearcher';
 import TyreCard from './components/TyreCard';
 import CartSection from './components/CartSection';
@@ -27,7 +27,9 @@ import {
   ArrowRight,
   ShieldCheck,
   Award,
-  Search
+  Search,
+  User,
+  LogOut
 } from 'lucide-react';
 
 export default function App() {
@@ -43,43 +45,34 @@ export default function App() {
     category: 'All'
   });
 
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [bookings, setBookings] = useState<Booking[]>([]);
   const [selectedReg, setSelectedReg] = useState('');
   const [selectedMakeModel, setSelectedMakeModel] = useState('');
   const [activeTab, setActiveTab] = useState<'shop' | 'bookings' | 'cart' | 'admin'>('shop');
   const [searchTriggered, setSearchTriggered] = useState(false);
   const [lastConfirmedBooking, setLastConfirmedBooking] = useState<Booking | null>(null);
 
-  // Initialize data from localStorage on load
-  useEffect(() => {
-    const savedCart = localStorage.getItem('arsh_autos_cart');
-    if (savedCart) {
-      try {
-        setCartItems(JSON.parse(savedCart));
-      } catch (e) {
-        console.error(e);
-      }
-    }
+  const {
+    tyres,
+    cartItems,
+    setCartItems,
+    bookings,
+    addBooking,
+    cancelBooking,
+    updateBookingStatus,
+    user,
+    signIn,
+    signUp,
+    signOut,
+    tyresError
+  } = useSupabase();
 
-    const savedBookings = localStorage.getItem('arsh_autos_bookings');
-    if (savedBookings) {
-      try {
-        setBookings(JSON.parse(savedBookings));
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  }, []);
-
-  // Save changes to localStorage
-  const saveCartToStorage = (items: CartItem[]) => {
-    localStorage.setItem('arsh_autos_cart', JSON.stringify(items));
-  };
-
-  const saveBookingsToStorage = (list: Booking[]) => {
-    localStorage.setItem('arsh_autos_bookings', JSON.stringify(list));
-  };
+  // Auth UI state
+  const [showAuth, setShowAuth] = useState(false);
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [authEmail, setAuthEmail] = useState('');
+  const [authPassword, setAuthPassword] = useState('');
+  const [authError, setAuthError] = useState('');
+  const [authLoading, setAuthLoading] = useState(false);
 
   // Cart operations
   const handleAddToCart = (tyre: Tyre, quantity: number) => {
@@ -93,7 +86,6 @@ export default function App() {
     }
 
     setCartItems(updated);
-    saveCartToStorage(updated);
 
     // Navigate to cart tab
     setActiveTab('cart');
@@ -107,17 +99,15 @@ export default function App() {
       return item;
     });
     setCartItems(updated);
-    saveCartToStorage(updated);
   };
 
   const handleRemoveCartItem = (tyreId: string) => {
     const updated = cartItems.filter(item => item.tyre.id !== tyreId);
     setCartItems(updated);
-    saveCartToStorage(updated);
   };
 
   // Booking operations
-  const handleCompleteBooking = (bookingData: {
+  const handleCompleteBooking = async (bookingData: {
     cartItems: CartItem[];
     subtotal: number;
     fittingFee: number;
@@ -131,24 +121,15 @@ export default function App() {
     vehicleRegistration: string;
     vehicleMakeModel: string;
   }) => {
-    const newBooking: Booking = {
-      ...bookingData,
-      id: 'ab' + Math.random().toString(36).substring(2, 8),
-      status: 'Scheduled',
-      createdAt: new Date().toISOString()
-    };
-
-    const updatedBookings = [newBooking, ...bookings];
-    setBookings(updatedBookings);
-    saveBookingsToStorage(updatedBookings);
+    const newBooking = await addBooking(bookingData);
+    if (!newBooking) return;
 
     // Clear cart
     setCartItems([]);
-    saveCartToStorage([]);
 
     // Open receipt modal / show confirmed state
     setLastConfirmedBooking(newBooking);
-    
+
     // Clear registration details
     setSelectedReg('');
     setSelectedMakeModel('');
@@ -157,26 +138,12 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleCancelBooking = (bookingId: string) => {
-    const updated = bookings.map(b => {
-      if (b.id === bookingId) {
-        return { ...b, status: 'Cancelled' as const };
-      }
-      return b;
-    });
-    setBookings(updated);
-    saveBookingsToStorage(updated);
+  const handleCancelBooking = async (bookingId: string) => {
+    await cancelBooking(bookingId);
   };
 
-  const handleUpdateBookingStatus = (bookingId: string, status: Booking['status']) => {
-    const updated = bookings.map(b => {
-      if (b.id === bookingId) {
-        return { ...b, status };
-      }
-      return b;
-    });
-    setBookings(updated);
-    saveBookingsToStorage(updated);
+  const handleUpdateBookingStatus = async (bookingId: string, status: Booking['status']) => {
+    await updateBookingStatus(bookingId, status);
   };
 
   // Search logic and filtering
@@ -208,8 +175,17 @@ export default function App() {
     navigate('/search-results', { state: { filters } });
   };
 
+  // Handle "Add to cart" actions routed back from the search results page
+  useEffect(() => {
+    const payload = location.state?.addToCart as { tyre: Tyre; quantity: number } | undefined;
+    if (payload) {
+      handleAddToCart(payload.tyre, payload.quantity);
+      navigate(location.pathname, { replace: true, state: { ...location.state, addToCart: undefined } });
+    }
+  }, [location.state, location.pathname, navigate]);
+
   // Get matching tyres from search parameters
-  const filteredTyres = TYRE_DATABASE.filter(tyre => {
+  const filteredTyres = tyres.filter(tyre => {
     // Width filter
     if (filters.width && tyre.width !== parseInt(filters.width)) return false;
     // Profile filter
@@ -318,8 +294,28 @@ export default function App() {
             </button>
           </nav>
 
-          {/* Mini Basket indicator */}
+          {/* Auth + Basket */}
           <div className="flex items-center gap-4">
+            {user ? (
+              <div className="flex items-center gap-2">
+                <span className="hidden sm:inline text-xs text-gray-400">{user.email}</span>
+                <button
+                  onClick={() => signOut()}
+                  className="flex items-center gap-1.5 text-xs font-bold text-bright-snow bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-2 rounded-lg transition"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => { setAuthMode('signin'); setShowAuth(true); setAuthError(''); }}
+                className="flex items-center gap-1.5 text-xs font-bold text-bright-snow bg-racing-red hover:bg-racing-red/90 px-3 py-2 rounded-lg transition"
+              >
+                <User className="w-3.5 h-3.5" />
+                Sign In
+              </button>
+            )}
             {cartItems.length > 0 && (
               <a
                 onClick={() => { navigate('/'); setActiveTab('cart'); }}
@@ -335,6 +331,108 @@ export default function App() {
           </div>
         </div>
       </header>
+
+      {/* Supabase fallback notice */}
+      {tyresError && (
+        <div className="bg-yellow-500/10 border-b border-yellow-500/20 text-yellow-300 text-xs text-center py-2 px-4">
+          {tyresError}
+        </div>
+      )}
+
+      {/* Auth Modal */}
+      {showAuth && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="bg-[#1e2121] border border-white/10 rounded-2xl p-6 w-full max-w-md shadow-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-display font-bold text-lg text-bright-snow">
+                {authMode === 'signin' ? 'Sign In' : 'Create Account'}
+              </h3>
+              <button
+                onClick={() => setShowAuth(false)}
+                className="text-gray-400 hover:text-bright-snow transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                setAuthError('');
+                setAuthLoading(true);
+                const { error } = authMode === 'signin'
+                  ? await signIn(authEmail, authPassword)
+                  : await signUp(authEmail, authPassword);
+                setAuthLoading(false);
+                if (error) {
+                  setAuthError(error.message);
+                } else {
+                  setShowAuth(false);
+                }
+              }}
+              className="space-y-4"
+            >
+              <div>
+                <label className="block text-xs uppercase font-bold text-gray-400 mb-1">Email</label>
+                <input
+                  type="email"
+                  value={authEmail}
+                  onChange={(e) => setAuthEmail(e.target.value)}
+                  required
+                  className="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-bright-snow focus:outline-none focus:border-racing-red"
+                />
+              </div>
+              <div>
+                <label className="block text-xs uppercase font-bold text-gray-400 mb-1">Password</label>
+                <input
+                  type="password"
+                  value={authPassword}
+                  onChange={(e) => setAuthPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  className="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-bright-snow focus:outline-none focus:border-racing-red"
+                />
+              </div>
+
+              {authError && (
+                <div className="text-racing-red text-xs font-semibold">{authError}</div>
+              )}
+
+              <button
+                type="submit"
+                disabled={authLoading}
+                className="w-full bg-racing-red hover:bg-racing-red/90 disabled:opacity-50 text-bright-snow font-bold text-sm py-2.5 rounded-lg transition"
+              >
+                {authLoading ? 'Please wait…' : (authMode === 'signin' ? 'Sign In' : 'Sign Up')}
+              </button>
+            </form>
+
+            <div className="mt-4 text-center text-xs text-gray-400">
+              {authMode === 'signin' ? (
+                <>
+                  No account?{' '}
+                  <button
+                    onClick={() => setAuthMode('signup')}
+                    className="text-racing-red font-bold hover:underline"
+                  >
+                    Sign up
+                  </button>
+                </>
+              ) : (
+                <>
+                  Already have an account?{' '}
+                  <button
+                    onClick={() => setAuthMode('signin')}
+                    className="text-racing-red font-bold hover:underline"
+                  >
+                    Sign in
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Body Grid */}
       <main className="w-full px-4 sm:px-6 lg:px-8 py-8">

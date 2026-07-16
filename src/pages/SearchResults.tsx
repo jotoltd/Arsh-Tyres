@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Tyre, SearchFilters } from '../types';
-import { TYRE_DATABASE } from '../data';
+import { useSupabase } from '../contexts/SupabaseContext';
 import TyreCard from '../components/TyreCard';
 import { Disc, ArrowLeft, Search } from 'lucide-react';
 
 export default function SearchResults() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { tyres, tyresLoading, tyresError } = useSupabase();
   const filters = location.state?.filters as SearchFilters || {
     width: '',
     profile: '',
@@ -22,7 +23,7 @@ export default function SearchResults() {
   useEffect(() => {
     // Simulate loading delay
     const timer = setTimeout(() => {
-      const results = TYRE_DATABASE.filter(tyre => {
+      const results = tyres.filter(tyre => {
         if (filters.width && tyre.width !== parseInt(filters.width)) return false;
         if (filters.profile && tyre.profile !== parseInt(filters.profile)) return false;
         if (filters.rim && tyre.rim !== parseInt(filters.rim)) return false;
@@ -35,14 +36,14 @@ export default function SearchResults() {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [filters]);
+  }, [filters, tyres]);
 
   const handleAddToCart = (tyre: Tyre, quantity: number) => {
     // Navigate back to home with cart action
     navigate('/', { state: { addToCart: { tyre, quantity } } });
   };
 
-  if (isLoading) {
+  if (isLoading || tyresLoading) {
     return (
       <div className="min-h-screen bg-black text-bright-snow font-sans antialiased flex items-center justify-center">
         <div className="text-center space-y-6">
