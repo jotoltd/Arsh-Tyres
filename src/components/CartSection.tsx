@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { CartItem, Booking, SearchFilters } from '../types';
-import { FITTING_FEES } from '../data';
-import { ShoppingBag, Trash2, CreditCard, ChevronRight, Sparkles, Search } from 'lucide-react';
+import { getUnitPrice, LOCKING_NUT_REMOVAL_PRICE } from '../data';
+import BookingCalendar from './BookingCalendar';
+import { ShoppingBag, Trash2, CreditCard, ChevronRight, Sparkles, Search, KeyRound } from 'lucide-react';
 
 interface CartSectionProps {
   cartItems: CartItem[];
@@ -33,8 +34,15 @@ export default function CartSection({
   selectedReg,
   selectedMakeModel
 }: CartSectionProps) {
-  const [fittingType] = useState<'delivery'>('delivery');
-  
+  const [fittingType] = useState<'shop'>('shop');
+
+  // Fitting appointment (next day up to 2 weeks - no same-day bookings)
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
+
+  // Extras
+  const [lockingNutCount, setLockingNutCount] = useState(0);
+
   // Checkout fields
   const [customerName, setCustomerName] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
@@ -74,22 +82,18 @@ export default function CartSection({
     );
   }
 
-  // Cost Calculations
+  // Cost Calculations (4+ of the same tyre gets the multi-buy price)
   const tyreCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-  const subtotal = cartItems.reduce((acc, item) => acc + (item.tyre.price * item.quantity), 0);
-  
-  const getFittingFee = () => {
-    switch (fittingType) {
-      case 'shop':
-        return FITTING_FEES.shop * tyreCount;
-      case 'mobile':
-        return FITTING_FEES.mobile + (10.00 * tyreCount); // £25 callout + £10 per tyre
-      case 'delivery':
-        return FITTING_FEES.delivery;
-    }
-  };
+  const tyresTotal = cartItems.reduce((acc, item) => acc + (getUnitPrice(item.tyre, item.quantity) * item.quantity), 0);
+  const multiBuySaving = cartItems.reduce(
+    (acc, item) => acc + ((item.tyre.price - getUnitPrice(item.tyre, item.quantity)) * item.quantity),
+    0
+  );
+  const lockingNutTotal = lockingNutCount * LOCKING_NUT_REMOVAL_PRICE;
+  const subtotal = tyresTotal + lockingNutTotal;
 
-  const fittingFee = getFittingFee();
+  // Fitting, balancing and new valves are included in all tyre prices
+  const fittingFee = 0;
   const totalPrice = subtotal + fittingFee;
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -116,6 +120,14 @@ export default function CartSection({
       setFormError('Please enter your vehicle manufacturer and model (e.g. BMW 3 Series)');
       return;
     }
+    if (!selectedDate) {
+      setFormError('Please select a fitting date (bookings open from tomorrow, up to 2 weeks ahead)');
+      return;
+    }
+    if (!selectedTimeSlot) {
+      setFormError('Please select a fitting time slot');
+      return;
+    }
 
     onCompleteBooking({
       cartItems,
@@ -123,8 +135,8 @@ export default function CartSection({
       fittingFee,
       totalPrice,
       fittingType,
-      date: '',
-      timeSlot: '',
+      date: selectedDate,
+      timeSlot: selectedTimeSlot,
       customerName,
       customerEmail,
       customerPhone,
@@ -157,9 +169,17 @@ export default function CartSection({
                   </div>
                   <h4 className="font-display font-bold text-bright-snow text-sm">{item.tyre.model}</h4>
                   <p className="font-mono text-xs text-gray-400 mt-1">
-                    Size: <strong className="text-bright-snow">{item.tyre.width}/{item.tyre.profile} R{item.tyre.rim} {item.tyre.loadIndex}{item.tyre.speedRating}</strong>
+                    Size: <strong className="text-bright-snow">{item.tyre.width}/{item.tyre.profile} R{item.tyre.rim}{item.tyre.category === 'Commercial' ? 'C' : ''}</strong>
                   </p>
-                  <p className="text-xs text-gray-400/80 mt-0.5">Price per tyre: £{item.tyre.price.toFixed(2)}</p>
+                  <p className="text-xs text-gray-400/80 mt-0.5">
+                    Price per tyre: £{getUnitPrice(item.tyre, item.quantity).toFixed(2)}
+                    {item.quantity >= 4 && item.tyre.price4 !== undefined && (
+                      <span className="text-emerald-400 font-bold ml-1">(multi-buy ×4 price)</span>
+                    )}
+                    {item.quantity < 4 && item.tyre.price4 !== undefined && (
+                      <span className="text-gray-400 ml-1">- buy 4 for £{item.tyre.price4.toFixed(2)} each</span>
+                    )}
+                  </p>
                 </div>
 
                 <div className="flex items-center justify-between sm:justify-end gap-4">
@@ -184,7 +204,7 @@ export default function CartSection({
 
                   <div className="text-right">
                     <p className="font-display font-extrabold text-bright-snow text-sm">
-                      £{(item.tyre.price * item.quantity).toFixed(2)}
+                      £{(getUnitPrice(item.tyre, item.quantity) * item.quantity).toFixed(2)}
                     </p>
                     <button
                       type="button"
@@ -200,6 +220,50 @@ export default function CartSection({
             ))}
           </div>
         </div>
+
+        {/* Extras: Locking wheel nut removal */}
+        <div className="bg-black rounded-2xl border border-white/5 shadow-lg p-6">
+          <h3 className="font-display font-extrabold text-bright-snow text-base mb-1 flex items-center gap-2">
+            <div className="w-8 h-8 bg-racing-red/20 rounded-lg flex items-center justify-center">
+              <KeyRound className="w-4 h-4 text-racing-red" />
+            </div>
+            Locking Wheel Nut Removal
+          </h3>
+          <p className="text-xs text-gray-400 mb-4">
+            Lost your locking wheel nut key? We can remove them - £{LOCKING_NUT_REMOVAL_PRICE.toFixed(2)} per locking wheel nut.
+          </p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center border border-white/5 rounded-lg overflow-hidden h-9 bg-[#1e2121]">
+              <button
+                type="button"
+                onClick={() => setLockingNutCount(c => Math.max(0, c - 1))}
+                className="px-3 py-0.5 hover:bg-racing-red/20 hover:text-racing-red font-semibold text-gray-400 text-sm transition"
+              >
+                -
+              </button>
+              <span className="px-3 font-mono font-bold text-xs text-bright-snow">{lockingNutCount}</span>
+              <button
+                type="button"
+                onClick={() => setLockingNutCount(c => Math.min(8, c + 1))}
+                className="px-3 py-0.5 hover:bg-racing-red/20 hover:text-racing-red font-semibold text-gray-400 text-sm transition"
+              >
+                +
+              </button>
+            </div>
+            <span className="font-display font-extrabold text-bright-snow text-sm">
+              {lockingNutCount > 0 ? `£${lockingNutTotal.toFixed(2)}` : 'Not required'}
+            </span>
+          </div>
+        </div>
+
+        {/* Fitting Appointment */}
+        <BookingCalendar
+          selectedDate={selectedDate}
+          onDateChange={setSelectedDate}
+          selectedTimeSlot={selectedTimeSlot}
+          onTimeSlotChange={setSelectedTimeSlot}
+          fittingType={fittingType}
+        />
       </div>
 
       {/* RIGHT: Order Summary and details checkout form */}
@@ -282,13 +346,27 @@ export default function CartSection({
           {/* Pricing breakdown */}
           <div className="border-t border-b border-white/5 py-3.5 space-y-2 bg-black/30 rounded-xl p-4">
             <div className="flex justify-between text-xs text-gray-400 font-medium">
-              <span>Tyres Total ({tyreCount} items)</span>
-              <span className="text-bright-snow">£{subtotal.toFixed(2)}</span>
+              <span>Tyres Total ({tyreCount} tyres)</span>
+              <span className="text-bright-snow">£{tyresTotal.toFixed(2)}</span>
             </div>
 
+            {multiBuySaving > 0 && (
+              <div className="flex justify-between text-xs text-emerald-400 font-bold">
+                <span>Multi-buy ×4 Saving</span>
+                <span>-£{multiBuySaving.toFixed(2)}</span>
+              </div>
+            )}
+
+            {lockingNutCount > 0 && (
+              <div className="flex justify-between text-xs text-gray-400 font-medium">
+                <span>Locking Wheel Nut Removal ×{lockingNutCount}</span>
+                <span className="text-bright-snow">£{lockingNutTotal.toFixed(2)}</span>
+              </div>
+            )}
+
             <div className="flex justify-between text-xs text-gray-400 font-medium">
-              <span>Delivery Shipping Fee</span>
-              <span className="text-emerald-400 font-bold">FREE</span>
+              <span>Fitting, Balancing & New Valves</span>
+              <span className="text-emerald-400 font-bold">INCLUDED</span>
             </div>
 
             <div className="flex justify-between text-xs text-gray-400 font-medium">
@@ -315,9 +393,9 @@ export default function CartSection({
               <Sparkles className="w-3.5 h-3.5 text-racing-red" />
               <span>Arsh Autos Triple Guarantee</span>
             </div>
-            <p>✔ No upfront payment required - Pay in shop or upon mobile completion</p>
-            <p>✔ 100% Free wheel balancing and old tyre recycling</p>
-            <p>✔ Lifetime manufacturing defect warranty on all selected brands</p>
+            <p>✔ No upfront payment required - Pay in shop on completion</p>
+            <p>✔ Fitting, wheel balancing and new valves included in every tyre price</p>
+            <p>✔ Bookings from next day, up to 2 weeks in advance</p>
           </div>
 
           {/* Submit Action */}

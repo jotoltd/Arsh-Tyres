@@ -1,6 +1,6 @@
 import React from 'react';
 import { SearchFilters } from '../types';
-import { WIDTHS, PROFILES, RIMS, SPEED_RATINGS } from '../data';
+import { WIDTHS, PROFILES, RIMS, TYRE_TYPES } from '../data';
 import { Search, Info } from 'lucide-react';
 
 interface TyreSearcherProps {
@@ -94,21 +94,21 @@ export default function TyreSearcher({
             </select>
           </div>
 
-          {/* Speed Rating Selector */}
+          {/* Tyre Type Selector */}
           <div>
             <label className="block text-xs uppercase text-bright-snow/80 font-bold tracking-wider mb-3 flex items-center gap-2">
               <span className="w-1 h-4 bg-racing-red rounded-full"></span>
-              Speed Rating
+              Tyre Type
             </label>
             <select
-              value={filters.speedRating}
-              onChange={(e) => handleSelectChange('speedRating', e.target.value)}
+              value={filters.category === 'All' ? '' : filters.category}
+              onChange={(e) => handleSelectChange('category', e.target.value || 'All')}
               className="w-full bg-[#1e2121] border-2 border-white/10 text-bright-snow rounded-xl py-3.5 px-4 focus:outline-none focus:ring-2 focus:ring-racing-red/30 focus:border-racing-red font-bold text-lg neon-border-focus transition-all"
             >
-              <option value="" className="bg-[#1e2121]">Any Speed</option>
-              {SPEED_RATINGS.map(sr => (
-                <option key={sr.code} value={sr.code} className="bg-[#1e2121]">
-                  {sr.code} ({sr.desc.split(' (')[0]})
+              <option value="" className="bg-[#1e2121]">All Types</option>
+              {TYRE_TYPES.map(t => (
+                <option key={t} value={t} className="bg-[#1e2121]">
+                  {t === 'Commercial' ? 'Commercial (Van)' : t}
                 </option>
               ))}
             </select>

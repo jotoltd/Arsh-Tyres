@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Tyre } from '../types';
-import { ShoppingCart, Star, Eye, ShieldCheck, HelpCircle, Sun, Snowflake, Layers, Disc } from 'lucide-react';
+import { getUnitPrice } from '../data';
+import { ShoppingCart, Star, ShieldCheck, Truck, Layers, Disc, Wrench } from 'lucide-react';
 
 interface TyreCardProps {
   tyre: Tyre;
@@ -21,10 +22,10 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case 'Summer':
-        return <Sun className="w-3.5 h-3.5 text-racing-red" />;
-      case 'Winter':
-        return <Snowflake className="w-3.5 h-3.5 text-blue-400" />;
+      case 'Runflat':
+        return <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />;
+      case 'Commercial':
+        return <Truck className="w-3.5 h-3.5 text-amber-400" />;
       default:
         return <Layers className="w-3.5 h-3.5 text-racing-red" />;
     }
@@ -62,8 +63,8 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
       {/* Top Banner with Badges */}
       <div className="p-4 pb-0 flex justify-between items-center">
         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
-          tyre.category === 'Summer' ? 'bg-racing-red/10 text-racing-red border border-racing-red/20' :
-          tyre.category === 'Winter' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' :
+          tyre.category === 'Runflat' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' :
+          tyre.category === 'Commercial' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
           'bg-racing-red/10 text-bright-snow border border-racing-red/20'
         }`}>
           {getCategoryIcon(tyre.category)}
@@ -92,20 +93,22 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
         </div>
 
         {/* Rating and Reviews */}
-        <div className="flex items-center gap-1.5 mb-4">
-          <div className="flex text-yellow-400">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star
-                key={i}
-                className={`w-3.5 h-3.5 fill-current ${
-                  i < Math.floor(tyre.rating) ? 'text-yellow-400' : 'text-zinc-700'
-                }`}
-              />
-            ))}
+        {tyre.rating !== undefined && (
+          <div className="flex items-center gap-1.5 mb-4">
+            <div className="flex text-yellow-400">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star
+                  key={i}
+                  className={`w-3.5 h-3.5 fill-current ${
+                    i < Math.floor(tyre.rating!) ? 'text-yellow-400' : 'text-zinc-700'
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="text-xs font-bold text-bright-snow/90">{tyre.rating}</span>
+            <span className="text-[11px] text-gray-400">({tyre.reviewsCount} reviews)</span>
           </div>
-          <span className="text-xs font-bold text-bright-snow/90">{tyre.rating}</span>
-          <span className="text-[11px] text-gray-400">({tyre.reviewsCount} reviews)</span>
-        </div>
+        )}
 
         {/* Size Code Display */}
         <div className="bg-[#1e2121] border border-white/5 rounded-lg p-3 mb-4">
@@ -115,48 +118,61 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
             <span className="text-bright-snow text-lg font-extrabold">{tyre.profile}</span>
             <span className="text-gray-400 font-normal text-sm ml-1">R</span>
             <span className="text-bright-snow text-lg font-extrabold">{tyre.rim}</span>
-            <span className="text-racing-red ml-1.5 text-lg font-extrabold">{tyre.loadIndex}{tyre.speedRating}</span>
+            {(tyre.loadIndex || tyre.speedRating) && (
+              <span className="text-racing-red ml-1.5 text-lg font-extrabold">{tyre.loadIndex}{tyre.speedRating}</span>
+            )}
+            {tyre.category === 'Commercial' && (
+              <span className="text-amber-400 ml-1 text-lg font-extrabold">C</span>
+            )}
           </div>
           <p className="text-[10px] text-gray-400 text-center mt-1 uppercase tracking-wider font-semibold">
-            Width / Profile / Rim / Speed Code
+            Width / Profile / Rim
           </p>
         </div>
 
-        {/* EU Label Specifications Widget */}
-        <div className="mt-auto border-t border-white/5 pt-4 mb-4">
-          <p className="text-[10px] uppercase font-bold tracking-wider text-gray-400/80 mb-2">Official EU Tyre Label</p>
-          <div className="grid grid-cols-3 gap-2">
-            {/* Fuel Efficiency */}
-            <div className="bg-[#1e2121] border border-white/5 rounded p-1.5 flex flex-col items-center justify-center text-center">
-              <span className="text-[10px] font-bold text-gray-400 uppercase">Fuel</span>
-              <div className="flex items-center gap-1 mt-1">
-                <span className="text-xs">⛽</span>
-                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-sm ${getEUClassColor(tyre.fuelEfficiency)}`}>
-                  {tyre.fuelEfficiency}
-                </span>
+        {/* EU Label Specifications Widget (only when data available) */}
+        {tyre.fuelEfficiency && tyre.wetGrip && (
+          <div className="mt-auto border-t border-white/5 pt-4 mb-4">
+            <p className="text-[10px] uppercase font-bold tracking-wider text-gray-400/80 mb-2">Official EU Tyre Label</p>
+            <div className="grid grid-cols-3 gap-2">
+              {/* Fuel Efficiency */}
+              <div className="bg-[#1e2121] border border-white/5 rounded p-1.5 flex flex-col items-center justify-center text-center">
+                <span className="text-[10px] font-bold text-gray-400 uppercase">Fuel</span>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-xs">⛽</span>
+                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-sm ${getEUClassColor(tyre.fuelEfficiency)}`}>
+                    {tyre.fuelEfficiency}
+                  </span>
+                </div>
               </div>
-            </div>
 
-            {/* Wet Grip */}
-            <div className="bg-[#1e2121] border border-white/5 rounded p-1.5 flex flex-col items-center justify-center text-center">
-              <span className="text-[10px] font-bold text-gray-400 uppercase">Grip</span>
-              <div className="flex items-center gap-1 mt-1">
-                <span className="text-xs">🌧️</span>
-                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-sm ${getEUClassColor(tyre.wetGrip)}`}>
-                  {tyre.wetGrip}
-                </span>
+              {/* Wet Grip */}
+              <div className="bg-[#1e2121] border border-white/5 rounded p-1.5 flex flex-col items-center justify-center text-center">
+                <span className="text-[10px] font-bold text-gray-400 uppercase">Grip</span>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-xs">🌧️</span>
+                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-sm ${getEUClassColor(tyre.wetGrip)}`}>
+                    {tyre.wetGrip}
+                  </span>
+                </div>
               </div>
-            </div>
 
-            {/* Noise Rating */}
-            <div className="bg-[#1e2121] border border-white/5 rounded p-1.5 flex flex-col items-center justify-center text-center">
-              <span className="text-[10px] font-bold text-gray-400 uppercase">Noise</span>
-              <div className="flex items-center gap-0.5 mt-1">
-                <span className="text-[10px] font-bold text-bright-snow">{tyre.noiseLevel} dB</span>
-                <span className="text-[10px] text-gray-400">🔊</span>
+              {/* Noise Rating */}
+              <div className="bg-[#1e2121] border border-white/5 rounded p-1.5 flex flex-col items-center justify-center text-center">
+                <span className="text-[10px] font-bold text-gray-400 uppercase">Noise</span>
+                <div className="flex items-center gap-0.5 mt-1">
+                  <span className="text-[10px] font-bold text-bright-snow">{tyre.noiseLevel} dB</span>
+                  <span className="text-[10px] text-gray-400">🔊</span>
+                </div>
               </div>
             </div>
           </div>
+        )}
+
+        {/* Fitting included note */}
+        <div className="mt-auto flex items-center gap-1.5 text-[11px] text-emerald-400 font-semibold mb-4">
+          <Wrench className="w-3.5 h-3.5 shrink-0" />
+          <span>Fitting, wheel balance & new valve included</span>
         </div>
 
         {/* Pricing and Action Footer */}
@@ -164,9 +180,16 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
           <div>
             <div className="text-xs text-gray-400 font-semibold uppercase">Price per Tyre</div>
             <div className="flex items-baseline gap-1">
-              <span className="font-display text-2xl font-extrabold text-bright-snow">£{tyre.price.toFixed(2)}</span>
+              <span className="font-display text-2xl font-extrabold text-bright-snow">£{getUnitPrice(tyre, quantity).toFixed(2)}</span>
               <span className="text-gray-400 text-xs font-medium">inc. VAT</span>
             </div>
+            {tyre.price4 !== undefined && (
+              <div className={`text-[11px] font-bold mt-0.5 ${quantity >= 4 ? 'text-emerald-400' : 'text-gray-400'}`}>
+                {quantity >= 4
+                  ? `Multi-buy applied - was £${tyre.price.toFixed(2)} each`
+                  : `Buy 4: only £${tyre.price4.toFixed(2)} each`}
+              </div>
+            )}
           </div>
 
           <div className="text-right">

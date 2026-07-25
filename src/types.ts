@@ -1,3 +1,5 @@
+export type TyreCategory = 'Standard' | 'Runflat' | 'Commercial';
+
 export interface Tyre {
   id: string;
   brand: string;
@@ -5,18 +7,19 @@ export interface Tyre {
   width: number;       // e.g., 205
   profile: number;     // e.g., 55
   rim: number;         // e.g., 16
-  speedRating: string; // e.g., "V", "W", "Y"
-  loadIndex: number;   // e.g., 91, 94
-  price: number;
-  category: 'Summer' | 'Winter' | 'All-Season';
+  speedRating?: string; // e.g., "V", "W", "Y"
+  loadIndex?: number;   // e.g., 91, 94
+  price: number;        // per tyre
+  price4?: number;      // per tyre when buying 4 or more
+  category: TyreCategory;
   isRunflat: boolean;
-  isReinforced: boolean; // XL
-  fuelEfficiency: 'A' | 'B' | 'C' | 'D' | 'E';
-  wetGrip: 'A' | 'B' | 'C' | 'D' | 'E';
-  noiseLevel: number; // in dB
+  isReinforced?: boolean; // XL
+  fuelEfficiency?: 'A' | 'B' | 'C' | 'D' | 'E';
+  wetGrip?: 'A' | 'B' | 'C' | 'D' | 'E';
+  noiseLevel?: number; // in dB
   stock: number;
-  rating: number;
-  reviewsCount: number;
+  rating?: number;
+  reviewsCount?: number;
   imageUrl?: string;
   recommendedFor?: string;
 }

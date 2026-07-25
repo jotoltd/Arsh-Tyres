@@ -37,7 +37,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
     speedRating: 'V',
     loadIndex: 91,
     price: 0,
-    category: 'All-Season',
+    category: 'Standard',
     isRunflat: false,
     isReinforced: false,
     fuelEfficiency: 'C',
@@ -140,7 +140,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
       speedRating: newTyre.speedRating || 'V',
       loadIndex: newTyre.loadIndex || 91,
       price: newTyre.price,
-      category: newTyre.category || 'All-Season',
+      category: newTyre.category || 'Standard',
       isRunflat: newTyre.isRunflat || false,
       isReinforced: newTyre.isReinforced || false,
       fuelEfficiency: newTyre.fuelEfficiency || 'C',
@@ -162,7 +162,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
       speedRating: 'V',
       loadIndex: 91,
       price: 0,
-      category: 'All-Season',
+      category: 'Standard',
       isRunflat: false,
       isReinforced: false,
       fuelEfficiency: 'C',
@@ -590,9 +590,9 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                     onChange={(e) => setNewTyre({ ...newTyre, category: e.target.value as Tyre['category'] })}
                     className="w-full bg-[#1e2121] border border-white/10 text-bright-snow rounded px-3 py-2 text-sm focus:outline-none focus:border-racing-red"
                   >
-                    <option value="Summer">Summer</option>
-                    <option value="Winter">Winter</option>
-                    <option value="All-Season">All-Season</option>
+                    <option value="Standard">Standard</option>
+                    <option value="Runflat">Runflat</option>
+                    <option value="Commercial">Commercial (Van)</option>
                   </select>
                 </div>
               </div>

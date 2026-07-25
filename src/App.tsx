@@ -594,6 +594,39 @@ export default function App() {
               </div>
             </div>
 
+            {/* Extra Workshop Services */}
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-black rounded-2xl p-6 border border-white/5 shadow-lg flex items-start gap-4">
+                <div className="w-12 h-12 bg-racing-red/20 rounded-xl flex items-center justify-center shrink-0">
+                  <ShieldCheck className="w-6 h-6 text-racing-red" />
+                </div>
+                <div>
+                  <h4 className="font-display font-bold text-bright-snow text-lg mb-1">TPMS — Tyre Pressure Monitoring Sensors</h4>
+                  <p className="text-gray-400 text-sm">
+                    We supply Autel sensors, including fitting and programming. Contact us for a quote.
+                  </p>
+                  <a
+                    href="tel:02084271234"
+                    className="inline-flex items-center gap-1.5 mt-3 text-xs font-bold text-racing-red hover:text-racing-red/80 uppercase tracking-wider"
+                  >
+                    <Phone className="w-3.5 h-3.5" />
+                    Call 020 8427 1234 for a quote
+                  </a>
+                </div>
+              </div>
+              <div className="bg-black rounded-2xl p-6 border border-white/5 shadow-lg flex items-start gap-4">
+                <div className="w-12 h-12 bg-racing-red/20 rounded-xl flex items-center justify-center shrink-0">
+                  <Wrench className="w-6 h-6 text-racing-red" />
+                </div>
+                <div>
+                  <h4 className="font-display font-bold text-bright-snow text-lg mb-1">Locking Wheel Nut Removal</h4>
+                  <p className="text-gray-400 text-sm">
+                    Lost your locking wheel nut key? We can safely remove locking wheel nuts — £20 per locking wheel nut removal. Add it at checkout with your tyre order.
+                  </p>
+                </div>
+              </div>
+            </section>
+
             {/* Smart Searcher Component */}
             <section className="space-y-6">
               <div className="text-center bg-black/30 backdrop-blur-sm rounded-2xl p-8 border border-white/5">
@@ -628,7 +661,7 @@ export default function App() {
 
                   {/* Categories tab filters */}
                   <div className="flex gap-1 bg-black p-1 rounded-xl border border-white/5">
-                    {['All', 'Summer', 'Winter', 'All-Season'].map((cat) => (
+                    {['All', 'Standard', 'Runflat', 'Commercial'].map((cat) => (
                       <button
                         key={cat}
                         type="button"
@@ -652,7 +685,7 @@ export default function App() {
                       <span className="text-2xl">🚗</span>
                       <div>
                         <h4 className="font-bold text-bright-snow text-sm">Vehicle Matched: <span className="font-mono bg-racing-red text-bright-snow px-1.5 py-0.5 rounded">{selectedReg}</span> - {selectedMakeModel}</h4>
-                        <p className="text-xs text-gray-400">Filters have been auto-tuned to dimensions: {filters.width}/{filters.profile} R{filters.rim} {filters.speedRating}</p>
+                        <p className="text-xs text-gray-400">Filters have been auto-tuned to dimensions: {filters.width}/{filters.profile} R{filters.rim}</p>
                       </div>
                     </div>
                     <button

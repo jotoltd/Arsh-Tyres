@@ -98,7 +98,7 @@ export default function SearchResults() {
 
             {/* Categories tab filters */}
             <div className="flex gap-1 bg-black p-1 rounded-xl border border-white/5">
-              {['All', 'Summer', 'Winter', 'All-Season'].map((cat) => (
+              {['All', 'Standard', 'Runflat', 'Commercial'].map((cat) => (
                 <button
                   key={cat}
                   type="button"
