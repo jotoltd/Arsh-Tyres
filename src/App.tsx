@@ -130,6 +130,34 @@ export default function App() {
     const newBooking = await addBooking(bookingData);
     if (!newBooking) return;
 
+    // Send confirmation email (fire-and-forget, don't block the UI)
+    fetch('/api/send-confirmation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        customerName: bookingData.customerName,
+        customerEmail: bookingData.customerEmail,
+        customerPhone: bookingData.customerPhone,
+        vehicleRegistration: bookingData.vehicleRegistration,
+        vehicleMakeModel: bookingData.vehicleMakeModel,
+        fittingType: bookingData.fittingType,
+        date: bookingData.date,
+        timeSlot: bookingData.timeSlot,
+        totalPrice: bookingData.totalPrice,
+        cartItems: bookingData.cartItems.map(item => ({
+          tyre: {
+            brand: item.tyre.brand,
+            model: item.tyre.model,
+            width: item.tyre.width,
+            profile: item.tyre.profile,
+            rim: item.tyre.rim,
+          },
+          quantity: item.quantity,
+          unitPrice: getUnitPrice(item.tyre, item.quantity),
+        })),
+      }),
+    }).catch(err => console.error('Failed to send confirmation email:', err));
+
     // Clear cart
     setCartItems([]);
 
