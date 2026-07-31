@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Tyre } from '../types';
 import { getUnitPrice } from '../data';
-import { ShoppingCart, Star, ShieldCheck, Truck, Layers, Disc, Wrench } from 'lucide-react';
+import { ShoppingBag, ShieldCheck, Truck, Layers, Disc, Wrench, Check } from 'lucide-react';
 
 interface TyreCardProps {
   tyre: Tyre;
@@ -31,23 +31,13 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
     }
   };
 
-  const getEUClassColor = (grade: 'A' | 'B' | 'C' | 'D' | 'E') => {
-    switch (grade) {
-      case 'A': return 'bg-emerald-500 text-white';
-      case 'B': return 'bg-teal-500 text-white';
-      case 'C': return 'bg-yellow-500 text-black font-bold';
-      case 'D': return 'bg-orange-500 text-white';
-      case 'E': return 'bg-racing-red text-white';
-    }
-  };
-
   return (
-    <div className="carbon-fiber rounded-xl border border-white/5 shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col h-full overflow-hidden">
-      {/* Tyre Image */}
-      <div className="relative h-44 w-full bg-[#1a1d1d] overflow-hidden flex items-center justify-center border-b border-white/5">
+    <div className="bg-[#1e2121] rounded-2xl border border-white/5 hover:border-white/15 shadow-lg hover:shadow-xl transition-all duration-200 flex flex-col h-full overflow-hidden">
+      {/* Tyre Image Area */}
+      <div className="relative h-36 w-full bg-black/40 overflow-hidden flex items-center justify-center border-b border-white/5">
         {!tyre.imageUrl || imageError ? (
-          <div className="flex flex-col items-center text-gray-500">
-            <Disc className="w-14 h-14 mb-2 opacity-40" />
+          <div className="flex flex-col items-center text-gray-600">
+            <Disc className="w-12 h-12 mb-1 opacity-40" />
             <span className="text-[10px] font-bold uppercase tracking-wider">{tyre.brand}</span>
           </div>
         ) : (
@@ -58,189 +48,99 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
             onError={() => setImageError(true)}
           />
         )}
-      </div>
-
-      {/* Top Banner with Badges */}
-      <div className="p-4 pb-0 flex justify-between items-center">
-        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
-          tyre.category === 'Runflat' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' :
-          tyre.category === 'Commercial' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
-          'bg-racing-red/10 text-bright-snow border border-racing-red/20'
+        {/* Category badge overlay */}
+        <span className={`absolute top-2 left-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${
+          tyre.category === 'Runflat' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
+          tyre.category === 'Commercial' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' :
+          'bg-racing-red/20 text-racing-red border border-racing-red/30'
         }`}>
           {getCategoryIcon(tyre.category)}
           {tyre.category}
         </span>
-
-        <div className="flex gap-1">
-          {tyre.isRunflat && (
-            <span className="bg-white/10 text-bright-snow/95 text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider border border-white/5" title="Runflat Technology">
-              RFT
-            </span>
-          )}
-          {tyre.isReinforced && (
-            <span className="bg-racing-red/10 text-bright-snow border border-racing-red/20 text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider" title="Extra Load / Reinforced">
-              XL
-            </span>
-          )}
-        </div>
+        {/* Stock badge */}
+        <span className={`absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-full ${
+          tyre.stock > 8 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-racing-red/20 text-racing-red border border-racing-red/30'
+        }`}>
+          {tyre.stock > 8 ? 'In stock' : `Only ${tyre.stock} left`}
+        </span>
       </div>
 
-      {/* Tyre Details */}
-      <div className="p-5 flex-1 flex flex-col">
-        <div className="mb-2">
-          <span className="text-xs uppercase tracking-wider font-bold text-racing-red block mb-0.5">{tyre.brand}</span>
-          <h3 className="font-display font-bold text-lg text-bright-snow leading-snug">{tyre.model}</h3>
+      {/* Card Body */}
+      <div className="p-4 flex-1 flex flex-col">
+        {/* Brand + Model */}
+        <div className="mb-3">
+          <span className="text-[11px] uppercase tracking-wider font-bold text-racing-red block">{tyre.brand}</span>
+          <h3 className="font-display font-bold text-base text-bright-snow leading-snug">{tyre.model}</h3>
         </div>
 
-        {/* Rating and Reviews */}
-        {tyre.rating !== undefined && (
-          <div className="flex items-center gap-1.5 mb-4">
-            <div className="flex text-yellow-400">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star
-                  key={i}
-                  className={`w-3.5 h-3.5 fill-current ${
-                    i < Math.floor(tyre.rating!) ? 'text-yellow-400' : 'text-zinc-700'
-                  }`}
-                />
-              ))}
-            </div>
-            <span className="text-xs font-bold text-bright-snow/90">{tyre.rating}</span>
-            <span className="text-[11px] text-gray-400">({tyre.reviewsCount} reviews)</span>
-          </div>
-        )}
-
-        {/* Size Code Display */}
-        <div className="bg-[#1e2121] border border-white/5 rounded-lg p-3 mb-4">
-          <div className="font-mono text-center font-bold text-bright-snow text-base flex justify-center items-center gap-1">
-            <span className="text-bright-snow text-lg font-extrabold">{tyre.width}</span>
-            <span className="text-gray-400 font-normal">/</span>
-            <span className="text-bright-snow text-lg font-extrabold">{tyre.profile}</span>
-            <span className="text-gray-400 font-normal text-sm ml-1">R</span>
-            <span className="text-bright-snow text-lg font-extrabold">{tyre.rim}</span>
-            {(tyre.loadIndex || tyre.speedRating) && (
-              <span className="text-racing-red ml-1.5 text-lg font-extrabold">{tyre.loadIndex}{tyre.speedRating}</span>
-            )}
-            {tyre.category === 'Commercial' && (
-              <span className="text-amber-400 ml-1 text-lg font-extrabold">C</span>
-            )}
-          </div>
-          <p className="text-[10px] text-gray-400 text-center mt-1 uppercase tracking-wider font-semibold">
-            Width / Profile / Rim
-          </p>
+        {/* Size — inline, compact */}
+        <div className="font-mono text-sm font-bold text-bright-snow bg-black/40 rounded-lg px-3 py-2 mb-3 flex items-center justify-center gap-1">
+          <span>{tyre.width}</span>
+          <span className="text-gray-500">/</span>
+          <span>{tyre.profile}</span>
+          <span className="text-gray-500 text-xs">R</span>
+          <span>{tyre.rim}{tyre.category === 'Commercial' ? 'C' : ''}</span>
+          {(tyre.loadIndex || tyre.speedRating) && (
+            <span className="text-racing-red ml-1">{tyre.loadIndex}{tyre.speedRating}</span>
+          )}
         </div>
 
-        {/* EU Label Specifications Widget (only when data available) */}
-        {tyre.fuelEfficiency && tyre.wetGrip && (
-          <div className="mt-auto border-t border-white/5 pt-4 mb-4">
-            <p className="text-[10px] uppercase font-bold tracking-wider text-gray-400/80 mb-2">Official EU Tyre Label</p>
-            <div className="grid grid-cols-3 gap-2">
-              {/* Fuel Efficiency */}
-              <div className="bg-[#1e2121] border border-white/5 rounded p-1.5 flex flex-col items-center justify-center text-center">
-                <span className="text-[10px] font-bold text-gray-400 uppercase">Fuel</span>
-                <div className="flex items-center gap-1 mt-1">
-                  <span className="text-xs">⛽</span>
-                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-sm ${getEUClassColor(tyre.fuelEfficiency)}`}>
-                    {tyre.fuelEfficiency}
-                  </span>
-                </div>
-              </div>
-
-              {/* Wet Grip */}
-              <div className="bg-[#1e2121] border border-white/5 rounded p-1.5 flex flex-col items-center justify-center text-center">
-                <span className="text-[10px] font-bold text-gray-400 uppercase">Grip</span>
-                <div className="flex items-center gap-1 mt-1">
-                  <span className="text-xs">🌧️</span>
-                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-sm ${getEUClassColor(tyre.wetGrip)}`}>
-                    {tyre.wetGrip}
-                  </span>
-                </div>
-              </div>
-
-              {/* Noise Rating */}
-              <div className="bg-[#1e2121] border border-white/5 rounded p-1.5 flex flex-col items-center justify-center text-center">
-                <span className="text-[10px] font-bold text-gray-400 uppercase">Noise</span>
-                <div className="flex items-center gap-0.5 mt-1">
-                  <span className="text-[10px] font-bold text-bright-snow">{tyre.noiseLevel} dB</span>
-                  <span className="text-[10px] text-gray-400">🔊</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Fitting included note */}
-        <div className="mt-auto flex items-center gap-1.5 text-[11px] text-emerald-400 font-semibold mb-4">
+        {/* Fitting included */}
+        <div className="flex items-center gap-1.5 text-[11px] text-emerald-400 font-semibold mb-3">
           <Wrench className="w-3.5 h-3.5 shrink-0" />
-          <span>Fitting, wheel balance & new valve included</span>
+          <span>Fitting, balancing & valves included</span>
         </div>
 
-        {/* Pricing and Action Footer */}
-        <div className="border-t border-white/5 pt-4 flex items-center justify-between mt-auto">
-          <div>
-            <div className="text-xs text-gray-400 font-semibold uppercase">Price per Tyre</div>
-            <div className="flex items-baseline gap-1">
-              <span className="font-display text-2xl font-extrabold text-bright-snow">£{getUnitPrice(tyre, quantity).toFixed(2)}</span>
-              <span className="text-gray-400 text-xs font-medium">inc. VAT</span>
+        {/* Price */}
+        <div className="mt-auto">
+          <div className="flex items-baseline gap-1.5 mb-1">
+            <span className="font-display text-2xl font-extrabold text-bright-snow">£{getUnitPrice(tyre, quantity).toFixed(2)}</span>
+            <span className="text-gray-500 text-xs">/ tyre</span>
+          </div>
+          {tyre.price4 !== undefined && (
+            <div className={`text-[11px] font-bold mb-3 ${quantity >= 4 ? 'text-emerald-400' : 'text-gray-400'}`}>
+              {quantity >= 4
+                ? `✓ Multi-buy price applied (was £${tyre.price.toFixed(2)})`
+                : `Buy 4+ for £${tyre.price4.toFixed(2)} each`}
             </div>
-            {tyre.price4 !== undefined && (
-              <div className={`text-[11px] font-bold mt-0.5 ${quantity >= 4 ? 'text-emerald-400' : 'text-gray-400'}`}>
-                {quantity >= 4
-                  ? `Multi-buy applied - was £${tyre.price.toFixed(2)} each`
-                  : `Buy 4: only £${tyre.price4.toFixed(2)} each`}
-              </div>
-            )}
-          </div>
+          )}
+          {tyre.price4 === undefined && <div className="mb-3" />}
 
-          <div className="text-right">
-            {tyre.stock > 8 ? (
-              <span className="text-xs text-emerald-400 font-semibold bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">In Stock</span>
-            ) : (
-              <span className="text-xs text-racing-red font-semibold bg-racing-red/10 border border-racing-red/20 px-2 py-0.5 rounded">Only {tyre.stock} Left</span>
-            )}
-          </div>
-        </div>
+          {/* Quantity + Add */}
+          <div className="flex gap-2 items-center">
+            <div className="flex items-center border border-white/10 rounded-lg overflow-hidden h-10 shrink-0 bg-black/40">
+              <button
+                onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
+                className="px-3 py-1 hover:bg-white/5 font-bold text-gray-400 transition disabled:opacity-30"
+                disabled={quantity <= 1}
+              >
+                -
+              </button>
+              <span className="px-3 font-mono font-bold text-sm text-bright-snow">{quantity}</span>
+              <button
+                onClick={() => setQuantity(prev => Math.min(tyre.stock, prev + 1))}
+                className="px-3 py-1 hover:bg-white/5 font-bold text-gray-400 transition disabled:opacity-30"
+                disabled={quantity >= tyre.stock}
+              >
+                +
+              </button>
+            </div>
 
-        {/* Quantity and Add Selector */}
-        <div className="mt-4 flex gap-2 items-center">
-          <div className="flex items-center border border-white/5 rounded-lg overflow-hidden h-10 shrink-0 bg-[#1e2121]">
             <button
-              onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
-              className="px-2.5 py-1 hover:bg-white/5 font-semibold text-gray-400 transition"
-              disabled={quantity <= 1}
+              onClick={handleAdd}
+              className={`flex-1 h-10 font-bold text-xs tracking-wider uppercase rounded-lg transition-all duration-200 flex items-center justify-center gap-1.5 ${
+                isAdded
+                  ? 'bg-emerald-600 text-white'
+                  : 'bg-racing-red hover:bg-racing-red/90 text-bright-snow shadow-md hover:shadow-lg'
+              }`}
             >
-              -
-            </button>
-            <span className="px-3 font-mono font-bold text-sm text-bright-snow">{quantity}</span>
-            <button
-              onClick={() => setQuantity(prev => Math.min(tyre.stock, prev + 1))}
-              className="px-2.5 py-1 hover:bg-white/5 font-semibold text-gray-400 transition"
-              disabled={quantity >= tyre.stock}
-            >
-              +
+              {isAdded ? (
+                <><Check className="w-4 h-4" /> Added!</>
+              ) : (
+                <><ShoppingBag className="w-4 h-4" /> Add {quantity}</>
+              )}
             </button>
           </div>
-
-          <button
-            onClick={handleAdd}
-            className={`flex-1 h-10 font-bold text-xs tracking-wider uppercase rounded-lg transition-all duration-200 flex items-center justify-center gap-1.5 ${
-              isAdded
-                ? 'bg-emerald-600 text-white'
-                : 'bg-racing-red hover:bg-racing-red/90 text-bright-snow shadow-md hover:shadow-lg font-bold'
-            }`}
-          >
-            {isAdded ? (
-              <>
-                <ShieldCheck className="w-4 h-4" />
-                Added!
-              </>
-            ) : (
-              <>
-                <ShoppingCart className="w-4 h-4" />
-                Add to Cart
-              </>
-            )}
-          </button>
         </div>
       </div>
     </div>

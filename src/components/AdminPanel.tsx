@@ -1,7 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Tyre, Booking } from '../types';
 import { TYRE_DATABASE } from '../data';
-import { Trash2, Edit, Plus, Package, Calendar, CheckCircle, XCircle, Clock, ShieldCheck, Users, Download, AlertTriangle, Tag, TrendingUp, BarChart3, FileText, CreditCard, MessageSquare } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { Trash2, Edit, Plus, Package, Calendar, CheckCircle, XCircle, Clock, ShieldCheck, Users, Download, AlertTriangle, Tag, TrendingUp, BarChart3, FileText, CreditCard, MessageSquare, Settings, FlaskConical, Zap, LogOut, Lock, Loader2 } from 'lucide-react';
+import { getStripeMode, setStripeMode, type StripeMode } from '../paymentSettings';
+import { isAdminAuthed, adminLogin, adminLogout } from '../adminAuth';
 
 interface AdminPanelProps {
   bookings: Booking[];
@@ -24,8 +27,14 @@ interface Staff {
 }
 
 export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProps) {
-  const [activeSection, setActiveSection] = useState<'dashboard' | 'inventory' | 'bookings' | 'customers' | 'promos' | 'schedule' | 'staff' | 'reports'>('dashboard');
+  const [authed, setAuthed] = useState(isAdminAuthed());
+  const [loginUser, setLoginUser] = useState('');
+  const [loginPass, setLoginPass] = useState('');
+  const [loginError, setLoginError] = useState('');
+
+  const [activeSection, setActiveSection] = useState<'dashboard' | 'inventory' | 'bookings' | 'customers' | 'promos' | 'schedule' | 'staff' | 'reports' | 'settings'>('dashboard');
   const [inventory, setInventory] = useState<Tyre[]>(TYRE_DATABASE);
+  const [inventoryLoading, setInventoryLoading] = useState(false);
   const [editingTyre, setEditingTyre] = useState<Tyre | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newTyre, setNewTyre] = useState<Partial<Tyre>>({
@@ -47,17 +56,124 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
     rating: 4.5,
     reviewsCount: 0
   });
-  const [promoCodes, setPromoCodes] = useState<PromoCode[]>([
-    { code: 'WELCOME10', discount: 10, expiry: '2026-12-31', active: true },
-    { code: 'SUMMER20', discount: 20, expiry: '2026-08-31', active: true }
-  ]);
-  const [staff, setStaff] = useState<Staff[]>([
-    { id: '1', name: 'John Smith', role: 'Senior Fitter', email: 'john@arshautos.co.uk', phone: '07700 900000' },
-    { id: '2', name: 'Sarah Jones', role: 'Manager', email: 'sarah@arshautos.co.uk', phone: '07700 900001' }
-  ]);
+  const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
+  const [staff, setStaff] = useState<Staff[]>([]);
   const [bookingNotes, setBookingNotes] = useState<Record<string, string>>({});
   const [showPromoForm, setShowPromoForm] = useState(false);
   const [newPromo, setNewPromo] = useState({ code: '', discount: 10, expiry: '' });
+  const [dataLoading, setDataLoading] = useState(true);
+
+  const [stripeMode, setStripeModeState] = useState<StripeMode>(getStripeMode());
+  const configured = isSupabaseConfigured();
+
+  const handleToggleStripeMode = () => {
+    const newMode = stripeMode === 'test' ? 'live' : 'test';
+    setStripeMode(newMode);
+    setStripeModeState(newMode);
+  };
+
+  const handleLogin = () => {
+    if (adminLogin(loginUser, loginPass)) {
+      setAuthed(true);
+      setLoginError('');
+      setLoginUser('');
+      setLoginPass('');
+    } else {
+      setLoginError('Invalid credentials');
+    }
+  };
+
+  const handleLogout = () => {
+    adminLogout();
+    setAuthed(false);
+  };
+
+  // Load inventory from Supabase
+  const loadInventory = useCallback(async () => {
+    if (!configured) { setInventory(TYRE_DATABASE); setDataLoading(false); return; }
+    setInventoryLoading(true);
+    const { data, error } = await supabase.from('tyres').select('*');
+    if (!error && data && data.length > 0) {
+      setInventory(data.map((raw: any) => ({
+        id: raw.id,
+        brand: raw.brand,
+        model: raw.model,
+        width: raw.width,
+        profile: raw.profile,
+        rim: raw.rim,
+        speedRating: raw.speed_rating ?? undefined,
+        loadIndex: raw.load_index ?? undefined,
+        price: Number(raw.price),
+        price4: raw.price_x4 != null ? Number(raw.price_x4) : undefined,
+        category: raw.category,
+        isRunflat: raw.is_runflat ?? false,
+        isReinforced: raw.is_reinforced ?? undefined,
+        fuelEfficiency: raw.fuel_efficiency ?? undefined,
+        wetGrip: raw.wet_grip ?? undefined,
+        noiseLevel: raw.noise_level ?? undefined,
+        stock: raw.stock,
+        rating: raw.rating != null ? Number(raw.rating) : undefined,
+        reviewsCount: raw.reviews_count ?? undefined,
+        imageUrl: raw.image_url || undefined,
+        recommendedFor: raw.recommended_for || undefined,
+      })));
+    } else {
+      setInventory(TYRE_DATABASE);
+    }
+    setInventoryLoading(false);
+    setDataLoading(false);
+  }, [configured]);
+
+  // Load promo codes from Supabase
+  const loadPromos = useCallback(async () => {
+    if (!configured) return;
+    const { data, error } = await supabase.from('promo_codes').select('*');
+    if (!error && data) {
+      setPromoCodes(data.map((p: any) => ({
+        code: p.code,
+        discount: p.discount,
+        expiry: p.expiry,
+        active: p.active,
+      })));
+    }
+  }, [configured]);
+
+  // Load staff from Supabase
+  const loadStaff = useCallback(async () => {
+    if (!configured) return;
+    const { data, error } = await supabase.from('staff').select('*');
+    if (!error && data) {
+      setStaff(data.map((s: any) => ({
+        id: s.id,
+        name: s.name,
+        role: s.role,
+        email: s.email || '',
+        phone: s.phone || '',
+      })));
+    }
+  }, [configured]);
+
+  // Load booking notes from Supabase
+  const loadBookingNotes = useCallback(async () => {
+    if (!configured) return;
+    const { data, error } = await supabase.from('bookings').select('id, admin_note');
+    if (!error && data) {
+      const notes: Record<string, string> = {};
+      data.forEach((row: any) => {
+        if (row.admin_note) notes[row.id] = row.admin_note;
+      });
+      setBookingNotes(notes);
+    }
+  }, [configured]);
+
+  // Load all data on mount (when authed)
+  useEffect(() => {
+    if (!authed) return;
+    loadInventory();
+    loadPromos();
+    loadStaff();
+    loadBookingNotes();
+  }, [authed, loadInventory, loadPromos, loadStaff, loadBookingNotes]);
 
   // Calculate dashboard stats
   const stats = useMemo(() => {
@@ -114,14 +230,17 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
 
   const handleDeleteTyre = (id: string) => {
     setInventory(inventory.filter(t => t.id !== id));
+    if (configured) supabase.from('tyres').delete().eq('id', id).then();
   };
 
   const handleUpdateStock = (id: string, newStock: number) => {
     setInventory(inventory.map(t => t.id === id ? { ...t, stock: newStock } : t));
+    if (configured) supabase.from('tyres').update({ stock: newStock }).eq('id', id).then();
   };
 
   const handleUpdatePrice = (id: string, newPrice: number) => {
     setInventory(inventory.map(t => t.id === id ? { ...t, price: newPrice } : t));
+    if (configured) supabase.from('tyres').update({ price: newPrice }).eq('id', id).then();
   };
 
   const handleAddTyre = () => {
@@ -152,6 +271,18 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
     };
 
     setInventory([...inventory, tyre]);
+    if (configured) {
+      supabase.from('tyres').insert({
+        id: tyre.id, brand: tyre.brand, model: tyre.model,
+        width: tyre.width, profile: tyre.profile, rim: tyre.rim,
+        speed_rating: tyre.speedRating, load_index: tyre.loadIndex,
+        price: tyre.price, price_x4: tyre.price4,
+        category: tyre.category, is_runflat: tyre.isRunflat,
+        is_reinforced: tyre.isReinforced, fuel_efficiency: tyre.fuelEfficiency,
+        wet_grip: tyre.wetGrip, noise_level: tyre.noiseLevel,
+        stock: tyre.stock, rating: tyre.rating, reviews_count: tyre.reviewsCount,
+      }).then();
+    }
     setShowAddForm(false);
     setNewTyre({
       brand: '',
@@ -180,16 +311,28 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
       return;
     }
     setPromoCodes([...promoCodes, { ...newPromo, active: true }]);
+    if (configured) {
+      supabase.from('promo_codes').insert({
+        code: newPromo.code.toUpperCase(),
+        discount: newPromo.discount,
+        expiry: newPromo.expiry,
+        active: true,
+      }).then();
+    }
     setShowPromoForm(false);
     setNewPromo({ code: '', discount: 10, expiry: '' });
   };
 
   const handleTogglePromo = (code: string) => {
+    const promo = promoCodes.find(p => p.code === code);
+    const newActive = promo ? !promo.active : true;
     setPromoCodes(promoCodes.map(p => p.code === code ? { ...p, active: !p.active } : p));
+    if (configured) supabase.from('promo_codes').update({ active: newActive }).eq('code', code).then();
   };
 
   const handleDeletePromo = (code: string) => {
     setPromoCodes(promoCodes.filter(p => p.code !== code));
+    if (configured) supabase.from('promo_codes').delete().eq('code', code).then();
   };
 
   const handleAddStaff = () => {
@@ -201,18 +344,27 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
       phone: ''
     };
     setStaff([...staff, newStaffMember]);
+    if (configured) {
+      supabase.from('staff').insert({
+        id: newStaffMember.id, name: newStaffMember.name,
+        role: newStaffMember.role, email: newStaffMember.email, phone: newStaffMember.phone,
+      }).then();
+    }
   };
 
   const handleUpdateStaff = (id: string, field: keyof Staff, value: string) => {
     setStaff(staff.map(s => s.id === id ? { ...s, [field]: value } : s));
+    if (configured) supabase.from('staff').update({ [field]: value }).eq('id', id).then();
   };
 
   const handleDeleteStaff = (id: string) => {
     setStaff(staff.filter(s => s.id !== id));
+    if (configured) supabase.from('staff').delete().eq('id', id).then();
   };
 
   const handleUpdateBookingNote = (bookingId: string, note: string) => {
     setBookingNotes({ ...bookingNotes, [bookingId]: note });
+    if (configured) supabase.from('bookings').update({ admin_note: note }).eq('id', bookingId).then();
   };
 
   const handleExportCSV = (type: 'bookings' | 'inventory') => {
@@ -243,8 +395,67 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
   };
 
   const handleBulkPriceUpdate = (percentage: number) => {
-    setInventory(inventory.map(t => ({ ...t, price: Math.round(t.price * (1 + percentage / 100)) })));
+    const updated = inventory.map(t => ({ ...t, price: Math.round(t.price * (1 + percentage / 100)) }));
+    setInventory(updated);
+    if (configured) {
+      updated.forEach(t => {
+        supabase.from('tyres').update({ price: t.price }).eq('id', t.id).then();
+      });
+    }
   };
+
+  if (!authed) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center px-4">
+        <div className="carbon-fiber rounded-2xl border border-white/5 shadow-xl shadow-[0_0_40px_rgba(239,18,25,0.2)] p-8 w-full max-w-sm">
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 bg-racing-red/20 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-racing-red/30">
+              <Lock className="w-8 h-8 text-racing-red" />
+            </div>
+            <h2 className="font-display font-extrabold text-2xl text-bright-snow">Admin Login</h2>
+            <p className="text-xs text-gray-400 mt-1">Enter your credentials to access the dashboard</p>
+          </div>
+          <div className="space-y-3">
+            <div>
+              <label className="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">Username</label>
+              <input
+                type="text"
+                value={loginUser}
+                onChange={(e) => setLoginUser(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+                placeholder="Username"
+                className="w-full bg-[#1e2121] border border-white/5 text-bright-snow rounded-lg p-2.5 text-sm font-medium focus:ring-2 focus:ring-racing-red/20 focus:border-racing-red transition"
+                autoFocus
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">Password</label>
+              <input
+                type="password"
+                value={loginPass}
+                onChange={(e) => setLoginPass(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+                placeholder="Password"
+                className="w-full bg-[#1e2121] border border-white/5 text-bright-snow rounded-lg p-2.5 text-sm font-medium focus:ring-2 focus:ring-racing-red/20 focus:border-racing-red transition"
+              />
+            </div>
+            {loginError && (
+              <div className="bg-racing-red/10 border border-racing-red/20 rounded-lg p-2.5 text-xs text-racing-red font-semibold text-center">
+                {loginError}
+              </div>
+            )}
+            <button
+              onClick={handleLogin}
+              className="w-full flex items-center justify-center gap-2 bg-racing-red hover:bg-racing-red/90 text-bright-snow font-extrabold uppercase tracking-wider text-sm px-5 py-3 rounded-xl transition shadow-lg shadow-racing-red/30"
+            >
+              <Lock className="w-4 h-4" />
+              Login
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -257,6 +468,13 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             </div>
             Admin Dashboard
           </h2>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-1.5 px-4 py-2 text-sm font-bold rounded-lg bg-[#1e2121] border border-white/5 text-gray-400 hover:text-racing-red hover:border-racing-red/30 transition"
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
+          </button>
         </div>
 
         {/* Navigation Grid */}
@@ -348,6 +566,17 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
           >
             <BarChart3 className="w-4 h-4" />
             Reports
+          </button>
+          <button
+            onClick={() => setActiveSection('settings')}
+            className={`px-4 py-3 text-sm font-bold rounded-xl transition flex items-center gap-2 ${
+              activeSection === 'settings'
+                ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/30 border border-racing-red'
+                : 'bg-[#1e2121] text-gray-400 hover:bg-racing-red/10 hover:text-bright-snow border border-white/5'
+            }`}
+          >
+            <Settings className="w-4 h-4" />
+            Settings
           </button>
         </div>
       </div>
@@ -611,6 +840,12 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   Cancel
                 </button>
               </div>
+            </div>
+          )}
+          {inventoryLoading && (
+            <div className="flex items-center justify-center py-8 text-gray-400 text-sm gap-2">
+              <Loader2 className="w-5 h-5 animate-spin" />
+              Loading inventory...
             </div>
           )}
           <div className="overflow-x-auto">
@@ -1083,6 +1318,79 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   <p className="text-xs text-gray-400">Cancelled</p>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Settings Section */}
+      {activeSection === 'settings' && (
+        <div className="carbon-fiber rounded-2xl border border-white/5 shadow-xl overflow-hidden">
+          <div className="p-6 border-b border-white/5">
+            <h3 className="font-display font-bold text-bright-snow text-lg">Settings</h3>
+          </div>
+          <div className="p-6 space-y-6">
+            {/* Stripe Mode Toggle */}
+            <div className="bg-black/50 rounded-lg p-5 border border-white/5">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-racing-red/20 rounded-lg flex items-center justify-center border border-racing-red/30">
+                    <CreditCard className="w-5 h-5 text-racing-red" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-bright-snow">Stripe Payment Mode</h4>
+                    <p className="text-xs text-gray-400 mt-0.5">Toggle between sandbox (test) and live payments</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 mt-4">
+                <div className={`flex-1 rounded-xl p-4 border transition-all ${
+                  stripeMode === 'test'
+                    ? 'bg-yellow-500/10 border-yellow-500/30'
+                    : 'bg-[#1e2121] border-white/5 opacity-60'
+                }`}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <FlaskConical className="w-4 h-4 text-yellow-400" />
+                    <span className="font-bold text-bright-snow text-sm">Sandbox (Test)</span>
+                  </div>
+                  <p className="text-xs text-gray-400">No real charges. Use test card 4242 4242 4242 4242.</p>
+                </div>
+
+                <div className={`flex-1 rounded-xl p-4 border transition-all ${
+                  stripeMode === 'live'
+                    ? 'bg-emerald-500/10 border-emerald-500/30'
+                    : 'bg-[#1e2121] border-white/5 opacity-60'
+                }`}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Zap className="w-4 h-4 text-emerald-400" />
+                    <span className="font-bold text-bright-snow text-sm">Live</span>
+                  </div>
+                  <p className="text-xs text-gray-400">Real charges to customer cards.</p>
+                </div>
+              </div>
+
+              <button
+                onClick={handleToggleStripeMode}
+                className={`w-full mt-4 flex items-center justify-center gap-2 font-extrabold uppercase tracking-wider text-sm px-5 py-3 rounded-xl transition ${
+                  stripeMode === 'test'
+                    ? 'bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 border border-yellow-500/30'
+                    : 'bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/30'
+                }`}
+              >
+                {stripeMode === 'test' ? (
+                  <>Switch to Live Mode</>
+                ) : (
+                  <>Switch to Sandbox Mode</>
+                )}
+              </button>
+
+              {stripeMode === 'live' && (
+                <div className="mt-4 bg-racing-red/10 border border-racing-red/20 rounded-lg p-3 text-xs text-racing-red font-semibold flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 shrink-0" />
+                  Live mode is active. Real payments will be processed.
+                </div>
+              )}
             </div>
           </div>
         </div>

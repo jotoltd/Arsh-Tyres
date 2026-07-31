@@ -1,7 +1,7 @@
 import React from 'react';
 import { SearchFilters } from '../types';
 import { WIDTHS, PROFILES, RIMS, TYRE_TYPES } from '../data';
-import { Search, Info } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 interface TyreSearcherProps {
   filters: SearchFilters;
@@ -24,119 +24,77 @@ export default function TyreSearcher({
   };
 
   return (
-    <div className="carbon-fiber rounded-2xl shadow-2xl border border-white/5 overflow-hidden max-w-5xl mx-auto shadow-[0_0_40px_rgba(220,38,38,0.4)] border-racing-red/40 relative">
-      {/* Ribbon Banner */}
-      <div className="absolute top-0 right-0 z-10">
-        <div className="bg-racing-red text-bright-snow font-extrabold text-xs uppercase tracking-wider px-4 py-1 rounded-bl-xl shadow-lg">
-          Tyre Finder
-        </div>
+    <div className="w-full max-w-3xl mx-auto">
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 sm:items-center bg-[#1e2121] rounded-2xl p-3 border border-white/10 shadow-2xl">
+        <select
+           value={filters.width}
+           onChange={(e) => handleSelectChange('width', e.target.value)}
+           className="flex-1 bg-black/60 border border-white/10 text-bright-snow rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-racing-red/40 focus:border-racing-red font-bold text-base transition"
+        >
+          <option value="">Width</option>
+          {WIDTHS.map(w => (
+            <option key={w} value={w}>{w}</option>
+          ))}
+        </select>
+
+        <span className="hidden sm:block text-gray-600 font-bold text-lg">/</span>
+
+        <select
+          value={filters.profile}
+          onChange={(e) => handleSelectChange('profile', e.target.value)}
+          className="flex-1 bg-black/60 border border-white/10 text-bright-snow rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-racing-red/40 focus:border-racing-red font-bold text-base transition"
+        >
+          <option value="">Profile</option>
+          {PROFILES.map(p => (
+            <option key={p} value={p}>{p}</option>
+          ))}
+        </select>
+
+        <span className="hidden sm:block text-gray-600 font-bold text-lg">R</span>
+
+        <select
+          value={filters.rim}
+          onChange={(e) => handleSelectChange('rim', e.target.value)}
+          className="flex-1 bg-black/60 border border-white/10 text-bright-snow rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-racing-red/40 focus:border-racing-red font-bold text-base transition"
+        >
+          <option value="">Rim</option>
+          {RIMS.map(r => (
+            <option key={r} value={r}>{r}"</option>
+          ))}
+        </select>
+
+        <button
+          type="button"
+          onClick={onSearch}
+          className="flex items-center justify-center gap-2 bg-racing-red hover:bg-racing-red/90 text-bright-snow font-extrabold text-sm uppercase tracking-wider px-6 py-3 rounded-xl transition shadow-lg shadow-racing-red/30 whitespace-nowrap"
+        >
+          <Search className="w-5 h-5" />
+          Search
+        </button>
       </div>
-      <div className="p-8 md:p-12">
-        <div className="mb-8">
-          <h2 className="font-display font-extrabold text-2xl md:text-3xl text-bright-snow mb-3 flex items-center gap-3">
-            <Search className="w-7 h-7 text-racing-red" />
-            Find Your Perfect Tyres
-          </h2>
-        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-          {/* Width Selector */}
-          <div>
-            <label className="block text-xs uppercase text-bright-snow/80 font-bold tracking-wider mb-3 flex items-center gap-2">
-              <span className="w-1 h-4 bg-racing-red rounded-full"></span>
-              Width
-            </label>
-            <select
-               value={filters.width}
-               onChange={(e) => handleSelectChange('width', e.target.value)}
-               className="w-full bg-[#1e2121] border-2 border-white/10 text-bright-snow rounded-xl py-3.5 px-4 focus:outline-none focus:ring-2 focus:ring-racing-red/30 focus:border-racing-red font-bold text-lg neon-border-focus transition-all"
-            >
-              <option value="" className="bg-[#1e2121]">Select Width</option>
-              {WIDTHS.map(w => (
-                <option key={w} value={w} className="bg-[#1e2121]">{w} mm</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Profile Selector */}
-          <div>
-            <label className="block text-xs uppercase text-bright-snow/80 font-bold tracking-wider mb-3 flex items-center gap-2">
-              <span className="w-1 h-4 bg-racing-red rounded-full"></span>
-              Profile
-            </label>
-            <select
-              value={filters.profile}
-              onChange={(e) => handleSelectChange('profile', e.target.value)}
-              className="w-full bg-[#1e2121] border-2 border-white/10 text-bright-snow rounded-xl py-3.5 px-4 focus:outline-none focus:ring-2 focus:ring-racing-red/30 focus:border-racing-red font-bold text-lg neon-border-focus transition-all"
-            >
-              <option value="" className="bg-[#1e2121]">Select Profile</option>
-              {PROFILES.map(p => (
-                <option key={p} value={p} className="bg-[#1e2121]">{p}%</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Rim Size Selector */}
-          <div>
-            <label className="block text-xs uppercase text-bright-snow/80 font-bold tracking-wider mb-3 flex items-center gap-2">
-              <span className="w-1 h-4 bg-racing-red rounded-full"></span>
-              Rim Size
-            </label>
-            <select
-              value={filters.rim}
-              onChange={(e) => handleSelectChange('rim', e.target.value)}
-              className="w-full bg-[#1e2121] border-2 border-white/10 text-bright-snow rounded-xl py-3.5 px-4 focus:outline-none focus:ring-2 focus:ring-racing-red/30 focus:border-racing-red font-bold text-lg neon-border-focus transition-all"
-            >
-              <option value="" className="bg-[#1e2121]">Select Rim</option>
-              {RIMS.map(r => (
-                <option key={r} value={r} className="bg-[#1e2121]">{r} inches</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Tyre Type Selector */}
-          <div>
-            <label className="block text-xs uppercase text-bright-snow/80 font-bold tracking-wider mb-3 flex items-center gap-2">
-              <span className="w-1 h-4 bg-racing-red rounded-full"></span>
-              Tyre Type
-            </label>
-            <select
-              value={filters.category === 'All' ? '' : filters.category}
-              onChange={(e) => handleSelectChange('category', e.target.value || 'All')}
-              className="w-full bg-[#1e2121] border-2 border-white/10 text-bright-snow rounded-xl py-3.5 px-4 focus:outline-none focus:ring-2 focus:ring-racing-red/30 focus:border-racing-red font-bold text-lg neon-border-focus transition-all"
-            >
-              <option value="" className="bg-[#1e2121]">All Types</option>
-              {TYRE_TYPES.map(t => (
-                <option key={t} value={t} className="bg-[#1e2121]">
-                  {t === 'Commercial' ? 'Commercial (Van)' : t}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <p className="text-bright-snow/70 text-sm md:text-base flex items-center gap-2 mb-6">
-          <Info className="w-4 h-4 text-racing-red shrink-0" />
-          Enter your tyre dimensions from the sidewall (e.g., 205/55 R16 91V)
-        </p>
-
-        <div className="flex flex-wrap justify-end gap-4 pt-6 border-t border-white/10">
+      <div className="flex items-center justify-between mt-3 px-1">
+        <select
+          value={filters.category === 'All' ? '' : filters.category}
+          onChange={(e) => handleSelectChange('category', e.target.value || 'All')}
+          className="bg-transparent text-bright-snow/70 text-xs font-bold border-none focus:outline-none cursor-pointer"
+        >
+          <option value="" className="bg-[#1e2121]">All Types</option>
+          {TYRE_TYPES.map(t => (
+            <option key={t} value={t} className="bg-[#1e2121]">
+              {t === 'Commercial' ? 'Commercial (Van)' : t}
+            </option>
+          ))}
+        </select>
+        {(filters.width || filters.profile || filters.rim) && (
           <button
             type="button"
             onClick={onClear}
-            className="px-6 py-3 text-sm font-bold text-bright-snow/70 hover:text-bright-snow hover:bg-white/5 rounded-xl transition border border-white/10 hover:border-white/20"
+            className="text-xs font-bold text-gray-500 hover:text-bright-snow transition"
           >
-            Clear Filters
+            Clear
           </button>
-          <button
-            type="button"
-            onClick={onSearch}
-            className="flex items-center gap-3 bg-racing-red hover:bg-racing-red/90 text-bright-snow font-extrabold text-sm tracking-widest uppercase px-8 py-3.5 rounded-xl transition shadow-lg hover:shadow-xl hover:shadow-racing-red/20 border-2 border-racing-red"
-          >
-            <Search className="w-5 h-5" />
-            Find Tyres
-          </button>
-        </div>
+        )}
       </div>
     </div>
   );

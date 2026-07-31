@@ -35,7 +35,7 @@ export interface Booking {
   subtotal: number;
   fittingFee: number;
   totalPrice: number;
-  fittingType: 'shop' | 'mobile' | 'delivery'; // 'shop' (fitted in shop), 'mobile' (fitted at home/work), 'delivery' (tyres only delivery)
+  fittingType: 'shop' | 'mobile' | 'delivery' | 'collection'; // 'shop' (fitted in shop), 'mobile' (fitted at home/work), 'delivery' (tyres only delivery), 'collection' (pick up from shop, no fitting)
   date: string; // YYYY-MM-DD
   timeSlot: string; // e.g., "09:00 - 10:30"
   customerName: string;

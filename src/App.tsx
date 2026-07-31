@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { Tyre, CartItem, Booking, SearchFilters } from './types';
+import { getUnitPrice } from './data';
 import { useSupabase } from './contexts/SupabaseContext';
 import TyreSearcher from './components/TyreSearcher';
 import TyreCard from './components/TyreCard';
@@ -49,6 +50,7 @@ export default function App() {
   const [selectedMakeModel, setSelectedMakeModel] = useState('');
   const [activeTab, setActiveTab] = useState<'shop' | 'bookings' | 'cart' | 'admin'>('shop');
   const [searchTriggered, setSearchTriggered] = useState(false);
+  const [sortBy, setSortBy] = useState<'price-low' | 'price-high' | 'size'>('price-low');
   const [lastConfirmedBooking, setLastConfirmedBooking] = useState<Booking | null>(null);
 
   const {
@@ -112,7 +114,7 @@ export default function App() {
     subtotal: number;
     fittingFee: number;
     totalPrice: number;
-    fittingType: 'shop' | 'mobile' | 'delivery';
+    fittingType: 'shop' | 'collection';
     date: string;
     timeSlot: string;
     customerName: string;
@@ -200,6 +202,14 @@ export default function App() {
     return true;
   });
 
+  // Sort filtered results
+  const sortedTyres = [...filteredTyres].sort((a, b) => {
+    if (sortBy === 'price-low') return a.price - b.price;
+    if (sortBy === 'price-high') return b.price - a.price;
+    if (sortBy === 'size') return (b.width * b.profile * b.rim) - (a.width * a.profile * a.rim);
+    return 0;
+  });
+
   // Highlighted features / featured products for first visual entry
   const totalCartTyres = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -273,7 +283,7 @@ export default function App() {
               }`}
             >
               <ShoppingBag className="w-4 h-4" />
-              Cart
+              Basket
               {cartItems.length > 0 && (
                 <span className="bg-white/10 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-1">
                   {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
@@ -532,144 +542,158 @@ export default function App() {
 
               {/* FIND & SHOP TAB */}
               {activeTab === 'shop' && !lastConfirmedBooking && (
-                <div className="space-y-12">
-                {/* Hero Brand Board */}
-            <div
-              className="relative overflow-hidden rounded-3xl border border-white/5 shadow-2xl"
-              style={{ backgroundImage: 'url(/assets/hero.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '480px' }}
-            >
-              <div className="absolute inset-0 bg-black/50" />
-              <div className="relative z-10 flex flex-col items-center justify-end h-full min-h-[480px] p-8 pb-10 text-center space-y-6">
-                <h2 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl text-bright-snow tracking-tight leading-tight drop-shadow-lg">
-                  Drive Confidently.<br />
-                  <span className="text-racing-red">Premium Tyres Fitted Instantly.</span>
-                </h2>
-
-                <button
-                  onClick={() => {
-                    document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="inline-flex items-center gap-2 bg-racing-red hover:bg-racing-red/90 text-bright-snow font-extrabold text-sm tracking-widest uppercase px-8 py-3.5 rounded-xl transition shadow-lg shadow-racing-red/30 hover:shadow-racing-red/50"
+                <div className="space-y-8">
+                {/* HERO */}
+                <section
+                  className="relative overflow-hidden min-h-[640px] flex items-center justify-center"
+                  style={{ backgroundImage: 'url(/assets/hero.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
                 >
-                  <Search className="w-5 h-5" />
-                  Find Your Tyres Now
-                  <ArrowRight className="w-5 h-5" />
-                </button>
+                  {/* Layered overlays for depth */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-black via-black/60 to-black" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-black/70" />
+                  {/* Red glow accent */}
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-racing-red/10 blur-[120px] rounded-full" />
 
-                <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
-                  <span className="text-gray-300 text-sm">Can't find what you're looking for?</span>
-                  <a
-                    href="https://wa.me/447123456789"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white font-semibold text-sm px-4 py-2 rounded-lg transition shadow-md hover:shadow-lg"
-                  >
-                    <Phone className="w-4 h-4" />
-                    WhatsApp Us
-                  </a>
-                </div>
-              </div>
-            </div>
+                  <div className="relative z-10 w-full max-w-2xl mx-auto px-4 py-20 flex flex-col items-center text-center space-y-7">
+                    {/* Logo */}
+                    <div className="bg-black/60 backdrop-blur-md rounded-2xl p-2 border border-white/10 shadow-xl">
+                      <img src="/assets/logo.jpg" alt="Arsh Autos" className="w-32 h-32 rounded-xl object-contain" />
+                    </div>
 
-            {/* 3 Steps + Logo */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 w-full items-center">
-              <div className="bg-black rounded-2xl p-6 border border-white/5 text-center shadow-lg animate-fade-in-up" style={{ animationDelay: '0s' }}>
-                <div className="w-12 h-12 bg-racing-red/20 rounded-full flex items-center justify-center mx-auto mb-4 text-racing-red font-extrabold text-xl">1</div>
-                <h4 className="font-display font-bold text-bright-snow text-xl mb-2">Search Tyres</h4>
-                <p className="text-gray-400 text-base">Select your tyre dimensions</p>
-              </div>
-              <div className="bg-black rounded-2xl p-6 border border-white/5 text-center shadow-lg animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-                <div className="w-12 h-12 bg-racing-red/20 rounded-full flex items-center justify-center mx-auto mb-4 text-racing-red font-extrabold text-xl">2</div>
-                <h4 className="font-display font-bold text-bright-snow text-xl mb-2">Add to Cart</h4>
-                <p className="text-gray-400 text-base">Choose quantity and add tyres</p>
-              </div>
-              <div className="bg-black rounded-2xl p-6 border border-white/5 text-center shadow-lg animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-                <div className="w-12 h-12 bg-racing-red/20 rounded-full flex items-center justify-center mx-auto mb-4 text-racing-red font-extrabold text-xl">3</div>
-                <h4 className="font-display font-bold text-bright-snow text-xl mb-2">Checkout</h4>
-                <p className="text-gray-400 text-base">Complete your order</p>
-              </div>
-              {/* Logo Display */}
-              <div className="relative z-10 bg-black rounded-2xl p-6 shrink-0 text-center shadow-xl">
-                <img src="/assets/logo.jpg" alt="Arsh Autos Logo" className="w-full h-auto object-contain max-h-48" />
-              </div>
-            </div>
+                    {/* Headline */}
+                    <div className="space-y-4">
+                      <h2 className="font-display font-black text-4xl sm:text-5xl md:text-6xl text-white tracking-tight leading-[1.05] drop-shadow-2xl">
+                        New tyres,
+                        <br />
+                        <span className="text-racing-red">fitted at our shop.</span>
+                      </h2>
+                      <p className="text-base sm:text-lg text-white/80 max-w-lg leading-relaxed">
+                        Search our range, pick a time that works for you, pay in shop.
+                      </p>
+                    </div>
 
-            {/* Extra Workshop Services */}
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-black rounded-2xl p-6 border border-white/5 shadow-lg flex items-start gap-4">
-                <div className="w-12 h-12 bg-racing-red/20 rounded-xl flex items-center justify-center shrink-0">
-                  <ShieldCheck className="w-6 h-6 text-racing-red" />
-                </div>
-                <div>
-                  <h4 className="font-display font-bold text-bright-snow text-lg mb-1">TPMS — Tyre Pressure Monitoring Sensors</h4>
-                  <p className="text-gray-400 text-sm">
-                    We supply Autel sensors, including fitting and programming. Contact us for a quote.
-                  </p>
-                  <a
-                    href="tel:02084271234"
-                    className="inline-flex items-center gap-1.5 mt-3 text-xs font-bold text-racing-red hover:text-racing-red/80 uppercase tracking-wider"
-                  >
-                    <Phone className="w-3.5 h-3.5" />
-                    Call 020 8427 1234 for a quote
-                  </a>
-                </div>
-              </div>
-              <div className="bg-black rounded-2xl p-6 border border-white/5 shadow-lg flex items-start gap-4">
-                <div className="w-12 h-12 bg-racing-red/20 rounded-xl flex items-center justify-center shrink-0">
-                  <Wrench className="w-6 h-6 text-racing-red" />
-                </div>
-                <div>
-                  <h4 className="font-display font-bold text-bright-snow text-lg mb-1">Locking Wheel Nut Removal</h4>
-                  <p className="text-gray-400 text-sm">
-                    Lost your locking wheel nut key? We can safely remove locking wheel nuts — £20 per locking wheel nut removal. Add it at checkout with your tyre order.
-                  </p>
-                </div>
-              </div>
-            </section>
+                    {/* Search — glassmorphism container */}
+                    <div className="w-full pt-3">
+                      <TyreSearcher
+                        filters={filters}
+                        onFilterChange={setFilters}
+                        onSearch={handleExecuteSearch}
+                        onClear={handleClearFilters}
+                      />
+                    </div>
 
-            {/* Smart Searcher Component */}
-            <section className="space-y-6">
-              <div className="text-center bg-black/30 backdrop-blur-sm rounded-2xl p-8 border border-white/5">
-                <div className="flex items-center justify-center gap-3 mb-3">
-                  <Search className="w-8 h-8 text-racing-red" />
-                  <h3 className="font-display font-extrabold text-bright-snow text-3xl md:text-4xl">Find Your Perfect Tyres</h3>
-                </div>
-                <p className="text-base text-gray-400">Select dimensions from the selector to find matching tyres.</p>
-              </div>
-
-              <TyreSearcher
-                filters={filters}
-                onFilterChange={setFilters}
-                onSearch={handleExecuteSearch}
-                onClear={handleClearFilters}
-              />
-            </section>
-
-            {/* RESULTS SECTION - only show after search */}
-            {searchTriggered && (
-              <section id="results-section" className="space-y-6 scroll-mt-24">
-                <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-white/5 pb-4">
-                  <div>
-                    <h3 className="font-display font-extrabold text-bright-snow text-xl flex items-center gap-2">
-                      <Disc className="w-5 h-5 text-racing-red animate-spin-slow" />
-                      Search Results Matching Sizes
-                    </h3>
-                    <p className="text-xs text-gray-400 mt-1">
-                      Found {filteredTyres.length} premium tyres matching your specification dimensions.
-                    </p>
+                    {/* Trust signals — pill style */}
+                    <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+                      <span className="flex items-center gap-1.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-3 py-1.5 text-xs text-white/90">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Fitting included
+                      </span>
+                      <span className="flex items-center gap-1.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-3 py-1.5 text-xs text-white/90">
+                        <Clock className="w-3.5 h-3.5 text-emerald-400" /> Pick your own slot
+                      </span>
+                      <span className="flex items-center gap-1.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-3 py-1.5 text-xs text-white/90">
+                        <MapPin className="w-3.5 h-3.5 text-emerald-400" /> Pay in shop
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Categories tab filters */}
-                  <div className="flex gap-1 bg-black p-1 rounded-xl border border-white/5">
+                  {/* Bottom location strip */}
+                  <div className="absolute bottom-0 left-0 right-0 z-10 bg-black/60 backdrop-blur-md border-t border-white/5 py-2.5">
+                    <div className="flex items-center justify-center gap-4 text-[11px] text-white/70">
+                      <span className="flex items-center gap-1.5"><MapPin className="w-3 h-3 text-racing-red" /> 48 Harrow Road, HA1 2YF</span>
+                      <span className="hidden sm:inline text-gray-600">·</span>
+                      <span className="hidden sm:flex items-center gap-1.5"><Phone className="w-3 h-3 text-racing-red" /> 020 8427 1234</span>
+                      <span className="hidden sm:inline text-gray-600">·</span>
+                      <span className="hidden sm:flex items-center gap-1.5"><Clock className="w-3 h-3 text-racing-red" /> Mon–Sat 8:30–6</span>
+                    </div>
+                  </div>
+                </section>
+
+                {/* CATEGORY CARDS — like Just Eat cuisine cards */}
+                <section>
+                  <h3 className="font-display font-extrabold text-bright-snow text-lg mb-4 px-1">Browse by type</h3>
+                  <div className="grid grid-cols-3 gap-3 sm:gap-4">
+                    {[
+                      { label: 'Standard', desc: 'Everyday car tyres', icon: '🚗', color: 'racing-red' },
+                      { label: 'Runflat', desc: 'Puncture-safe tyres', icon: '🛡️', color: 'blue-500' },
+                      { label: 'Commercial', desc: 'Van & heavy-duty', icon: '🚐', color: 'amber-500' },
+                    ].map(cat => (
+                      <button
+                        key={cat.label}
+                        onClick={() => { setFilters({ ...filters, category: cat.label }); setSearchTriggered(true); setTimeout(() => document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth' }), 100); }}
+                        className="bg-[#1e2121] hover:bg-[#252828] border border-white/5 hover:border-white/15 rounded-2xl p-4 sm:p-5 text-left transition group"
+                      >
+                        <span className="text-2xl sm:text-3xl block mb-2">{cat.icon}</span>
+                        <p className="font-display font-bold text-bright-snow text-sm sm:text-base">{cat.label}</p>
+                        <p className="text-[11px] text-gray-400 hidden sm:block">{cat.desc}</p>
+                      </button>
+                    ))}
+                  </div>
+                </section>
+
+                {/* SERVICES STRIP — compact */}
+                <section className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="bg-[#1e2121] rounded-2xl p-4 border border-white/5 flex items-center gap-3">
+                    <div className="w-10 h-10 bg-racing-red/20 rounded-xl flex items-center justify-center shrink-0">
+                      <ShieldCheck className="w-5 h-5 text-racing-red" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-bright-snow text-sm">TPMS Sensors</p>
+                      <p className="text-xs text-gray-400 truncate">Autel sensors — fitting & programming. Call for quote.</p>
+                    </div>
+                    <a href="tel:02084271234" className="text-xs font-bold text-racing-red hover:text-racing-red/80 whitespace-nowrap shrink-0">
+                      Call →
+                    </a>
+                  </div>
+                  <div className="bg-[#1e2121] rounded-2xl p-4 border border-white/5 flex items-center gap-3">
+                    <div className="w-10 h-10 bg-racing-red/20 rounded-xl flex items-center justify-center shrink-0">
+                      <Wrench className="w-5 h-5 text-racing-red" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-bright-snow text-sm">Locking Nut Removal</p>
+                      <p className="text-xs text-gray-400 truncate">Lost your key? £20 per nut. Add at checkout.</p>
+                    </div>
+                  </div>
+                </section>
+
+                {/* RESULTS SECTION - only show after search */}
+                {searchTriggered && (
+              <section id="results-section" className="space-y-6 scroll-mt-24">
+                <div className="flex flex-col gap-4 border-b border-white/5 pb-4">
+                  <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+                    <div>
+                      <h3 className="font-display font-extrabold text-bright-snow text-xl">
+                        {filteredTyres.length} tyres found
+                      </h3>
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        {filters.width || filters.profile || filters.rim
+                          ? `${filters.width || '?'}/${filters.profile || '?'} R${filters.rim || '?'}`
+                          : 'Showing all tyres'}
+                      </p>
+                    </div>
+
+                    {/* Sort dropdown */}
+                    <select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value as 'price-low' | 'price-high' | 'size')}
+                      className="bg-[#1e2121] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-xs font-bold focus:outline-none focus:border-racing-red transition"
+                    >
+                      <option value="price-low">Price: Low to High</option>
+                      <option value="price-high">Price: High to Low</option>
+                      <option value="size">Size: Largest first</option>
+                    </select>
+                  </div>
+
+                  {/* Filter chips */}
+                  <div className="flex gap-2 flex-wrap">
                     {['All', 'Standard', 'Runflat', 'Commercial'].map((cat) => (
                       <button
                         key={cat}
                         type="button"
                         onClick={() => setFilters({ ...filters, category: cat })}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition uppercase ${
+                        className={`px-3 py-1.5 rounded-full text-xs font-bold transition ${
                           filters.category === cat
-                            ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
-                            : 'text-gray-400 hover:text-bright-snow'
+                            ? 'bg-racing-red text-bright-snow'
+                            : 'bg-[#1e2121] text-gray-400 border border-white/10 hover:text-bright-snow hover:border-white/20'
                         }`}
                       >
                         {cat}
@@ -699,7 +723,7 @@ export default function App() {
 
                 {/* Grid representation - only show after search */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredTyres.map((tyre) => (
+                  {sortedTyres.map((tyre) => (
                     <TyreCard
                       key={tyre.id}
                       tyre={tyre}
@@ -708,20 +732,30 @@ export default function App() {
                   ))}
                 </div>
 
-                {/* Empty state search block */}
+                {/* Empty state */}
                 {filteredTyres.length === 0 && (
-                  <div className="bg-black border border-white/5 rounded-2xl p-8 text-center shadow-md w-full">
-                    <Info className="w-10 h-10 text-racing-red mx-auto mb-2" />
-                    <h4 className="font-display font-bold text-bright-snow mb-1">No Matches Found in Current Dimensions</h4>
-                    <p className="text-xs text-gray-400 mb-4">
-                      The requested combination ({filters.width || '?'}/{filters.profile || '?'} R{filters.rim || '?'}) doesn't have local warehouse stock right now. Let us source it.
+                  <div className="bg-[#1e2121] border border-white/10 rounded-2xl p-8 text-center w-full">
+                    <div className="text-4xl mb-3">🔍</div>
+                    <h4 className="font-display font-bold text-bright-snow text-lg mb-1">No tyres found</h4>
+                    <p className="text-sm text-gray-400 mb-5">
+                      We couldn't find tyres matching {filters.width || '?'}/{filters.profile || '?'} R{filters.rim || '?'}.<br />
+                      We can still source them — give us a call.
                     </p>
-                    <button
-                      onClick={handleClearFilters}
-                      className="bg-racing-red hover:bg-racing-red/90 text-bright-snow font-extrabold text-xs px-4 py-2 rounded-lg transition"
-                    >
-                      Reset & View All Tyres
-                    </button>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                      <a
+                        href="tel:02084271234"
+                        className="bg-racing-red hover:bg-racing-red/90 text-bright-snow font-bold text-sm px-5 py-2.5 rounded-lg transition flex items-center justify-center gap-2"
+                      >
+                        <Phone className="w-4 h-4" />
+                        Call 020 8427 1234
+                      </a>
+                      <button
+                        onClick={handleClearFilters}
+                        className="bg-black/40 hover:bg-white/5 border border-white/10 text-bright-snow font-bold text-sm px-5 py-2.5 rounded-lg transition"
+                      >
+                        Clear filters
+                      </button>
+                    </div>
                   </div>
                 )}
               </section>
@@ -779,10 +813,6 @@ export default function App() {
               <li>Arsh Autos Tyre, MOT & Wheel Alignment Centre</li>
               <li>48 Harrow Road</li>
               <li>London, HA1 2YF</li>
-              <li className="flex items-center gap-1.5 text-racing-red font-bold">
-                <Star className="w-3 h-3 fill-racing-red text-racing-red" />
-                4.8 · 774 Reviews
-              </li>
               <li className="text-racing-red font-bold">Tel: 020 8427 1234</li>
             </ul>
           </div>
@@ -800,6 +830,25 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* Sticky mobile basket bar */}
+      {cartItems.length > 0 && activeTab !== 'cart' && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden">
+          <button
+            onClick={() => { navigate('/'); setActiveTab('cart'); }}
+            className="w-full bg-racing-red text-bright-snow font-bold px-4 py-3.5 flex items-center justify-between shadow-2xl shadow-racing-red/30 active:bg-racing-red/90 transition"
+          >
+            <span className="flex items-center gap-2 text-sm">
+              <ShoppingBag className="w-5 h-5" />
+              {totalCartTyres} {totalCartTyres === 1 ? 'tyre' : 'tyres'} in basket
+            </span>
+            <span className="flex items-center gap-1.5 text-sm font-extrabold">
+              £{cartItems.reduce((acc, item) => acc + getUnitPrice(item.tyre, item.quantity) * item.quantity, 0).toFixed(2)}
+              <ArrowRight className="w-4 h-4" />
+            </span>
+          </button>
+        </div>
+      )}
 
     </div>
   );

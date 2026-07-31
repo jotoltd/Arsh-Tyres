@@ -223,15 +223,14 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Load bookings from Supabase when signed in
+  // Load bookings from Supabase (all bookings, not just user-scoped)
   useEffect(() => {
-    if (!configured || !user) return;
+    if (!configured) return;
 
     let mounted = true;
     supabase
       .from('bookings')
       .select('*')
-      .eq('user_id', user.id)
       .order('created_at', { ascending: false })
       .then(({ data, error }) => {
         if (!mounted) return;
@@ -245,7 +244,7 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
     return () => {
       mounted = false;
     };
-  }, [configured, user]);
+  }, [configured]);
 
   const persistBookings = useCallback((list: Booking[]) => {
     localStorage.setItem(BOOKINGS_KEY, JSON.stringify(list));
@@ -265,10 +264,10 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
       setBookingsState(updated);
       persistBookings(updated);
 
-      if (configured && user) {
+      if (configured) {
         const { error } = await supabase.from('bookings').insert({
           id: newBooking.id,
-          user_id: user.id,
+          user_id: user?.id ?? null,
           booking_date: newBooking.date,
           booking_time: newBooking.timeSlot,
           fitting_type: newBooking.fittingType,
@@ -303,15 +302,14 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
       setBookingsState(updated);
       persistBookings(updated);
 
-      if (configured && user) {
+      if (configured) {
         await supabase
           .from('bookings')
           .update({ status: 'Cancelled' })
-          .eq('id', id)
-          .eq('user_id', user.id);
+          .eq('id', id);
       }
     },
-    [bookings, configured, user, persistBookings]
+    [bookings, configured, persistBookings]
   );
 
   const updateBookingStatus = useCallback(
@@ -320,15 +318,14 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
       setBookingsState(updated);
       persistBookings(updated);
 
-      if (configured && user) {
+      if (configured) {
         await supabase
           .from('bookings')
           .update({ status })
-          .eq('id', id)
-          .eq('user_id', user.id);
+          .eq('id', id);
       }
     },
-    [bookings, configured, user, persistBookings]
+    [bookings, configured, persistBookings]
   );
 
   const signIn = useCallback(async (email: string, password: string) => {
