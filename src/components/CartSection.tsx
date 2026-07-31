@@ -6,7 +6,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import StripePaymentForm from './StripePayment';
 import { getStripePublishableKey, getStripeMode } from '../paymentSettings';
-import { ShoppingBag, Trash2, ChevronRight, ChevronLeft, Search, KeyRound, Check, Car, Calendar, User, Sparkles, ShieldCheck, Wrench, Package, CreditCard, Lock, Loader2 } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { ShoppingBag, Trash2, ChevronRight, ChevronLeft, Search, KeyRound, Check, Car, Calendar, User, Sparkles, ShieldCheck, Wrench, Package, CreditCard, Lock, Loader2, Tag, X } from 'lucide-react';
 
 let stripePromiseCache: Promise<any> | null = null;
 function getStripePromise() {
@@ -72,6 +73,54 @@ export default function CartSection({
   const [paymentIntentId, setPaymentIntentId] = useState('');
   const [paymentError, setPaymentError] = useState('');
   const [isFetchingIntent, setIsFetchingIntent] = useState(false);
+  const [promoInput, setPromoInput] = useState('');
+  const [promoCode, setPromoCode] = useState('');
+  const [promoDiscount, setPromoDiscount] = useState(0);
+  const [promoChecking, setPromoChecking] = useState(false);
+  const [promoMessage, setPromoMessage] = useState('');
+
+  const handleApplyPromo = async () => {
+    if (!promoInput.trim()) return;
+    setPromoChecking(true);
+    setPromoMessage('');
+    const code = promoInput.trim().toUpperCase();
+
+    if (isSupabaseConfigured()) {
+      const { data, error } = await supabase
+        .from('promo_codes')
+        .select('*')
+        .eq('code', code)
+        .single();
+      if (error || !data) {
+        setPromoMessage('Invalid promo code');
+        setPromoChecking(false);
+        return;
+      }
+      if (!data.active) {
+        setPromoMessage('This promo code is no longer active');
+        setPromoChecking(false);
+        return;
+      }
+      if (new Date(data.expiry) < new Date()) {
+        setPromoMessage('This promo code has expired');
+        setPromoChecking(false);
+        return;
+      }
+      setPromoCode(data.code);
+      setPromoDiscount(data.discount);
+      setPromoMessage(`Promo applied: ${data.discount}% off!`);
+    } else {
+      setPromoMessage('Unable to verify promo code');
+    }
+    setPromoChecking(false);
+  };
+
+  const handleRemovePromo = () => {
+    setPromoCode('');
+    setPromoDiscount(0);
+    setPromoInput('');
+    setPromoMessage('');
+  };
 
   useEffect(() => {
     if (selectedReg) setVehicleRegistration(selectedReg);
@@ -108,7 +157,8 @@ export default function CartSection({
   const lockingNutTotal = lockingNutCount * LOCKING_NUT_REMOVAL_PRICE;
   const subtotal = tyresTotal + lockingNutTotal;
   const fittingFee = 0;
-  const totalPrice = subtotal + fittingFee;
+  const discountAmount = promoDiscount > 0 ? (subtotal * promoDiscount) / 100 : 0;
+  const totalPrice = subtotal + fittingFee - discountAmount;
 
   const validateStep = (s: number): boolean => {
     setFormError('');
@@ -247,6 +297,12 @@ export default function CartSection({
           <span>{fittingType === 'shop' ? 'Fitting & balancing' : 'Collection only'}</span>
           <span className={fittingType === 'shop' ? 'text-emerald-400 font-bold' : 'text-gray-500'}>{fittingType === 'shop' ? 'Included' : 'No fitting'}</span>
         </div>
+        {discountAmount > 0 && (
+          <div className="flex justify-between text-emerald-400 font-bold">
+            <span>Promo ({promoCode})</span>
+            <span>-£{discountAmount.toFixed(2)}</span>
+          </div>
+        )}
       </div>
       <div className="flex justify-between items-baseline pt-3 mt-3 border-t border-white/5">
         <span className="font-display font-bold text-bright-snow text-sm">Total</span>
@@ -348,6 +404,46 @@ export default function CartSection({
                   You're saving £{multiBuySaving.toFixed(2)} with multi-buy pricing!
                 </div>
               )}
+
+              {/* Promo code input */}
+              <div className="mt-4 pt-4 border-t border-white/5">
+                {promoCode ? (
+                  <div className="flex items-center justify-between bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3">
+                    <div className="flex items-center gap-2 text-xs text-emerald-400 font-bold">
+                      <Tag className="w-4 h-4" />
+                      {promoCode} — {promoDiscount}% off
+                    </div>
+                    <button type="button" onClick={handleRemovePromo} className="text-gray-400 hover:text-racing-red transition">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <div className="flex-1 relative">
+                      <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      <input
+                        type="text"
+                        value={promoInput}
+                        onChange={(e) => setPromoInput(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleApplyPromo())}
+                        placeholder="Promo code"
+                        className="w-full bg-[#1e2121] border border-white/5 text-bright-snow rounded-lg pl-9 pr-3 py-2.5 text-sm font-medium focus:ring-2 focus:ring-racing-red/20 focus:border-racing-red transition uppercase"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleApplyPromo}
+                      disabled={promoChecking || !promoInput.trim()}
+                      className="px-4 py-2.5 rounded-lg bg-racing-red hover:bg-racing-red/90 disabled:opacity-50 text-bright-snow font-bold text-sm transition whitespace-nowrap"
+                    >
+                      {promoChecking ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Apply'}
+                    </button>
+                  </div>
+                )}
+                {promoMessage && !promoCode && (
+                  <p className={`text-xs mt-2 font-semibold ${promoMessage.includes('applied') ? 'text-emerald-400' : 'text-racing-red'}`}>{promoMessage}</p>
+                )}
+              </div>
             </div>
           )}
 
@@ -655,6 +751,12 @@ export default function CartSection({
                   <div className="flex justify-between text-xs mb-3">
                     <span className="text-gray-400">Locking nut removal x{lockingNutCount}</span>
                     <span className="text-bright-snow font-bold">£{lockingNutTotal.toFixed(2)}</span>
+                  </div>
+                )}
+                {discountAmount > 0 && (
+                  <div className="flex justify-between text-xs mb-3">
+                    <span className="text-emerald-400 font-bold">Promo ({promoCode}) — {promoDiscount}% off</span>
+                    <span className="text-emerald-400 font-bold">-£{discountAmount.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="border-t border-white/5 pt-4 mb-4">

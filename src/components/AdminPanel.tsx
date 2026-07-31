@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Tyre, Booking } from '../types';
 import { TYRE_DATABASE } from '../data';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
-import { Trash2, Edit, Plus, Package, Calendar, CheckCircle, XCircle, Clock, ShieldCheck, Users, Download, AlertTriangle, Tag, TrendingUp, BarChart3, FileText, CreditCard, MessageSquare, Settings, FlaskConical, Zap, LogOut, Lock, Loader2 } from 'lucide-react';
+import { Trash2, Edit, Plus, Package, Calendar, CheckCircle, XCircle, Clock, ShieldCheck, Users, Download, AlertTriangle, Tag, TrendingUp, BarChart3, FileText, CreditCard, MessageSquare, Settings, FlaskConical, Zap, LogOut, Lock, Loader2, X, Check } from 'lucide-react';
 import { getStripeMode, setStripeMode, type StripeMode } from '../paymentSettings';
 import { isAdminAuthed, adminLogin, adminLogout } from '../adminAuth';
 
@@ -884,7 +884,10 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex gap-2">
-                        <button className="p-2 text-gray-400 hover:text-racing-red hover:bg-racing-red/10 rounded-lg transition">
+                        <button
+                          onClick={() => setEditingTyre(tyre)}
+                          className="p-2 text-gray-400 hover:text-racing-red hover:bg-racing-red/10 rounded-lg transition"
+                        >
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
@@ -899,6 +902,116 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Tyre Modal */}
+      {editingTyre && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" onClick={() => setEditingTyre(null)}>
+          <div className="bg-[#1e2121] rounded-2xl border border-white/10 shadow-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-5">
+              <h4 className="font-display font-bold text-bright-snow text-lg">Edit Tyre</h4>
+              <button onClick={() => setEditingTyre(null)} className="text-gray-400 hover:text-racing-red transition">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Brand</label>
+                <input type="text" value={editingTyre.brand} onChange={e => setEditingTyre({ ...editingTyre, brand: e.target.value })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Model</label>
+                <input type="text" value={editingTyre.model} onChange={e => setEditingTyre({ ...editingTyre, model: e.target.value })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Category</label>
+                <select value={editingTyre.category} onChange={e => setEditingTyre({ ...editingTyre, category: e.target.value as any })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none">
+                  <option value="Standard">Standard</option>
+                  <option value="Runflat">Runflat</option>
+                  <option value="Commercial">Commercial</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Width</label>
+                <input type="number" value={editingTyre.width} onChange={e => setEditingTyre({ ...editingTyre, width: parseInt(e.target.value) || 0 })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Profile</label>
+                <input type="number" value={editingTyre.profile} onChange={e => setEditingTyre({ ...editingTyre, profile: parseInt(e.target.value) || 0 })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Rim</label>
+                <input type="number" value={editingTyre.rim} onChange={e => setEditingTyre({ ...editingTyre, rim: parseInt(e.target.value) || 0 })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Speed Rating</label>
+                <input type="text" value={editingTyre.speedRating || ''} onChange={e => setEditingTyre({ ...editingTyre, speedRating: e.target.value })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Load Index</label>
+                <input type="number" value={editingTyre.loadIndex || 0} onChange={e => setEditingTyre({ ...editingTyre, loadIndex: parseInt(e.target.value) || 0 })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Price (£)</label>
+                <input type="number" step="0.01" value={editingTyre.price} onChange={e => setEditingTyre({ ...editingTyre, price: parseFloat(e.target.value) || 0 })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Price x4 (£)</label>
+                <input type="number" step="0.01" value={editingTyre.price4 ?? ''} onChange={e => setEditingTyre({ ...editingTyre, price4: e.target.value ? parseFloat(e.target.value) : undefined })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Stock</label>
+                <input type="number" value={editingTyre.stock} onChange={e => setEditingTyre({ ...editingTyre, stock: parseInt(e.target.value) || 0 })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
+              </div>
+              <div className="flex items-end gap-4">
+                <label className="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
+                  <input type="checkbox" checked={editingTyre.isRunflat} onChange={e => setEditingTyre({ ...editingTyre, isRunflat: e.target.checked })} className="accent-racing-red" />
+                  Runflat
+                </label>
+                <label className="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
+                  <input type="checkbox" checked={editingTyre.isReinforced || false} onChange={e => setEditingTyre({ ...editingTyre, isReinforced: e.target.checked })} className="accent-racing-red" />
+                  Reinforced
+                </label>
+              </div>
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => {
+                  const updated = inventory.map(t => t.id === editingTyre.id ? editingTyre : t);
+                  setInventory(updated);
+                  if (configured) {
+                    supabase.from('tyres').update({
+                      brand: editingTyre.brand,
+                      model: editingTyre.model,
+                      width: editingTyre.width,
+                      profile: editingTyre.profile,
+                      rim: editingTyre.rim,
+                      speed_rating: editingTyre.speedRating,
+                      load_index: editingTyre.loadIndex,
+                      price: editingTyre.price,
+                      price_x4: editingTyre.price4,
+                      category: editingTyre.category,
+                      is_runflat: editingTyre.isRunflat,
+                      is_reinforced: editingTyre.isReinforced,
+                      stock: editingTyre.stock,
+                    }).eq('id', editingTyre.id).then();
+                  }
+                  setEditingTyre(null);
+                }}
+                className="flex-1 flex items-center justify-center gap-2 bg-racing-red hover:bg-racing-red/90 text-bright-snow font-bold text-sm px-4 py-2.5 rounded-lg transition"
+              >
+                <Check className="w-4 h-4" />
+                Save Changes
+              </button>
+              <button
+                onClick={() => setEditingTyre(null)}
+                className="px-4 py-2.5 text-sm font-semibold text-gray-400 hover:text-bright-snow hover:bg-white/5 rounded-lg transition"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
