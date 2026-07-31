@@ -53,6 +53,10 @@ export default function App() {
   const [sortBy, setSortBy] = useState<'price-low' | 'price-high' | 'size'>('price-low');
   const [lastConfirmedBooking, setLastConfirmedBooking] = useState<Booking | null>(null);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [activeTab, location.pathname]);
+
   const {
     tyres,
     cartItems,
