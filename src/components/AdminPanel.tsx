@@ -585,49 +585,116 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
       {activeSection === 'dashboard' && (
         <div className="space-y-6">
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-black rounded-2xl p-6 border border-white/5 shadow-lg hover:border-racing-red/30 transition-all shadow-[0_0_20px_rgba(239,18,25,0.1)]">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-xs uppercase tracking-wider font-bold">Total Revenue</p>
-                  <p className="text-3xl font-extrabold text-racing-red mt-2">£{stats.totalRevenue.toLocaleString()}</p>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-gradient-to-br from-racing-red/10 to-black rounded-2xl p-5 border border-racing-red/20 shadow-lg hover:scale-[1.02] transition-transform">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-10 h-10 bg-racing-red/20 rounded-lg flex items-center justify-center border border-racing-red/30">
+                  <TrendingUp className="w-5 h-5 text-racing-red" />
                 </div>
-                <div className="w-14 h-14 bg-racing-red/20 rounded-xl flex items-center justify-center border border-racing-red/30">
-                  <TrendingUp className="w-7 h-7 text-racing-red" />
+                <p className="text-gray-400 text-[10px] uppercase tracking-wider font-bold">Revenue</p>
+              </div>
+              <p className="text-2xl font-extrabold text-racing-red">£{stats.totalRevenue.toLocaleString()}</p>
+            </div>
+            <div className="bg-black rounded-2xl p-5 border border-white/5 shadow-lg hover:scale-[1.02] transition-transform">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center border border-blue-500/30">
+                  <Calendar className="w-5 h-5 text-blue-400" />
                 </div>
+                <p className="text-gray-400 text-[10px] uppercase tracking-wider font-bold">Bookings</p>
+              </div>
+              <p className="text-2xl font-extrabold text-bright-snow">{stats.totalBookings}</p>
+            </div>
+            <div className="bg-black rounded-2xl p-5 border border-white/5 shadow-lg hover:scale-[1.02] transition-transform">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center border border-emerald-500/30">
+                  <CheckCircle className="w-5 h-5 text-emerald-400" />
+                </div>
+                <p className="text-gray-400 text-[10px] uppercase tracking-wider font-bold">Completed</p>
+              </div>
+              <p className="text-2xl font-extrabold text-bright-snow">{stats.completedBookings}</p>
+            </div>
+            <div className="bg-black rounded-2xl p-5 border border-white/5 shadow-lg hover:scale-[1.02] transition-transform">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center border border-yellow-500/30">
+                  <Clock className="w-5 h-5 text-yellow-400" />
+                </div>
+                <p className="text-gray-400 text-[10px] uppercase tracking-wider font-bold">Scheduled</p>
+              </div>
+              <p className="text-2xl font-extrabold text-bright-snow">{stats.scheduledBookings}</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Top Selling Brands — visual bar chart */}
+            <div className="bg-black rounded-2xl border border-white/5 shadow-xl overflow-hidden">
+              <div className="p-4 border-b border-white/5 flex items-center gap-3">
+                <div className="w-10 h-10 bg-racing-red/20 rounded-lg flex items-center justify-center border border-racing-red/30">
+                  <BarChart3 className="w-5 h-5 text-racing-red" />
+                </div>
+                <h3 className="font-display font-bold text-bright-snow text-lg">Top Selling Brands</h3>
+              </div>
+              <div className="p-5">
+                {stats.topBrands.length > 0 ? (
+                  <div className="space-y-4">
+                    {stats.topBrands.map(([brand, count], index) => {
+                      const maxCount = stats.topBrands[0][1];
+                      const pct = (count / maxCount) * 100;
+                      return (
+                        <div key={brand}>
+                          <div className="flex items-center justify-between mb-1.5">
+                            <div className="flex items-center gap-2">
+                              <span className="text-racing-red font-bold text-xs">#{index + 1}</span>
+                              <span className="text-bright-snow font-semibold text-sm">{brand}</span>
+                            </div>
+                            <span className="text-gray-400 text-xs font-bold">{count} tyres</span>
+                          </div>
+                          <div className="h-2.5 bg-[#1e2121] rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-gradient-to-r from-racing-red to-racing-red/60 rounded-full transition-all duration-500"
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-gray-400 text-sm">No sales data yet</p>
+                )}
               </div>
             </div>
-            <div className="bg-black rounded-2xl p-6 border border-white/5 shadow-lg hover:border-racing-red/30 transition-all shadow-[0_0_20px_rgba(239,18,25,0.1)]">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-xs uppercase tracking-wider font-bold">Total Bookings</p>
-                  <p className="text-3xl font-extrabold text-bright-snow mt-2">{stats.totalBookings}</p>
+
+            {/* Recent Bookings */}
+            <div className="bg-black rounded-2xl border border-white/5 shadow-xl overflow-hidden">
+              <div className="p-4 border-b border-white/5 flex items-center gap-3">
+                <div className="w-10 h-10 bg-racing-red/20 rounded-lg flex items-center justify-center border border-racing-red/30">
+                  <Calendar className="w-5 h-5 text-racing-red" />
                 </div>
-                <div className="w-14 h-14 bg-racing-red/20 rounded-xl flex items-center justify-center border border-racing-red/30">
-                  <Calendar className="w-7 h-7 text-racing-red" />
-                </div>
+                <h3 className="font-display font-bold text-bright-snow text-lg">Recent Bookings</h3>
               </div>
-            </div>
-            <div className="bg-black rounded-2xl p-6 border border-white/5 shadow-lg hover:border-racing-red/30 transition-all shadow-[0_0_20px_rgba(239,18,25,0.1)]">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-xs uppercase tracking-wider font-bold">Completed</p>
-                  <p className="text-3xl font-extrabold text-bright-snow mt-2">{stats.completedBookings}</p>
-                </div>
-                <div className="w-14 h-14 bg-emerald-500/20 rounded-xl flex items-center justify-center border border-emerald-500/30">
-                  <CheckCircle className="w-7 h-7 text-emerald-400" />
-                </div>
-              </div>
-            </div>
-            <div className="bg-black rounded-2xl p-6 border border-white/5 shadow-lg hover:border-racing-red/30 transition-all shadow-[0_0_20px_rgba(239,18,25,0.1)]">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-xs uppercase tracking-wider font-bold">Scheduled</p>
-                  <p className="text-3xl font-extrabold text-bright-snow mt-2">{stats.scheduledBookings}</p>
-                </div>
-                <div className="w-14 h-14 bg-yellow-500/20 rounded-xl flex items-center justify-center border border-yellow-500/30">
-                  <Clock className="w-7 h-7 text-yellow-400" />
-                </div>
+              <div className="p-4">
+                {bookings.length > 0 ? (
+                  <div className="space-y-2">
+                    {bookings.slice(0, 5).map(booking => (
+                      <div key={booking.id} className="flex items-center justify-between bg-[#1e2121] rounded-lg p-3 border border-white/5">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-bright-snow text-sm font-semibold truncate">{booking.customerName}</p>
+                          <p className="text-gray-400 text-xs truncate">{booking.vehicleRegistration} · {booking.date || 'Collection'}</p>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0 ml-3">
+                          <span className="text-bright-snow font-bold text-sm">£{booking.totalPrice.toFixed(0)}</span>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            booking.status === 'Completed' ? 'bg-emerald-500/20 text-emerald-400' :
+                            booking.status === 'Cancelled' ? 'bg-racing-red/20 text-racing-red' :
+                            'bg-yellow-500/20 text-yellow-400'
+                          }`}>{booking.status}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-400 text-sm">No bookings yet</p>
+                )}
               </div>
             </div>
           </div>
@@ -640,49 +707,26 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   <AlertTriangle className="w-5 h-5 text-racing-red" />
                 </div>
                 <h3 className="font-display font-bold text-racing-red text-lg">Low Stock Alerts</h3>
+                <span className="ml-auto text-racing-red text-xs font-bold bg-racing-red/10 px-2 py-1 rounded-full">{stats.lowStockItems.length} items</span>
               </div>
               <div className="p-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                   {stats.lowStockItems.map(tyre => (
-                    <div key={tyre.id} className="bg-black/50 rounded-lg p-3 border border-white/5">
+                    <div key={tyre.id} className="bg-black/50 rounded-lg p-3 border border-white/5 hover:border-racing-red/20 transition">
                       <p className="font-semibold text-bright-snow text-sm">{tyre.brand} {tyre.model}</p>
                       <p className="text-gray-400 text-xs">{tyre.width}/{tyre.profile} R{tyre.rim}</p>
-                      <p className="text-racing-red font-bold text-sm mt-1">Stock: {tyre.stock}</p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <div className="flex-1 h-1.5 bg-[#1e2121] rounded-full overflow-hidden">
+                          <div className={`h-full rounded-full ${tyre.stock > 4 ? 'bg-yellow-500' : 'bg-racing-red'}`} style={{ width: `${Math.min(tyre.stock * 10, 100)}%` }} />
+                        </div>
+                        <p className="text-racing-red font-bold text-xs">{tyre.stock}</p>
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
           )}
-
-          {/* Top Selling Brands */}
-          <div className="bg-black rounded-2xl border border-white/5 shadow-xl overflow-hidden">
-            <div className="p-4 border-b border-white/5 flex items-center gap-3">
-              <div className="w-10 h-10 bg-racing-red/20 rounded-lg flex items-center justify-center border border-racing-red/30">
-                <BarChart3 className="w-5 h-5 text-racing-red" />
-              </div>
-              <h3 className="font-display font-bold text-bright-snow text-lg">Top Selling Brands</h3>
-            </div>
-            <div className="p-4">
-              {stats.topBrands.length > 0 ? (
-                <div className="space-y-3">
-                  {stats.topBrands.map(([brand, count], index) => (
-                    <div key={brand} className="flex items-center justify-between bg-[#1e2121] rounded-xl p-4 border border-white/5">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-racing-red/20 rounded-lg flex items-center justify-center border border-racing-red/30 text-racing-red font-bold text-sm">
-                          #{index + 1}
-                        </div>
-                        <span className="text-bright-snow font-semibold">{brand}</span>
-                      </div>
-                      <span className="text-racing-red font-extrabold">{count} tyres</span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-400 text-sm">No sales data yet</p>
-              )}
-            </div>
-          </div>
         </div>
       )}
 

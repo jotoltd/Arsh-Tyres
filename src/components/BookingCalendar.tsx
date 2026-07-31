@@ -71,8 +71,8 @@ export default function BookingCalendar({
         <div>
           <h3 className="font-display font-bold text-bright-snow text-base">Select Fitting Date & Time</h3>
           <p className="text-xs text-gray-400">
-            {fittingType === 'shop' 
-              ? 'Choose when to bring your car into Arsh Autos Shop' 
+            {fittingType === 'shop'
+              ? 'Bookings available from tomorrow onwards. Choose a date and time slot.'
               : 'Choose when our mobile fitting van will arrive at your home/work'}
           </p>
         </div>
@@ -109,7 +109,7 @@ export default function BookingCalendar({
       {/* Time Slot Selector */}
       <div className="mt-5">
         <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">2. Select Time Slot</label>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+        <div className="grid grid-cols-2 gap-3">
           {TIME_SLOTS.map((slot) => {
             const isSelected = selectedTimeSlot === slot;
             return (
@@ -117,18 +117,19 @@ export default function BookingCalendar({
                 key={slot}
                 type="button"
                 onClick={() => onTimeSlotChange(slot)}
-                className={`flex items-center justify-center gap-2 p-3 rounded-lg border text-xs font-semibold font-mono transition ${
+                className={`flex items-center justify-center gap-2 p-4 rounded-xl border text-sm font-bold transition ${
                   isSelected
-                    ? 'bg-racing-red border-racing-red text-bright-snow shadow-sm font-extrabold'
+                    ? 'bg-racing-red border-racing-red text-bright-snow shadow-md font-extrabold'
                     : 'bg-[#1e2121] border-white/5 text-bright-snow/90 hover:border-white/20 hover:text-bright-snow'
                 }`}
               >
-                <Clock className="w-3.5 h-3.5 shrink-0" />
+                <Clock className="w-4 h-4 shrink-0" />
                 {slot}
               </button>
             );
           })}
         </div>
+        <p className="text-[11px] text-gray-500 mt-2">Morning: 8:30am–1pm · Afternoon: 1pm–6pm</p>
       </div>
 
       {/* Included Services Badge */}

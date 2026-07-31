@@ -234,7 +234,7 @@ export default function App() {
           {/* Logo */}
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => { navigate('/'); setActiveTab('shop'); setLastConfirmedBooking(null); }}>
             <div className="bg-racing-red text-bright-snow p-2 rounded-xl flex items-center justify-center shadow-md overflow-hidden racing-glow-sm">
-              <img src="/assets/logo.jpg" alt="Arsh Autos Logo" className="w-10 h-10 object-contain" />
+              <img src="/assets/logo.jpg" alt="Arsh Autos Logo" className="w-20 h-20 object-contain" />
             </div>
             <div>
               <span className="text-xs uppercase font-extrabold tracking-widest text-racing-red block leading-none">ARSH AUTOS</span>
@@ -283,7 +283,7 @@ export default function App() {
               }`}
             >
               <ShoppingBag className="w-4 h-4" />
-              Basket
+              My Order
               {cartItems.length > 0 && (
                 <span className="bg-white/10 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-1">
                   {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
@@ -304,7 +304,7 @@ export default function App() {
             </button>
           </nav>
 
-          {/* Auth + Basket */}
+          {/* Auth + Order */}
           <div className="flex items-center gap-4">
             {user ? (
               <div className="flex items-center gap-2">
@@ -332,7 +332,7 @@ export default function App() {
                 className="bg-[#1e2121] hover:bg-[#252828] text-bright-snow border border-gray-500/20 rounded-xl px-4 py-2 text-sm font-bold flex items-center gap-2 transition shadow-md hover:shadow-lg cursor-pointer"
               >
                 <ShoppingBag className="w-4 h-4 text-racing-red" />
-                <span className="hidden sm:inline">Basket:</span>
+                <span className="hidden sm:inline">My Order:</span>
                 <span className="bg-racing-red text-bright-snow text-xs font-black w-6 h-6 rounded-full flex items-center justify-center font-mono">
                   {totalCartTyres}
                 </span>
@@ -545,35 +545,62 @@ export default function App() {
                 <div className="space-y-8">
                 {/* HERO */}
                 <section
-                  className="relative overflow-hidden min-h-[640px] flex items-center justify-center"
+                  className="relative overflow-hidden min-h-[700px] flex items-center justify-center"
                   style={{ backgroundImage: 'url(/assets/hero.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
                 >
                   {/* Layered overlays for depth */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-black via-black/60 to-black" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-black/70" />
-                  {/* Red glow accent */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-racing-red/10 blur-[120px] rounded-full" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-black via-black/70 to-black" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/30 to-black/80" />
+                  {/* Red glow accents */}
+                  <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-racing-red/10 blur-[140px] rounded-full" />
+                  <div className="absolute bottom-0 left-0 w-[400px] h-[200px] bg-racing-red/5 blur-[100px] rounded-full" />
 
-                  <div className="relative z-10 w-full max-w-2xl mx-auto px-4 py-20 flex flex-col items-center text-center space-y-7">
-                    {/* Logo */}
-                    <div className="bg-black/60 backdrop-blur-md rounded-2xl p-2 border border-white/10 shadow-xl">
-                      <img src="/assets/logo.jpg" alt="Arsh Autos" className="w-32 h-32 rounded-xl object-contain" />
+                  <div className="relative z-10 w-full max-w-3xl mx-auto px-4 py-24 flex flex-col items-center text-center space-y-8">
+                    {/* Logo with glow ring */}
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-racing-red/20 blur-2xl rounded-full scale-110" />
+                      <div className="relative bg-black/70 backdrop-blur-md rounded-3xl p-3 border border-white/10 shadow-2xl">
+                        <img src="/assets/logo.jpg" alt="Arsh Autos" className="w-48 h-48 rounded-2xl object-contain" />
+                      </div>
                     </div>
 
                     {/* Headline */}
                     <div className="space-y-4">
+                      <div className="flex items-center justify-center gap-2 mb-2">
+                        <span className="h-px w-8 bg-racing-red/50" />
+                        <span className="text-racing-red text-xs font-bold uppercase tracking-[0.3em]">Premium Tyre Fitting</span>
+                        <span className="h-px w-8 bg-racing-red/50" />
+                      </div>
                       <h2 className="font-display font-black text-4xl sm:text-5xl md:text-6xl text-white tracking-tight leading-[1.05] drop-shadow-2xl">
                         New tyres,
                         <br />
                         <span className="text-racing-red">fitted at our shop.</span>
                       </h2>
                       <p className="text-base sm:text-lg text-white/80 max-w-lg leading-relaxed">
-                        Search our range, pick a time that works for you, pay in shop.
+                        Search our range, pick a time that works for you, pay online or in shop.
                       </p>
                     </div>
 
+                    {/* Stats row */}
+                    <div className="flex items-center gap-6 sm:gap-10">
+                      <div className="text-center">
+                        <div className="font-display font-black text-2xl sm:text-3xl text-bright-snow">500+</div>
+                        <div className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Tyres in stock</div>
+                      </div>
+                      <div className="w-px h-10 bg-white/10" />
+                      <div className="text-center">
+                        <div className="font-display font-black text-2xl sm:text-3xl text-bright-snow">30min</div>
+                        <div className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Avg fitting</div>
+                      </div>
+                      <div className="w-px h-10 bg-white/10" />
+                      <div className="text-center">
+                        <div className="font-display font-black text-2xl sm:text-3xl text-bright-snow">All</div>
+                        <div className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Premium brands</div>
+                      </div>
+                    </div>
+
                     {/* Search — glassmorphism container */}
-                    <div className="w-full pt-3">
+                    <div className="w-full pt-2">
                       <TyreSearcher
                         filters={filters}
                         onFilterChange={setFilters}
@@ -591,7 +618,7 @@ export default function App() {
                         <Clock className="w-3.5 h-3.5 text-emerald-400" /> Pick your own slot
                       </span>
                       <span className="flex items-center gap-1.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-3 py-1.5 text-xs text-white/90">
-                        <MapPin className="w-3.5 h-3.5 text-emerald-400" /> Pay in shop
+                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Online or in-shop payment
                       </span>
                     </div>
                   </div>
@@ -783,55 +810,110 @@ export default function App() {
       </main>
 
       {/* FOOTER */}
-      <footer className="border-t border-white/5 bg-black text-gray-400 text-xs py-12 mt-16 tyre-tread-pattern">
-        <div className="w-full px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <div className="bg-racing-red text-bright-snow p-1 rounded-lg overflow-hidden">
-                <img src="/assets/logo.jpg" alt="Arsh Autos Logo" className="w-5 h-5 object-contain" />
+      <footer className="border-t border-white/5 bg-black text-gray-400 text-xs mt-16">
+        {/* Top section — info columns */}
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Brand + description */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2.5">
+              <div className="bg-racing-red p-1.5 rounded-lg overflow-hidden">
+                <img src="/assets/logo.jpg" alt="Arsh Autos Logo" className="w-8 h-8 object-contain" />
               </div>
-              <span className="font-display font-black text-bright-snow tracking-tight text-sm">Arsh Autos Auto Tyre Shop</span>
+              <div>
+                <span className="font-display font-black text-bright-snow tracking-tight text-sm block leading-none">Arsh Autos</span>
+                <span className="text-[10px] text-gray-500 uppercase tracking-wider">Auto Tyre Shop</span>
+              </div>
             </div>
-            <p className="leading-relaxed">
-              Arsh Autos is a premier automotive wheel and tyre fitter based in Harrow, London. Offering premium brands, state of the art computerized alignments, and mobile fleet van fittings.
+            <p className="leading-relaxed text-gray-400/80">
+              Premier tyre fitting and wheel alignment specialist in Harrow, London. Premium brands, expert fitting, and competitive prices.
             </p>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-racing-red uppercase tracking-wider mb-3">Service Hours</h4>
-            <ul className="space-y-1.5 font-medium text-bright-snow/80">
-              <li>Monday - Friday: 08:00 - 18:00</li>
-              <li>Saturday: 08:00 - 17:00</li>
-              <li>Sunday: Emergency Service Callouts Only</li>
-              <li className="text-emerald-400 font-bold">Harrow Workshop Is Fully Open</li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-racing-red uppercase tracking-wider mb-3">Workshop Address</h4>
-            <ul className="space-y-1.5 font-medium text-bright-snow/80">
-              <li>Arsh Autos Tyre, MOT & Wheel Alignment Centre</li>
-              <li>48 Harrow Road</li>
-              <li>London, HA1 2YF</li>
-              <li className="text-racing-red font-bold">Tel: 020 8427 1234</li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-racing-red uppercase tracking-wider mb-3">Premium Brands We Fit</h4>
-            <div className="flex flex-wrap gap-1.5">
-              {['Michelin', 'Continental', 'Pirelli', 'Goodyear', 'Bridgestone', 'Dunlop', 'Yokohama', 'Hankook'].map(b => (
-                <span key={b} className="bg-white/5 text-bright-snow/85 text-[10px] font-bold px-2 py-0.5 rounded border border-gray-500/25">{b}</span>
-              ))}
+            {/* Social links */}
+            <div className="flex items-center gap-2 pt-1">
+              <a href="tel:02084271234" className="w-9 h-9 rounded-lg bg-[#1e2121] border border-white/5 flex items-center justify-center text-gray-400 hover:text-racing-red hover:border-racing-red/30 transition">
+                <Phone className="w-4 h-4" />
+              </a>
+              <a href="https://maps.google.com/?q=48+Harrow+Road+London+HA1+2YF" target="_blank" rel="noopener" className="w-9 h-9 rounded-lg bg-[#1e2121] border border-white/5 flex items-center justify-center text-gray-400 hover:text-racing-red hover:border-racing-red/30 transition">
+                <MapPin className="w-4 h-4" />
+              </a>
+              <a href="https://facebook.com" target="_blank" rel="noopener" className="w-9 h-9 rounded-lg bg-[#1e2121] border border-white/5 flex items-center justify-center text-gray-400 hover:text-racing-red hover:border-racing-red/30 transition">
+                <span className="text-xs font-bold">f</span>
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener" className="w-9 h-9 rounded-lg bg-[#1e2121] border border-white/5 flex items-center justify-center text-gray-400 hover:text-racing-red hover:border-racing-red/30 transition">
+                <span className="text-xs font-bold">IG</span>
+              </a>
             </div>
-            <p className="mt-3 text-[10px] text-gray-400/80">
-              © 2026 Arsh Autos Auto Tyre Shop. All rights reserved. Professional fitting & alignment guaranteed.
-            </p>
           </div>
+
+          {/* Opening hours with live status */}
+          <div>
+            <h4 className="font-display font-bold text-racing-red uppercase tracking-wider mb-4 text-sm">Opening Hours</h4>
+            <ul className="space-y-2">
+              <li className="flex justify-between items-center text-bright-snow/80">
+                <span>Mon – Fri</span>
+                <span className="font-mono font-bold">8:30 – 6:00</span>
+              </li>
+              <li className="flex justify-between items-center text-bright-snow/80">
+                <span>Saturday</span>
+                <span className="font-mono font-bold">8:30 – 6:00</span>
+              </li>
+              <li className="flex justify-between items-center text-gray-500">
+                <span>Sunday</span>
+                <span className="font-mono">Closed</span>
+              </li>
+            </ul>
+            <div className="mt-4 inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-3 py-1.5">
+              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+              <span className="text-emerald-400 font-bold text-[11px]">Open now — bookings from tomorrow</span>
+            </div>
+          </div>
+
+          {/* Address + contact */}
+          <div>
+            <h4 className="font-display font-bold text-racing-red uppercase tracking-wider mb-4 text-sm">Visit Us</h4>
+            <div className="space-y-2 text-bright-snow/80">
+              <p className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 text-racing-red shrink-0 mt-0.5" />
+                <span>48 Harrow Road<br />London, HA1 2YF</span>
+              </p>
+              <p className="flex items-center gap-2">
+                <Phone className="w-4 h-4 text-racing-red shrink-0" />
+                <a href="tel:02084271234" className="hover:text-racing-red transition font-bold">020 8427 1234</a>
+              </p>
+            </div>
+            {/* Map embed */}
+            <div className="mt-4 rounded-xl overflow-hidden border border-white/5 h-32">
+              <iframe
+                src="https://maps.google.com/maps?q=48%20Harrow%20Road%20London%20HA1%202YF&t=&z=14&ie=UTF8&iwloc=&output=embed"
+                className="w-full h-full grayscale opacity-60"
+                loading="lazy"
+                title="Arsh Autos Location"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Brand strip */}
+        <div className="border-t border-white/5 py-4 px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <span className="text-[10px] uppercase tracking-wider text-gray-500 font-bold mr-2">Brands we fit:</span>
+            {['Michelin', 'Continental', 'Pirelli', 'Goodyear', 'Bridgestone', 'Dunlop', 'Yokohama', 'Hankook'].map(b => (
+              <span key={b} className="bg-white/5 text-bright-snow/85 text-[10px] font-bold px-2 py-0.5 rounded border border-gray-500/25">{b}</span>
+            ))}
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="border-t border-white/5 py-4 px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <p className="text-[10px] text-gray-500">
+            © 2026 Arsh Autos Auto Tyre Shop. All rights reserved.
+          </p>
+          <button onClick={() => setActiveTab('admin')} className="text-[10px] text-gray-600 hover:text-gray-400 transition underline">
+            Admin
+          </button>
         </div>
       </footer>
 
-      {/* Sticky mobile basket bar */}
+      {/* Sticky mobile order bar */}
       {cartItems.length > 0 && activeTab !== 'cart' && (
         <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden">
           <button
@@ -840,7 +922,7 @@ export default function App() {
           >
             <span className="flex items-center gap-2 text-sm">
               <ShoppingBag className="w-5 h-5" />
-              {totalCartTyres} {totalCartTyres === 1 ? 'tyre' : 'tyres'} in basket
+              {totalCartTyres} {totalCartTyres === 1 ? 'tyre' : 'tyres'} in your order
             </span>
             <span className="flex items-center gap-1.5 text-sm font-extrabold">
               £{cartItems.reduce((acc, item) => acc + getUnitPrice(item.tyre, item.quantity) * item.quantity, 0).toFixed(2)}

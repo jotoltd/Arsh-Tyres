@@ -42,7 +42,7 @@ interface CartSectionProps {
 }
 
 const STEPS = [
-  { id: 0, label: 'Basket', icon: ShoppingBag },
+  { id: 0, label: 'My Order', icon: ShoppingBag },
   { id: 1, label: 'Extras', icon: KeyRound },
   { id: 2, label: 'Date & Time', icon: Calendar },
   { id: 3, label: 'Your Details', icon: User },
@@ -133,9 +133,9 @@ export default function CartSection({
         <div className="bg-[#1e2121] w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
           <ShoppingBag className="w-10 h-10" />
         </div>
-        <h3 className="font-display font-extrabold text-bright-snow text-2xl mb-2">Your Basket is Empty</h3>
+        <h3 className="font-display font-extrabold text-bright-snow text-2xl mb-2">Your Order is Empty</h3>
         <p className="text-sm text-gray-400 mb-6">
-          Search for your tyre size and add them to your basket to get started.
+          Search for your tyre size and add them to your order to get started.
         </p>
         <button
           onClick={() => window.location.href = '/'}
@@ -242,43 +242,62 @@ export default function CartSection({
   };
 
   const ProgressBar = () => (
-    <div className="flex items-center justify-between max-w-2xl mx-auto mb-8 px-2">
-      {STEPS.map((s, i) => {
-        const Icon = s.icon;
-        const done = i < step;
-        const active = i === step;
-        return (
-          <React.Fragment key={s.id}>
-            <div className="flex flex-col items-center gap-1.5 shrink-0">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-                done ? 'bg-emerald-500 text-white' :
-                active ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/40 scale-110' :
-                'bg-[#1e2121] text-gray-500 border border-white/5'
-              }`}>
-                {done ? <Check className="w-5 h-5" /> : <Icon className="w-5 h-5" />}
+    <div className="mb-8">
+      {/* Desktop progress bar */}
+      <div className="hidden sm:flex items-center justify-between max-w-2xl mx-auto px-2">
+        {STEPS.map((s, i) => {
+          const Icon = s.icon;
+          const done = i < step;
+          const active = i === step;
+          return (
+            <React.Fragment key={s.id}>
+              <div className="flex flex-col items-center gap-1.5 shrink-0">
+                <div className={`w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300 ${
+                  done ? 'bg-emerald-500 text-white' :
+                  active ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/40 scale-110 ring-4 ring-racing-red/20' :
+                  'bg-[#1e2121] text-gray-500 border border-white/5'
+                }`}>
+                  {done ? <Check className="w-5 h-5" /> : <Icon className="w-5 h-5" />}
+                </div>
+                <span className={`text-[10px] font-bold uppercase tracking-wider transition ${active ? 'text-bright-snow' : done ? 'text-emerald-400' : 'text-gray-500'}`}>
+                  {s.label}
+                </span>
               </div>
-              <span className={`text-[10px] font-bold uppercase tracking-wider ${active ? 'text-bright-snow' : done ? 'text-emerald-400' : 'text-gray-500'}`}>
-                {s.label}
-              </span>
-            </div>
-            {i < STEPS.length - 1 && (
-              <div className={`flex-1 h-0.5 mx-1 rounded transition-all ${i < step ? 'bg-emerald-500' : 'bg-white/5'}`} />
-            )}
-          </React.Fragment>
-        );
-      })}
+              {i < STEPS.length - 1 && (
+                <div className="flex-1 h-0.5 mx-1 rounded transition-all duration-500 relative overflow-hidden">
+                  <div className={`absolute inset-0 transition-all duration-500 ${i < step ? 'bg-emerald-500' : 'bg-white/5'}`} />
+                  {i === step - 1 && <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-racing-red animate-pulse" />}
+                </div>
+              )}
+            </React.Fragment>
+          );
+        })}
+      </div>
+      {/* Mobile progress bar — compact */}
+      <div className="sm:hidden">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-bold text-bright-snow">Step {step + 1} of {STEPS.length}</span>
+          <span className="text-xs font-bold text-racing-red">{STEPS[step].label}</span>
+        </div>
+        <div className="h-2 bg-[#1e2121] rounded-full overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-racing-red to-racing-red/80 rounded-full transition-all duration-500 ease-out"
+            style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
+          />
+        </div>
+      </div>
     </div>
   );
 
   const MiniSummary = () => (
     <div className="bg-black rounded-2xl border border-white/5 p-5 shadow-lg shadow-[0_0_30px_rgba(239,18,25,0.15)]">
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-4">
         <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Order Summary</span>
-        <span className="text-xs text-gray-500">{tyreCount} tyres</span>
+        <span className="text-[10px] font-bold text-racing-red bg-racing-red/10 px-2 py-0.5 rounded-full">{STEPS[step].label}</span>
       </div>
       <div className="space-y-1.5 text-xs">
         <div className="flex justify-between text-gray-400">
-          <span>Tyres</span>
+          <span>Tyres ({tyreCount})</span>
           <span className="text-bright-snow">£{tyresTotal.toFixed(2)}</span>
         </div>
         {multiBuySaving > 0 && (
@@ -357,7 +376,7 @@ export default function CartSection({
             </div>
           )}
 
-          {/* STEP 0: Basket */}
+          {/* STEP 0: My Order */}
           {step === 0 && (
             <div className="bg-black rounded-2xl border border-white/5 shadow-lg p-6 animate-fade-in-up">
               <h3 className="font-display font-extrabold text-bright-snow text-xl mb-1">Your Tyres</h3>

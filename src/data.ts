@@ -202,12 +202,8 @@ export const MOCK_REGISTRATIONS: Record<string, RegLookup> = {};
 
 // Available time slots for booking
 export const TIME_SLOTS = [
-  '08:30 - 10:00',
-  '10:00 - 11:30',
-  '11:30 - 13:00',
-  '13:00 - 14:30',
-  '14:30 - 16:00',
-  '16:00 - 17:30'
+  'Morning',
+  'Afternoon'
 ];
 
 // Fitting is included in all tyre prices
