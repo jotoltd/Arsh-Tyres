@@ -611,10 +611,10 @@ export default function App() {
                       <h2 className="font-display font-black text-4xl sm:text-5xl md:text-6xl text-white tracking-tight leading-[1.05] drop-shadow-2xl">
                         New tyres,
                         <br />
-                        <span className="text-racing-red">fitted at our shop.</span>
+                        <span className="text-racing-red">fitted in London.</span>
                       </h2>
                       <p className="text-base sm:text-lg text-white/80 max-w-lg leading-relaxed">
-                        Search our range, pick a time that works for you, pay online or in shop.
+                        Search our range, pick a time that works for you, pay online.
                       </p>
                     </div>
 
