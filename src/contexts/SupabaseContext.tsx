@@ -22,6 +22,8 @@ interface SupabaseContextType {
   signOut: () => Promise<void>;
   stockManagementEnabled: boolean;
   setStockManagementEnabled: (enabled: boolean) => Promise<void>;
+  maintenanceMode: boolean;
+  setMaintenanceMode: (enabled: boolean) => Promise<void>;
   settingsLoading: boolean;
 }
 
@@ -94,6 +96,9 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
   const [bookings, setBookingsState] = useState<Booking[]>([]);
   const [stockManagementEnabled, setStockManagementEnabledState] = useState(() => {
     return localStorage.getItem('arsh_stock_management_enabled') === 'true';
+  });
+  const [maintenanceMode, setMaintenanceModeState] = useState(() => {
+    return localStorage.getItem('arsh_maintenance_mode') === 'true';
   });
   const [settingsLoading, setSettingsLoading] = useState(false);
 
@@ -172,6 +177,9 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
           const stockEnabled = settingsMap['stock_management_enabled'] === 'true';
           setStockManagementEnabledState(stockEnabled);
           localStorage.setItem('arsh_stock_management_enabled', String(stockEnabled));
+          const maintMode = settingsMap['maintenance_mode'] === 'true';
+          setMaintenanceModeState(maintMode);
+          localStorage.setItem('arsh_maintenance_mode', String(maintMode));
         }
         setSettingsLoading(false);
       });
@@ -200,6 +208,30 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
       await supabase
         .from('settings')
         .insert({ key: 'stock_management_enabled', value: String(enabled) });
+    }
+  }, [configured]);
+
+  const setMaintenanceMode = useCallback(async (enabled: boolean) => {
+    setMaintenanceModeState(enabled);
+    localStorage.setItem('arsh_maintenance_mode', String(enabled));
+
+    if (!configured) return;
+
+    const { data: existing } = await supabase
+      .from('settings')
+      .select('id')
+      .eq('key', 'maintenance_mode')
+      .single();
+
+    if (existing) {
+      await supabase
+        .from('settings')
+        .update({ value: String(enabled), updated_at: new Date().toISOString() })
+        .eq('key', 'maintenance_mode');
+    } else {
+      await supabase
+        .from('settings')
+        .insert({ key: 'maintenance_mode', value: String(enabled) });
     }
   }, [configured]);
 
@@ -422,6 +454,8 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
         signOut,
         stockManagementEnabled,
         setStockManagementEnabled,
+        maintenanceMode,
+        setMaintenanceMode,
         settingsLoading,
       }}
     >

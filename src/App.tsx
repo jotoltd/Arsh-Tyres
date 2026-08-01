@@ -69,7 +69,8 @@ export default function App() {
     user,
     signIn,
     signOut,
-    tyresError
+    tyresError,
+    maintenanceMode
   } = useSupabase();
 
   // Cart operations
@@ -291,7 +292,8 @@ export default function App() {
             </div>
           </div>
 
-          {/* Nav Tabs — desktop only */}
+          {/* Nav Tabs — desktop only (hidden in maintenance mode) */}
+          {(!maintenanceMode || activeTab === 'admin') && (
           <nav className="hidden sm:flex items-center gap-1 sm:gap-2">
             <button
               onClick={() => { navigate('/'); setActiveTab('shop'); setLastConfirmedBooking(null); }}
@@ -362,6 +364,7 @@ export default function App() {
               Account
             </button>
           </nav>
+          )}
 
           {/* Auth + Order */}
           <div className="flex items-center gap-4">
@@ -410,6 +413,64 @@ export default function App() {
 
       {/* Main Body Grid */}
       <main className="w-full px-4 sm:px-6 lg:px-8 py-8 pb-24 sm:pb-8">
+        {maintenanceMode && activeTab !== 'admin' ? (
+          <div className="min-h-[60vh] flex items-center justify-center">
+            <div className="max-w-lg w-full text-center space-y-8 animate-fade-in-up">
+              {/* Logo */}
+              <div className="relative inline-block">
+                <div className="absolute inset-0 bg-racing-red/20 blur-2xl rounded-full scale-110" />
+                <div className="relative bg-black/80 backdrop-blur-md rounded-3xl p-3 border border-white/10 shadow-2xl">
+                  <img src="/assets/logo.jpg" alt="Arsh Autos" className="w-24 h-24 rounded-2xl object-contain" />
+                </div>
+              </div>
+
+              {/* Status badge */}
+              <div className="inline-flex items-center gap-2 bg-racing-red/10 border border-racing-red/20 rounded-full px-4 py-2">
+                <span className="w-2 h-2 bg-racing-red rounded-full animate-pulse" />
+                <span className="text-racing-red text-xs font-bold uppercase tracking-wider">Under Maintenance</span>
+              </div>
+
+              {/* Message */}
+              <div className="space-y-3">
+                <h1 className="font-display font-black text-3xl sm:text-4xl text-bright-snow">We'll be right back</h1>
+                <p className="text-gray-400 text-sm sm:text-base leading-relaxed max-w-md mx-auto">
+                  Arsh Autos is undergoing scheduled maintenance to serve you better. We'll be back online shortly — thank you for your patience!
+                </p>
+              </div>
+
+              {/* Contact info */}
+              <div className="bg-black/50 border border-white/5 rounded-2xl p-6 space-y-3 text-left">
+                <p className="text-[10px] uppercase text-gray-500 font-bold tracking-wider text-center mb-3">Need to reach us?</p>
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-9 h-9 bg-racing-red/10 rounded-lg flex items-center justify-center border border-racing-red/20 shrink-0">
+                    <Phone className="w-4 h-4 text-racing-red" />
+                  </div>
+                  <a href="tel:02084271234" className="text-bright-snow font-bold hover:text-racing-red transition">020 8427 1234</a>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-9 h-9 bg-racing-red/10 rounded-lg flex items-center justify-center border border-racing-red/20 shrink-0">
+                    <MapPin className="w-4 h-4 text-racing-red" />
+                  </div>
+                  <span className="text-gray-400">48 Harrow Road, London, HA1 2YF</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-9 h-9 bg-racing-red/10 rounded-lg flex items-center justify-center border border-racing-red/20 shrink-0">
+                    <Clock className="w-4 h-4 text-racing-red" />
+                  </div>
+                  <span className="text-gray-400">Mon–Sat: 8:30am – 6:00pm</span>
+                </div>
+              </div>
+
+              {/* Admin link */}
+              <button
+                onClick={() => setActiveTab('admin')}
+                className="text-[11px] text-gray-600 hover:text-gray-400 transition underline"
+              >
+                Admin Login
+              </button>
+            </div>
+          </div>
+        ) : (
         <Routes>
           <Route path="/search-results" element={<SearchResults />} />
           <Route path="/" element={
@@ -844,9 +905,11 @@ export default function App() {
             </>
           } />
         </Routes>
+        )}
       </main>
 
-      {/* FOOTER */}
+      {/* FOOTER — hidden in maintenance mode */}
+      {(!maintenanceMode || activeTab === 'admin') && (
       <footer className="border-t border-white/5 bg-black text-gray-400 text-xs mt-16">
         {/* Top section — info columns */}
         <div className="w-full px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -949,8 +1012,10 @@ export default function App() {
           </button>
         </div>
       </footer>
+      )}
 
-      {/* Mobile bottom tab bar */}
+      {/* Mobile bottom tab bar — hidden in maintenance mode */}
+      {(!maintenanceMode || activeTab === 'admin') && (
       <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-black/95 backdrop-blur-lg border-t border-white/10 pb-safe">
         <div className="flex items-center justify-around h-16">
           <button
@@ -1014,6 +1079,7 @@ export default function App() {
           </button>
         </div>
       </nav>
+      )}
 
     </div>
   );

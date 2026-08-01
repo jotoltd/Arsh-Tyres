@@ -29,7 +29,7 @@ interface Staff {
 }
 
 export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProps) {
-  const { stockManagementEnabled, setStockManagementEnabled: setStockManagementSupabase } = useSupabase();
+  const { stockManagementEnabled, setStockManagementEnabled: setStockManagementSupabase, maintenanceMode, setMaintenanceMode } = useSupabase();
   const [authed, setAuthed] = useState(isAdminAuthed());
   const [loginUser, setLoginUser] = useState('');
   const [loginPass, setLoginPass] = useState('');
@@ -2008,6 +2008,39 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                 <div className="mt-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3 text-xs text-emerald-400 font-semibold flex items-center gap-2">
                   <Check className="w-4 h-4 shrink-0" />
                   Unlimited stock mode — customers can order any quantity without restrictions.
+                </div>
+              )}
+            </div>
+
+            {/* Maintenance Mode Toggle */}
+            <div className={`rounded-lg p-5 border ${maintenanceMode ? 'bg-racing-red/10 border-racing-red/30' : 'bg-black/50 border-white/5'}`}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center border ${maintenanceMode ? 'bg-racing-red/20 border-racing-red/30' : 'bg-white/5 border-white/10'}`}>
+                    {maintenanceMode ? <AlertTriangle className="w-5 h-5 text-racing-red" /> : <Settings className="w-5 h-5 text-gray-400" />}
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-bright-snow">Maintenance Mode</h4>
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      {maintenanceMode
+                        ? 'Site is offline. Visitors see a maintenance page. Admin panel still accessible.'
+                        : 'Site is live and fully operational for all visitors.'}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setMaintenanceMode(!maintenanceMode)}
+                  className={`relative w-14 h-7 rounded-full transition shrink-0 ${
+                    maintenanceMode ? 'bg-racing-red' : 'bg-gray-600'
+                  }`}
+                >
+                  <span className={`absolute top-0.5 w-6 h-6 bg-white rounded-full transition-all ${maintenanceMode ? 'left-7' : 'left-0.5'}`} />
+                </button>
+              </div>
+              {maintenanceMode && (
+                <div className="mt-4 bg-racing-red/10 border border-racing-red/20 rounded-lg p-3 text-xs text-racing-red font-semibold flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 shrink-0" />
+                  Maintenance mode is active. Customers cannot browse or place orders.
                 </div>
               )}
             </div>
