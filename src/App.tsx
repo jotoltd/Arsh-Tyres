@@ -599,7 +599,34 @@ export default function App() {
 
               {/* BOOKINGS TAB */}
               {activeTab === 'bookings' && (
-                <BookingsList bookings={bookings} onCancelBooking={handleCancelBooking} />
+                user ? (
+                  <BookingsList bookings={bookings.filter(b => b.customerEmail?.toLowerCase() === user.email?.toLowerCase())} onCancelBooking={handleCancelBooking} />
+                ) : (
+                  <div className="max-w-md mx-auto my-12 px-4">
+                    <div className="bg-gradient-to-b from-[#1a1c1c] to-black rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+                      <div className="h-1 w-full bg-gradient-to-r from-transparent via-racing-red to-transparent" />
+                      <div className="p-8 text-center">
+                        <div className="relative inline-block mb-4">
+                          <div className="absolute inset-0 bg-racing-red/30 blur-xl rounded-full" />
+                          <div className="relative w-20 h-20 bg-gradient-to-br from-racing-red/20 to-black rounded-2xl flex items-center justify-center mx-auto border border-racing-red/30">
+                            <Calendar className="w-10 h-10 text-racing-red" />
+                          </div>
+                        </div>
+                        <h2 className="font-display font-black text-bright-snow text-2xl mb-2">Sign In to View Your Bookings</h2>
+                        <p className="text-gray-400 text-sm mb-6">
+                          Log in to see your fitting appointments, track orders, and manage your bookings.
+                        </p>
+                        <button
+                          onClick={() => setActiveTab('account')}
+                          className="bg-racing-red hover:bg-racing-red/90 text-bright-snow font-extrabold text-sm px-6 py-3 rounded-xl transition shadow-lg shadow-racing-red/30 inline-flex items-center gap-2"
+                        >
+                          <User className="w-4 h-4" />
+                          Go to Sign In
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )
               )}
 
               {/* ADMIN TAB */}
