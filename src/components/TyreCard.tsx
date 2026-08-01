@@ -32,7 +32,8 @@ const BRAND_COLORS: Record<string, string> = {
 };
 
 export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
-  const { stockManagementEnabled } = useSupabase();
+  const { stockManagementEnabled, tyreDisplayFields } = useSupabase();
+  const show = (field: string) => tyreDisplayFields.includes(field as any);
   const [quantity, setQuantity] = useState(4);
   const [isAdded, setIsAdded] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -77,6 +78,7 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
           />
         )}
         {/* Category badge overlay */}
+        {show('categoryBadge') && (
         <span className={`absolute top-2 left-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold backdrop-blur-sm ${
           tyre.category === 'Runflat' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
           tyre.category === 'Commercial' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' :
@@ -85,6 +87,7 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
           {getCategoryIcon(tyre.category)}
           {tyre.category}
         </span>
+        )}
         {/* Stock badge */}
         {(() => {
           if (!stockManagementEnabled) return (
@@ -117,19 +120,19 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
           <span>{tyre.profile}</span>
           <span className="text-gray-500 text-xs">R</span>
           <span>{tyre.rim}{tyre.category === 'Commercial' ? 'C' : ''}</span>
-          {(tyre.loadIndex || tyre.speedRating) && (
+          {show('speedLoad') && (tyre.loadIndex || tyre.speedRating) && (
             <span className="text-racing-red ml-1">{tyre.loadIndex}{tyre.speedRating}</span>
           )}
         </div>
 
         {/* Spec pills */}
         <div className="flex flex-wrap gap-1.5 mb-3">
-          {tyre.isRunflat && (
+          {show('runflatBadge') && tyre.isRunflat && (
             <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
               <ShieldCheck className="w-3 h-3" /> Runflat
             </span>
           )}
-          {tyre.isReinforced && (
+          {show('reinforcedBadge') && tyre.isReinforced && (
             <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
               <Gauge className="w-3 h-3" /> Reinforced
             </span>
@@ -140,6 +143,7 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
         </div>
 
         {/* EU Tyre Label Ratings */}
+        {show('euLabel') && (
         <div className="flex items-center gap-2 mb-3 bg-black/30 rounded-lg p-2">
           <div className="flex-1 text-center">
             <p className="text-[8px] uppercase text-gray-500 font-bold tracking-wider mb-0.5">Fuel</p>
@@ -165,6 +169,12 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
             </div>
           </div>
         </div>
+        )}
+
+        {/* Recommended For */}
+        {show('recommendedFor') && tyre.recommendedFor && (
+          <p className="text-[10px] text-gray-400 mb-3 italic">Recommended for: {tyre.recommendedFor}</p>
+        )}
 
         {/* Price */}
         <div className="mt-auto">
@@ -172,14 +182,14 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
             <span className="font-display text-2xl font-extrabold text-bright-snow">£{getUnitPrice(tyre, quantity).toFixed(2)}</span>
             <span className="text-gray-500 text-xs">/ tyre</span>
           </div>
-          {tyre.price4 !== undefined && (
+          {show('multiBuy') && tyre.price4 !== undefined && (
             <div className={`text-[11px] font-bold mb-3 ${quantity >= 4 ? 'text-emerald-400' : 'text-gray-400'}`}>
               {quantity >= 4
                 ? `✓ Multi-buy price applied (was £${tyre.price.toFixed(2)})`
                 : `Buy 4+ for £${tyre.price4.toFixed(2)} each`}
             </div>
           )}
-          {tyre.price4 === undefined && <div className="mb-3" />}
+          {(!show('multiBuy') || tyre.price4 === undefined) && <div className="mb-3" />}
 
           {/* Quantity + Add */}
           <div className="flex gap-2 items-center">

@@ -2,11 +2,11 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Tyre, Booking } from '../types';
 import { TYRE_DATABASE } from '../data';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
-import { Trash2, Edit, Plus, Package, Calendar, CheckCircle, XCircle, Clock, ShieldCheck, Users, Download, AlertTriangle, Tag, TrendingUp, BarChart3, FileText, CreditCard, MessageSquare, Settings, FlaskConical, Zap, LogOut, Lock, Loader2, X, Check, Search, Upload, ChevronUp, ChevronDown } from 'lucide-react';
+import { Trash2, Edit, Plus, Package, Calendar, CheckCircle, XCircle, Clock, ShieldCheck, Users, Download, AlertTriangle, Tag, TrendingUp, BarChart3, FileText, CreditCard, MessageSquare, Settings, FlaskConical, Zap, LogOut, Lock, Loader2, X, Check, Search, Upload, ChevronUp, ChevronDown, Disc } from 'lucide-react';
 import { SkeletonRow, SkeletonStatCard } from './Skeleton';
 import { getStripeMode, setStripeMode, type StripeMode } from '../paymentSettings';
 import { isAdminAuthed, adminLogin, adminLogout, getCurrentAdminUser, hasPermission, type AdminPermission, STAFF_USERS, ALL_PERMISSIONS } from '../adminAuth';
-import { useSupabase } from '../contexts/SupabaseContext';
+import { useSupabase, ALL_TYRE_DISPLAY_FIELDS, DEFAULT_TYRE_DISPLAY_FIELDS, type TyreDisplayField } from '../contexts/SupabaseContext';
 
 interface AdminPanelProps {
   bookings: Booking[];
@@ -29,7 +29,7 @@ interface Staff {
 }
 
 export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProps) {
-  const { stockManagementEnabled, setStockManagementEnabled: setStockManagementSupabase, maintenanceMode, setMaintenanceMode } = useSupabase();
+  const { stockManagementEnabled, setStockManagementEnabled: setStockManagementSupabase, maintenanceMode, setMaintenanceMode, tyreDisplayFields, setTyreDisplayFields } = useSupabase();
   const [authed, setAuthed] = useState(isAdminAuthed());
   const [currentAdminUser, setCurrentAdminUser] = useState(getCurrentAdminUser());
   const [loginUser, setLoginUser] = useState('');
@@ -2137,6 +2137,56 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   Maintenance mode is active. Customers cannot browse or place orders.
                 </div>
               )}
+            </div>
+
+            {/* Tyre Display Fields */}
+            <div className="bg-black/50 rounded-lg p-5 border border-white/5">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-racing-red/20 rounded-lg flex items-center justify-center border border-racing-red/30">
+                  <Disc className="w-5 h-5 text-racing-red" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-bright-snow">Tyre Card Display Fields</h4>
+                  <p className="text-xs text-gray-400 mt-0.5">Choose what information is shown on tyre cards in the shop. Width, profile, and rim are always shown.</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                {ALL_TYRE_DISPLAY_FIELDS.map(field => {
+                  const enabled = tyreDisplayFields.includes(field.key);
+                  return (
+                    <button
+                      key={field.key}
+                      onClick={() => {
+                        const next = enabled
+                          ? tyreDisplayFields.filter(f => f !== field.key)
+                          : [...tyreDisplayFields, field.key];
+                        setTyreDisplayFields(next);
+                      }}
+                      className={`flex items-start gap-3 p-3 rounded-xl border text-left transition ${
+                        enabled
+                          ? 'bg-racing-red/10 border-racing-red/30'
+                          : 'bg-black/40 border-white/5 hover:border-white/10'
+                      }`}
+                    >
+                      <div className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5 ${
+                        enabled ? 'bg-racing-red text-white' : 'bg-white/5 border border-white/10'
+                      }`}>
+                        {enabled && <Check className="w-3.5 h-3.5" />}
+                      </div>
+                      <div>
+                        <p className={`text-sm font-bold ${enabled ? 'text-bright-snow' : 'text-gray-400'}`}>{field.label}</p>
+                        <p className="text-[11px] text-gray-500 mt-0.5">{field.description}</p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+              <button
+                onClick={() => setTyreDisplayFields(DEFAULT_TYRE_DISPLAY_FIELDS)}
+                className="mt-4 text-xs font-bold text-gray-400 hover:text-bright-snow transition"
+              >
+                Reset to defaults
+              </button>
             </div>
 
             {/* Stripe Mode Toggle */}

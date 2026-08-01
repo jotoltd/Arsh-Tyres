@@ -4,6 +4,34 @@ import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { TYRE_DATABASE } from '../data';
 import { Tyre, CartItem, Booking } from '../types';
 
+export type TyreDisplayField =
+  | 'speedLoad'
+  | 'euLabel'
+  | 'runflatBadge'
+  | 'reinforcedBadge'
+  | 'categoryBadge'
+  | 'multiBuy'
+  | 'recommendedFor';
+
+export const DEFAULT_TYRE_DISPLAY_FIELDS: TyreDisplayField[] = [
+  'speedLoad',
+  'euLabel',
+  'runflatBadge',
+  'reinforcedBadge',
+  'categoryBadge',
+  'multiBuy',
+];
+
+export const ALL_TYRE_DISPLAY_FIELDS: { key: TyreDisplayField; label: string; description: string }[] = [
+  { key: 'speedLoad', label: 'Speed & Load Index', description: 'Shows speed rating and load index (e.g. 91V)' },
+  { key: 'euLabel', label: 'EU Tyre Label', description: 'Fuel efficiency, wet grip, and noise level ratings' },
+  { key: 'runflatBadge', label: 'Runflat Badge', description: 'Shows a badge if the tyre is runflat' },
+  { key: 'reinforcedBadge', label: 'Reinforced Badge', description: 'Shows a badge if the tyre is reinforced (XL)' },
+  { key: 'categoryBadge', label: 'Category Badge', description: 'Shows the tyre category (Standard/Runflat/Commercial)' },
+  { key: 'multiBuy', label: 'Multi-Buy Price', description: 'Shows discounted price when buying 4+ tyres' },
+  { key: 'recommendedFor', label: 'Recommended For', description: 'Shows what vehicles/conditions the tyre is recommended for' },
+];
+
 interface SupabaseContextType {
   session: Session | null;
   user: User | null;
@@ -27,6 +55,8 @@ interface SupabaseContextType {
   setStockManagementEnabled: (enabled: boolean) => Promise<void>;
   maintenanceMode: boolean;
   setMaintenanceMode: (enabled: boolean) => Promise<void>;
+  tyreDisplayFields: TyreDisplayField[];
+  setTyreDisplayFields: (fields: TyreDisplayField[]) => Promise<void>;
   settingsLoading: boolean;
 }
 
@@ -98,6 +128,7 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
   const [bookings, setBookingsState] = useState<Booking[]>([]);
   const [stockManagementEnabled, setStockManagementEnabledState] = useState(false);
   const [maintenanceMode, setMaintenanceModeState] = useState(false);
+  const [tyreDisplayFields, setTyreDisplayFieldsState] = useState<TyreDisplayField[]>(DEFAULT_TYRE_DISPLAY_FIELDS);
   const [settingsLoading, setSettingsLoading] = useState(false);
 
   const configured = isSupabaseConfigured();
@@ -176,6 +207,10 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
           setStockManagementEnabledState(stockEnabled);
           const maintMode = settingsMap['maintenance_mode'] === 'true';
           setMaintenanceModeState(maintMode);
+          try {
+            const fields = JSON.parse(settingsMap['tyre_display_fields'] || 'null');
+            if (Array.isArray(fields)) setTyreDisplayFieldsState(fields);
+          } catch { /* keep defaults */ }
         }
         setSettingsLoading(false);
       });
@@ -226,6 +261,30 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
       await supabase
         .from('settings')
         .insert({ key: 'maintenance_mode', value: String(enabled) });
+    }
+  }, [configured]);
+
+  const setTyreDisplayFields = useCallback(async (fields: TyreDisplayField[]) => {
+    setTyreDisplayFieldsState(fields);
+
+    if (!configured) return;
+
+    const json = JSON.stringify(fields);
+    const { data: existing } = await supabase
+      .from('settings')
+      .select('id')
+      .eq('key', 'tyre_display_fields')
+      .single();
+
+    if (existing) {
+      await supabase
+        .from('settings')
+        .update({ value: json, updated_at: new Date().toISOString() })
+        .eq('key', 'tyre_display_fields');
+    } else {
+      await supabase
+        .from('settings')
+        .insert({ key: 'tyre_display_fields', value: json });
     }
   }, [configured]);
 
@@ -466,6 +525,8 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
         setStockManagementEnabled,
         maintenanceMode,
         setMaintenanceMode,
+        tyreDisplayFields,
+        setTyreDisplayFields,
         settingsLoading,
       }}
     >
