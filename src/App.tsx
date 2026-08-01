@@ -73,14 +73,6 @@ export default function App() {
     tyresError
   } = useSupabase();
 
-  // Auth UI state
-  const [showAuth, setShowAuth] = useState(false);
-  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
-  const [authEmail, setAuthEmail] = useState('');
-  const [authPassword, setAuthPassword] = useState('');
-  const [authError, setAuthError] = useState('');
-  const [authLoading, setAuthLoading] = useState(false);
-
   // Cart operations
   const handleAddToCart = (tyre: Tyre, quantity: number) => {
     const updated = [...cartItems];
@@ -161,6 +153,17 @@ export default function App() {
 
     // Clear cart
     setCartItems([]);
+
+    // Auto-create a Supabase account for the customer so they can log in later
+    // Uses a random password — Supabase sends a confirmation email to set their own password
+    if (bookingData.customerEmail) {
+      const tempPassword = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+      signUp(bookingData.customerEmail, tempPassword).then(({ error }) => {
+        if (error && !error.message.toLowerCase().includes('already')) {
+          console.error('Auto account creation failed:', error.message);
+        }
+      });
+    }
 
     // Open receipt modal / show confirmed state
     setLastConfirmedBooking(newBooking);
@@ -378,7 +381,7 @@ export default function App() {
               </div>
             ) : (
               <button
-                onClick={() => { setAuthMode('signin'); setShowAuth(true); setAuthError(''); }}
+                onClick={() => { navigate('/'); setActiveTab('account'); setLastConfirmedBooking(null); }}
                 className="flex items-center gap-1.5 text-xs font-bold text-bright-snow bg-racing-red hover:bg-racing-red/90 px-3 py-2 rounded-lg transition"
               >
                 <User className="w-3.5 h-3.5" />
@@ -408,101 +411,6 @@ export default function App() {
         </div>
       )}
 
-      {/* Auth Modal */}
-      {showAuth && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="bg-[#1e2121] border border-white/10 rounded-2xl p-6 w-full max-w-md shadow-2xl">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-display font-bold text-lg text-bright-snow">
-                {authMode === 'signin' ? 'Sign In' : 'Create Account'}
-              </h3>
-              <button
-                onClick={() => setShowAuth(false)}
-                className="text-gray-400 hover:text-bright-snow transition"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault();
-                setAuthError('');
-                setAuthLoading(true);
-                const { error } = authMode === 'signin'
-                  ? await signIn(authEmail, authPassword)
-                  : await signUp(authEmail, authPassword);
-                setAuthLoading(false);
-                if (error) {
-                  setAuthError(error.message);
-                } else {
-                  setShowAuth(false);
-                }
-              }}
-              className="space-y-4"
-            >
-              <div>
-                <label className="block text-xs uppercase font-bold text-gray-400 mb-1">Email</label>
-                <input
-                  type="email"
-                  value={authEmail}
-                  onChange={(e) => setAuthEmail(e.target.value)}
-                  required
-                  className="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-bright-snow focus:outline-none focus:border-racing-red"
-                />
-              </div>
-              <div>
-                <label className="block text-xs uppercase font-bold text-gray-400 mb-1">Password</label>
-                <input
-                  type="password"
-                  value={authPassword}
-                  onChange={(e) => setAuthPassword(e.target.value)}
-                  required
-                  minLength={6}
-                  className="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-bright-snow focus:outline-none focus:border-racing-red"
-                />
-              </div>
-
-              {authError && (
-                <div className="text-racing-red text-xs font-semibold">{authError}</div>
-              )}
-
-              <button
-                type="submit"
-                disabled={authLoading}
-                className="w-full bg-racing-red hover:bg-racing-red/90 disabled:opacity-50 text-bright-snow font-bold text-sm py-2.5 rounded-lg transition"
-              >
-                {authLoading ? 'Please wait…' : (authMode === 'signin' ? 'Sign In' : 'Sign Up')}
-              </button>
-            </form>
-
-            <div className="mt-4 text-center text-xs text-gray-400">
-              {authMode === 'signin' ? (
-                <>
-                  No account?{' '}
-                  <button
-                    onClick={() => setAuthMode('signup')}
-                    className="text-racing-red font-bold hover:underline"
-                  >
-                    Sign up
-                  </button>
-                </>
-              ) : (
-                <>
-                  Already have an account?{' '}
-                  <button
-                    onClick={() => setAuthMode('signin')}
-                    className="text-racing-red font-bold hover:underline"
-                  >
-                    Sign in
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Main Body Grid */}
       <main className="w-full px-4 sm:px-6 lg:px-8 py-8">
         <Routes>
@@ -524,6 +432,10 @@ export default function App() {
                     <p className="text-gray-400 text-sm w-full">
                       Thank you for choosing Arsh Autos! We have secured your selected tyres. A receipt and calendar invitation have been registered in your system files.
                     </p>
+                    <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3 text-xs text-emerald-300 font-semibold inline-flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 shrink-0" />
+                      We've created an account for you. Check your email to set your password and view your order history.
+                    </div>
                     {/* Receipt Quick Info Card */}
                     <div className="bg-black border border-white/10 rounded-2xl p-5 text-left divide-y divide-white/10 w-full text-xs space-y-3.5">
                       <div className="flex justify-between items-center pb-2">

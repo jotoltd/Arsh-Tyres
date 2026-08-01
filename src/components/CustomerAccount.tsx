@@ -13,8 +13,7 @@ interface CustomerAccountProps {
 }
 
 export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
-  const { user, bookings, signIn, signUp, signOut } = useSupabase();
-  const [mode, setMode] = useState<'signin' | 'signup'>('signin');
+  const { user, bookings, signIn, signOut } = useSupabase();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -40,9 +39,7 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
     e.preventDefault();
     setError('');
     setLoading(true);
-    const { error } = mode === 'signin'
-      ? await signIn(email, password)
-      : await signUp(email, password);
+    const { error } = await signIn(email, password);
     setLoading(false);
     if (error) setError(error.message);
   };
@@ -74,7 +71,7 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
             </div>
             <h2 className="font-display font-extrabold text-bright-snow text-2xl">My Account</h2>
             <p className="text-gray-400 text-sm mt-1">
-              {mode === 'signin' ? 'Sign in to view your orders and bookings' : 'Create an account to track orders and bookings'}
+              Sign in to view your orders and bookings
             </p>
           </div>
 
@@ -118,19 +115,11 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
               className="w-full flex items-center justify-center gap-2 bg-racing-red hover:bg-racing-red/90 text-bright-snow font-extrabold text-sm px-5 py-3 rounded-xl transition shadow-lg shadow-racing-red/30 disabled:opacity-50"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <User className="w-4 h-4" />}
-              {mode === 'signin' ? 'Sign In' : 'Create Account'}
+              Sign In
             </button>
 
-            <div className="text-center text-xs text-gray-400">
-              {mode === 'signin' ? (
-                <>Don't have an account?{' '}
-                  <button type="button" onClick={() => { setMode('signup'); setError(''); }} className="text-racing-red font-bold hover:underline">Sign up</button>
-                </>
-              ) : (
-                <>Already have an account?{' '}
-                  <button type="button" onClick={() => { setMode('signin'); setError(''); }} className="text-racing-red font-bold hover:underline">Sign in</button>
-                </>
-              )}
+            <div className="text-center text-xs text-gray-400 pt-2">
+              No account yet? An account is created automatically when you place your first order. Check your email for a password setup link after checkout.
             </div>
           </form>
         </div>
