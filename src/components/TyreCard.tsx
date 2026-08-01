@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Tyre } from '../types';
 import { getUnitPrice } from '../data';
 import { ShoppingBag, ShieldCheck, Truck, Layers, Disc, Wrench, Check, Gauge } from 'lucide-react';
+import { isStockManagementEnabled } from '../stockSettings';
 
 interface TyreCardProps {
   tyre: Tyre;
@@ -84,11 +85,21 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
           {tyre.category}
         </span>
         {/* Stock badge */}
-        <span className={`absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm ${
-          tyre.stock > 8 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-racing-red/20 text-racing-red border border-racing-red/30'
-        }`}>
-          {tyre.stock > 8 ? 'In stock' : `Only ${tyre.stock} left`}
-        </span>
+        {(() => {
+          const stockOn = isStockManagementEnabled();
+          if (!stockOn) return (
+            <span className="absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+              In stock
+            </span>
+          );
+          return (
+            <span className={`absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm ${
+              tyre.stock > 8 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-racing-red/20 text-racing-red border border-racing-red/30'
+            }`}>
+              {tyre.stock > 8 ? 'In stock' : `Only ${tyre.stock} left`}
+            </span>
+          );
+        })()}
       </div>
 
       {/* Card Body */}
@@ -155,9 +166,9 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
               </button>
               <span className="px-3 font-mono font-bold text-sm text-bright-snow">{quantity}</span>
               <button
-                onClick={() => setQuantity(prev => Math.min(tyre.stock, prev + 1))}
+                onClick={() => setQuantity(prev => isStockManagementEnabled() ? Math.min(tyre.stock, prev + 1) : prev + 1)}
                 className="px-3 py-1 hover:bg-white/5 font-bold text-gray-400 transition disabled:opacity-30"
-                disabled={quantity >= tyre.stock}
+                disabled={isStockManagementEnabled() && quantity >= tyre.stock}
               >
                 +
               </button>

@@ -6,6 +6,7 @@ import { Trash2, Edit, Plus, Package, Calendar, CheckCircle, XCircle, Clock, Shi
 import { SkeletonRow, SkeletonStatCard } from './Skeleton';
 import { getStripeMode, setStripeMode, type StripeMode } from '../paymentSettings';
 import { isAdminAuthed, adminLogin, adminLogout } from '../adminAuth';
+import { isStockManagementEnabled, setStockManagementEnabled } from '../stockSettings';
 
 interface AdminPanelProps {
   bookings: Booking[];
@@ -68,12 +69,19 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
   const [invSort, setInvSort] = useState<'brand' | 'stock-low' | 'price-high' | 'size'>('brand');
 
   const [stripeMode, setStripeModeState] = useState<StripeMode>(getStripeMode());
+  const [stockManagementEnabled, setStockManagementEnabledState] = useState(isStockManagementEnabled());
   const configured = isSupabaseConfigured();
 
   const handleToggleStripeMode = () => {
     const newMode = stripeMode === 'test' ? 'live' : 'test';
     setStripeMode(newMode);
     setStripeModeState(newMode);
+  };
+
+  const handleToggleStockManagement = () => {
+    const newVal = !stockManagementEnabled;
+    setStockManagementEnabled(newVal);
+    setStockManagementEnabledState(newVal);
   };
 
   const handleLogin = () => {
@@ -710,7 +718,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
           </div>
 
           {/* Low Stock Alerts */}
-          {stats.lowStockItems.length > 0 && (
+          {stockManagementEnabled && stats.lowStockItems.length > 0 && (
             <div className="bg-black rounded-2xl border border-racing-red/30 shadow-xl overflow-hidden">
               <div className="p-4 bg-racing-red/10 border-b border-racing-red/20 flex items-center gap-3">
                 <div className="w-10 h-10 bg-racing-red/20 rounded-lg flex items-center justify-center border border-racing-red/30">
@@ -752,7 +760,10 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                 </div>
                 <div>
                   <h3 className="font-display font-extrabold text-bright-snow text-xl">Inventory Management</h3>
-                  <p className="text-xs text-gray-400 mt-0.5">{inventory.length} tyres in stock across {new Set(inventory.map(t => t.brand)).size} brands</p>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    {inventory.length} tyres across {new Set(inventory.map(t => t.brand)).size} brands
+                    {!stockManagementEnabled && <span className="text-emerald-400 font-bold"> — Unlimited stock</span>}
+                  </p>
                 </div>
               </div>
               <div className="flex gap-2 flex-wrap">
@@ -791,15 +802,15 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             <div className="grid grid-cols-3 gap-3 mb-4">
               <div className="bg-[#1e2121] rounded-lg px-4 py-2.5 border border-white/5">
                 <p className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Total Units</p>
-                <p className="text-lg font-extrabold text-bright-snow">{inventory.reduce((s, t) => s + t.stock, 0)}</p>
+                <p className="text-lg font-extrabold text-bright-snow">{stockManagementEnabled ? inventory.reduce((s, t) => s + t.stock, 0) : '∞'}</p>
               </div>
-              <div className="bg-yellow-500/10 rounded-lg px-4 py-2.5 border border-yellow-500/20">
-                <p className="text-[10px] uppercase text-yellow-400 font-bold tracking-wider">Low Stock</p>
-                <p className="text-lg font-extrabold text-yellow-400">{inventory.filter(t => t.stock > 0 && t.stock <= 4).length}</p>
+              <div className={`rounded-lg px-4 py-2.5 border ${stockManagementEnabled ? 'bg-yellow-500/10 border-yellow-500/20' : 'bg-[#1e2121] border-white/5'}`}>
+                <p className={`text-[10px] uppercase font-bold tracking-wider ${stockManagementEnabled ? 'text-yellow-400' : 'text-gray-400'}`}>Low Stock</p>
+                <p className={`text-lg font-extrabold ${stockManagementEnabled ? 'text-yellow-400' : 'text-gray-500'}`}>{stockManagementEnabled ? inventory.filter(t => t.stock > 0 && t.stock <= 4).length : '—'}</p>
               </div>
-              <div className="bg-racing-red/10 rounded-lg px-4 py-2.5 border border-racing-red/20">
-                <p className="text-[10px] uppercase text-racing-red font-bold tracking-wider">Out of Stock</p>
-                <p className="text-lg font-extrabold text-racing-red">{inventory.filter(t => t.stock === 0).length}</p>
+              <div className={`rounded-lg px-4 py-2.5 border ${stockManagementEnabled ? 'bg-racing-red/10 border-racing-red/20' : 'bg-[#1e2121] border-white/5'}`}>
+                <p className={`text-[10px] uppercase font-bold tracking-wider ${stockManagementEnabled ? 'text-racing-red' : 'text-gray-400'}`}>Out of Stock</p>
+                <p className={`text-lg font-extrabold ${stockManagementEnabled ? 'text-racing-red' : 'text-gray-500'}`}>{stockManagementEnabled ? inventory.filter(t => t.stock === 0).length : '—'}</p>
               </div>
             </div>
 
@@ -821,7 +832,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                 className="bg-[#1e2121] border border-white/10 text-bright-snow rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-racing-red"
               >
                 <option value="brand">Sort: Brand A-Z</option>
-                <option value="stock-low">Sort: Low Stock First</option>
+                {stockManagementEnabled && <option value="stock-low">Sort: Low Stock First</option>}
                 <option value="price-high">Sort: Price High-Low</option>
                 <option value="size">Sort: By Size</option>
               </select>
@@ -979,7 +990,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Model</th>
                   <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Size</th>
                   <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Category</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Stock</th>
+                  {stockManagementEnabled && <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Stock</th>}
                   <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Price</th>
                   <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Actions</th>
                 </tr>
@@ -1005,7 +1016,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   if (filtered.length === 0) {
                     return (
                       <tr>
-                        <td colSpan={7} className="px-6 py-12 text-center text-gray-500 text-sm">
+                        <td colSpan={stockManagementEnabled ? 7 : 6} className="px-6 py-12 text-center text-gray-500 text-sm">
                           No tyres match your search.
                         </td>
                       </tr>
@@ -1026,22 +1037,24 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                             'bg-white/5 text-gray-400'
                           }`}>{tyre.category}</span>
                         </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="number"
-                              value={tyre.stock}
-                              onChange={(e) => handleUpdateStock(tyre.id, parseInt(e.target.value) || 0)}
-                              className={`w-16 bg-[#1e2121] border rounded px-2 py-1 text-sm focus:outline-none ${
-                                stockStatus === 'out' ? 'border-racing-red/50 text-racing-red' :
-                                stockStatus === 'low' ? 'border-yellow-500/50 text-yellow-400' :
-                                'border-white/10 text-bright-snow'
-                              } focus:border-racing-red`}
-                            />
-                            {stockStatus === 'out' && <span className="text-[10px] font-bold text-racing-red">OUT</span>}
-                            {stockStatus === 'low' && <span className="text-[10px] font-bold text-yellow-400">LOW</span>}
-                          </div>
-                        </td>
+                        {stockManagementEnabled && (
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="number"
+                                value={tyre.stock}
+                                onChange={(e) => handleUpdateStock(tyre.id, parseInt(e.target.value) || 0)}
+                                className={`w-16 bg-[#1e2121] border rounded px-2 py-1 text-sm focus:outline-none ${
+                                  stockStatus === 'out' ? 'border-racing-red/50 text-racing-red' :
+                                  stockStatus === 'low' ? 'border-yellow-500/50 text-yellow-400' :
+                                  'border-white/10 text-bright-snow'
+                                } focus:border-racing-red`}
+                              />
+                              {stockStatus === 'out' && <span className="text-[10px] font-bold text-racing-red">OUT</span>}
+                              {stockStatus === 'low' && <span className="text-[10px] font-bold text-yellow-400">LOW</span>}
+                            </div>
+                          </td>
+                        )}
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-1">
                             <span className="text-gray-500 text-sm">£</span>
@@ -1616,6 +1629,39 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             <h3 className="font-display font-bold text-bright-snow text-lg">Settings</h3>
           </div>
           <div className="p-6 space-y-6">
+            {/* Stock Management Toggle */}
+            <div className="bg-black/50 rounded-lg p-5 border border-white/5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center border ${stockManagementEnabled ? 'bg-racing-red/20 border-racing-red/30' : 'bg-emerald-500/20 border-emerald-500/30'}`}>
+                    <Package className={`w-5 h-5 ${stockManagementEnabled ? 'text-racing-red' : 'text-emerald-400'}`} />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-bright-snow">Stock Management</h4>
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      {stockManagementEnabled
+                        ? 'Stock levels are tracked. Low/out of stock alerts are active.'
+                        : 'All stock is unlimited. No stock tracking or limits applied.'}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleToggleStockManagement}
+                  className={`relative w-14 h-7 rounded-full transition shrink-0 ${
+                    stockManagementEnabled ? 'bg-racing-red' : 'bg-emerald-500'
+                  }`}
+                >
+                  <span className={`absolute top-0.5 w-6 h-6 bg-white rounded-full transition-all ${stockManagementEnabled ? 'left-7' : 'left-0.5'}`} />
+                </button>
+              </div>
+              {!stockManagementEnabled && (
+                <div className="mt-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3 text-xs text-emerald-400 font-semibold flex items-center gap-2">
+                  <Check className="w-4 h-4 shrink-0" />
+                  Unlimited stock mode — customers can order any quantity without restrictions.
+                </div>
+              )}
+            </div>
+
             {/* Stripe Mode Toggle */}
             <div className="bg-black/50 rounded-lg p-5 border border-white/5">
               <div className="flex items-center justify-between mb-4">
