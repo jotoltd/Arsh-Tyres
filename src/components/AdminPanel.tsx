@@ -5,7 +5,7 @@ import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { Trash2, Edit, Plus, Package, Calendar, CheckCircle, XCircle, Clock, ShieldCheck, Users, Download, AlertTriangle, Tag, TrendingUp, BarChart3, FileText, CreditCard, MessageSquare, Settings, FlaskConical, Zap, LogOut, Lock, Loader2, X, Check, Search, Upload, ChevronUp, ChevronDown } from 'lucide-react';
 import { SkeletonRow, SkeletonStatCard } from './Skeleton';
 import { getStripeMode, setStripeMode, type StripeMode } from '../paymentSettings';
-import { isAdminAuthed, adminLogin, adminLogout } from '../adminAuth';
+import { isAdminAuthed, adminLogin, adminLogout, getCurrentAdminUser, hasPermission, type AdminPermission, STAFF_USERS, ALL_PERMISSIONS } from '../adminAuth';
 import { useSupabase } from '../contexts/SupabaseContext';
 
 interface AdminPanelProps {
@@ -31,6 +31,7 @@ interface Staff {
 export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProps) {
   const { stockManagementEnabled, setStockManagementEnabled: setStockManagementSupabase, maintenanceMode, setMaintenanceMode } = useSupabase();
   const [authed, setAuthed] = useState(isAdminAuthed());
+  const [currentAdminUser, setCurrentAdminUser] = useState(getCurrentAdminUser());
   const [loginUser, setLoginUser] = useState('');
   const [loginPass, setLoginPass] = useState('');
   const [loginError, setLoginError] = useState('');
@@ -105,6 +106,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
   const handleLogin = () => {
     if (adminLogin(loginUser, loginPass)) {
       setAuthed(true);
+      setCurrentAdminUser(getCurrentAdminUser());
       setLoginError('');
       setLoginUser('');
       setLoginPass('');
@@ -116,6 +118,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
   const handleLogout = () => {
     adminLogout();
     setAuthed(false);
+    setCurrentAdminUser(null);
   };
 
   // Load inventory from Supabase
@@ -537,12 +540,22 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
       {/* Admin Header */}
       <div className="bg-black rounded-2xl p-6 border border-white/5 shadow-xl shadow-[0_0_40px_rgba(239,18,25,0.2)]">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
-          <h2 className="font-display font-extrabold text-3xl text-bright-snow flex items-center gap-3">
-            <div className="w-12 h-12 bg-racing-red/20 rounded-xl flex items-center justify-center border border-racing-red/30">
-              <ShieldCheck className="w-6 h-6 text-racing-red" />
-            </div>
-            Admin Dashboard
-          </h2>
+          <div className="flex items-center gap-3">
+            <h2 className="font-display font-extrabold text-3xl text-bright-snow flex items-center gap-3">
+              <div className="w-12 h-12 bg-racing-red/20 rounded-xl flex items-center justify-center border border-racing-red/30">
+                <ShieldCheck className="w-6 h-6 text-racing-red" />
+              </div>
+              Admin Dashboard
+            </h2>
+            {currentAdminUser && (
+              <div className="flex items-center gap-2 ml-2">
+                <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full ${currentAdminUser.role === 'admin' ? 'bg-racing-red/20 text-racing-red border border-racing-red/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'}`}>
+                {currentAdminUser.role}
+                </span>
+                <span className="text-sm font-bold text-bright-snow">{currentAdminUser.name}</span>
+              </div>
+            )}
+          </div>
           <button
             onClick={handleLogout}
             className="flex items-center gap-1.5 px-4 py-2 text-sm font-bold rounded-lg bg-[#1e2121] border border-white/5 text-gray-400 hover:text-racing-red hover:border-racing-red/30 transition"
@@ -554,6 +567,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
 
         {/* Navigation Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {hasPermission('dashboard') && (
           <button
             onClick={() => setActiveSection('dashboard')}
             className={`px-4 py-3 text-sm font-bold rounded-xl transition flex items-center gap-2 ${
@@ -565,6 +579,8 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             <TrendingUp className="w-4 h-4" />
             Dashboard
           </button>
+          )}
+          {hasPermission('inventory') && (
           <button
             onClick={() => setActiveSection('inventory')}
             className={`px-4 py-3 text-sm font-bold rounded-xl transition flex items-center gap-2 ${
@@ -576,6 +592,8 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             <Package className="w-4 h-4" />
             Inventory
           </button>
+          )}
+          {hasPermission('bookings') && (
           <button
             onClick={() => setActiveSection('bookings')}
             className={`px-4 py-3 text-sm font-bold rounded-xl transition flex items-center gap-2 ${
@@ -587,6 +605,8 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             <Calendar className="w-4 h-4" />
             Bookings
           </button>
+          )}
+          {hasPermission('customers') && (
           <button
             onClick={() => setActiveSection('customers')}
             className={`px-4 py-3 text-sm font-bold rounded-xl transition flex items-center gap-2 ${
@@ -598,6 +618,8 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             <Users className="w-4 h-4" />
             Customers
           </button>
+          )}
+          {hasPermission('promos') && (
           <button
             onClick={() => setActiveSection('promos')}
             className={`px-4 py-3 text-sm font-bold rounded-xl transition flex items-center gap-2 ${
@@ -609,6 +631,8 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             <Tag className="w-4 h-4" />
             Promos
           </button>
+          )}
+          {hasPermission('schedule') && (
           <button
             onClick={() => setActiveSection('schedule')}
             className={`px-4 py-3 text-sm font-bold rounded-xl transition flex items-center gap-2 ${
@@ -620,6 +644,8 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             <Calendar className="w-4 h-4" />
             Schedule
           </button>
+          )}
+          {hasPermission('staff') && (
           <button
             onClick={() => setActiveSection('staff')}
             className={`px-4 py-3 text-sm font-bold rounded-xl transition flex items-center gap-2 ${
@@ -631,6 +657,8 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             <Users className="w-4 h-4" />
             Staff
           </button>
+          )}
+          {hasPermission('reports') && (
           <button
             onClick={() => setActiveSection('reports')}
             className={`px-4 py-3 text-sm font-bold rounded-xl transition flex items-center gap-2 ${
@@ -642,6 +670,8 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             <BarChart3 className="w-4 h-4" />
             Reports
           </button>
+          )}
+          {hasPermission('settings') && (
           <button
             onClick={() => setActiveSection('settings')}
             className={`px-4 py-3 text-sm font-bold rounded-xl transition flex items-center gap-2 ${
@@ -653,6 +683,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             <Settings className="w-4 h-4" />
             Settings
           </button>
+          )}
         </div>
       </div>
 
@@ -1832,77 +1863,140 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
         </div>
       )}
 
-      {/* Staff Section */}
+      {/* Staff Section — Admin Users with credentials & permissions */}
       {activeSection === 'staff' && (
-        <div className="carbon-fiber rounded-2xl border border-white/5 shadow-xl overflow-hidden">
-          <div className="p-6 border-b border-white/5 flex items-center justify-between">
-            <h3 className="font-display font-bold text-bright-snow text-lg">Staff Management</h3>
-            <button 
-              onClick={handleAddStaff}
-              className="inline-flex items-center gap-2 bg-racing-red hover:bg-racing-red/90 text-bright-snow font-semibold text-sm px-4 py-2 rounded-lg transition shadow-md"
-            >
-              <Plus className="w-4 h-4" />
-              Add Staff
-            </button>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-black/50">
-                <tr>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Name</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Role</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Email</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Phone</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {staff.map((member) => (
-                  <tr key={member.id} className="hover:bg-white/5 transition">
-                    <td className="px-6 py-4">
-                      <input
-                        type="text"
-                        value={member.name}
-                        onChange={(e) => handleUpdateStaff(member.id, 'name', e.target.value)}
-                        className="w-full bg-[#1e2121] border border-white/10 text-bright-snow rounded px-2 py-1 text-sm focus:outline-none focus:border-racing-red"
-                      />
-                    </td>
-                    <td className="px-6 py-4">
-                      <input
-                        type="text"
-                        value={member.role}
-                        onChange={(e) => handleUpdateStaff(member.id, 'role', e.target.value)}
-                        className="w-full bg-[#1e2121] border border-white/10 text-bright-snow rounded px-2 py-1 text-sm focus:outline-none focus:border-racing-red"
-                      />
-                    </td>
-                    <td className="px-6 py-4">
-                      <input
-                        type="email"
-                        value={member.email}
-                        onChange={(e) => handleUpdateStaff(member.id, 'email', e.target.value)}
-                        className="w-full bg-[#1e2121] border border-white/10 text-bright-snow rounded px-2 py-1 text-sm focus:outline-none focus:border-racing-red"
-                      />
-                    </td>
-                    <td className="px-6 py-4">
-                      <input
-                        type="text"
-                        value={member.phone}
-                        onChange={(e) => handleUpdateStaff(member.id, 'phone', e.target.value)}
-                        className="w-full bg-[#1e2121] border border-white/10 text-bright-snow rounded px-2 py-1 text-sm focus:outline-none focus:border-racing-red"
-                      />
-                    </td>
-                    <td className="px-6 py-4">
-                      <button
-                        onClick={() => handleDeleteStaff(member.id)}
-                        className="p-2 text-gray-400 hover:text-racing-red hover:bg-racing-red/10 rounded-lg transition"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </td>
+        <div className="space-y-6">
+          {/* Admin Users */}
+          <div className="carbon-fiber rounded-2xl border border-white/5 shadow-xl overflow-hidden">
+            <div className="p-6 border-b border-white/5">
+              <h3 className="font-display font-bold text-bright-snow text-lg">Admin Users</h3>
+              <p className="text-xs text-gray-400 mt-1">Users with access to the admin panel. Credentials and permissions are managed in code.</p>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-black/50">
+                  <tr>
+                    <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Name</th>
+                    <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Username</th>
+                    <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Email</th>
+                    <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Role</th>
+                    <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Permissions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {STAFF_USERS.map((user) => (
+                    <tr key={user.username} className="hover:bg-white/5 transition">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center border ${user.role === 'admin' ? 'bg-racing-red/20 border-racing-red/30' : 'bg-blue-500/20 border-blue-500/30'}`}>
+                            <ShieldCheck className={`w-4 h-4 ${user.role === 'admin' ? 'text-racing-red' : 'text-blue-400'}`} />
+                          </div>
+                          <span className="text-sm font-bold text-bright-snow">{user.name}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-gray-300 font-mono">{user.username}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-gray-400">{user.email || '—'}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full ${user.role === 'admin' ? 'bg-racing-red/20 text-racing-red border border-racing-red/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'}`}>
+                          {user.role}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-wrap gap-1 max-w-xs">
+                          {user.permissions.length === ALL_PERMISSIONS.length ? (
+                            <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">All Access</span>
+                          ) : (
+                            user.permissions.map(p => (
+                              <span key={p} className="text-[10px] font-bold text-gray-400 bg-white/5 border border-white/10 px-2 py-0.5 rounded-full">{p}</span>
+                            ))
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* General Staff Directory (from Supabase) */}
+          <div className="carbon-fiber rounded-2xl border border-white/5 shadow-xl overflow-hidden">
+            <div className="p-6 border-b border-white/5 flex items-center justify-between">
+              <div>
+                <h3 className="font-display font-bold text-bright-snow text-lg">Staff Directory</h3>
+                <p className="text-xs text-gray-400 mt-1">General staff contact info (no admin access)</p>
+              </div>
+              <button
+                onClick={handleAddStaff}
+                className="inline-flex items-center gap-2 bg-racing-red hover:bg-racing-red/90 text-bright-snow font-semibold text-sm px-4 py-2 rounded-lg transition shadow-md"
+              >
+                <Plus className="w-4 h-4" />
+                Add Staff
+              </button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-black/50">
+                  <tr>
+                    <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Name</th>
+                    <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Role</th>
+                    <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Email</th>
+                    <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Phone</th>
+                    <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {staff.map((member) => (
+                    <tr key={member.id} className="hover:bg-white/5 transition">
+                      <td className="px-6 py-4">
+                        <input
+                          type="text"
+                          value={member.name}
+                          onChange={(e) => handleUpdateStaff(member.id, 'name', e.target.value)}
+                          className="w-full bg-[#1e2121] border border-white/10 text-bright-snow rounded px-2 py-1 text-sm focus:outline-none focus:border-racing-red"
+                        />
+                      </td>
+                      <td className="px-6 py-4">
+                        <input
+                          type="text"
+                          value={member.role}
+                          onChange={(e) => handleUpdateStaff(member.id, 'role', e.target.value)}
+                          className="w-full bg-[#1e2121] border border-white/10 text-bright-snow rounded px-2 py-1 text-sm focus:outline-none focus:border-racing-red"
+                        />
+                      </td>
+                      <td className="px-6 py-4">
+                        <input
+                          type="email"
+                          value={member.email}
+                          onChange={(e) => handleUpdateStaff(member.id, 'email', e.target.value)}
+                          className="w-full bg-[#1e2121] border border-white/10 text-bright-snow rounded px-2 py-1 text-sm focus:outline-none focus:border-racing-red"
+                        />
+                      </td>
+                      <td className="px-6 py-4">
+                        <input
+                          type="text"
+                          value={member.phone}
+                          onChange={(e) => handleUpdateStaff(member.id, 'phone', e.target.value)}
+                          className="w-full bg-[#1e2121] border border-white/10 text-bright-snow rounded px-2 py-1 text-sm focus:outline-none focus:border-racing-red"
+                        />
+                      </td>
+                      <td className="px-6 py-4">
+                        <button
+                          onClick={() => handleDeleteStaff(member.id)}
+                          className="p-2 text-gray-400 hover:text-racing-red hover:bg-racing-red/10 rounded-lg transition"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
