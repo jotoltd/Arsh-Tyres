@@ -119,7 +119,7 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
             </button>
 
             <div className="text-center text-xs text-gray-400 pt-2">
-              No account yet? An account is created automatically when you place your first order. Check your email for a password setup link after checkout.
+              No account yet? An account is created automatically when you place your first order. We'll email you your login details.
             </div>
           </form>
         </div>

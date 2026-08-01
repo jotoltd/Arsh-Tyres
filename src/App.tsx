@@ -68,7 +68,6 @@ export default function App() {
     updateBookingStatus,
     user,
     signIn,
-    signUp,
     signOut,
     tyresError
   } = useSupabase();
@@ -154,15 +153,13 @@ export default function App() {
     // Clear cart
     setCartItems([]);
 
-    // Auto-create a Supabase account for the customer so they can log in later
-    // Uses a random password — Supabase sends a confirmation email to set their own password
+    // Auto-create a customer account via our API (bypasses Supabase's email, sends our own)
     if (bookingData.customerEmail) {
-      const tempPassword = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
-      signUp(bookingData.customerEmail, tempPassword).then(({ error }) => {
-        if (error && !error.message.toLowerCase().includes('already')) {
-          console.error('Auto account creation failed:', error.message);
-        }
-      });
+      fetch('/api/create-customer-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: bookingData.customerEmail }),
+      }).catch(err => console.error('Auto account creation failed:', err));
     }
 
     // Open receipt modal / show confirmed state
@@ -434,7 +431,7 @@ export default function App() {
                     </p>
                     <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3 text-xs text-emerald-300 font-semibold inline-flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 shrink-0" />
-                      We've created an account for you. Check your email to set your password and view your order history.
+                      We've created an account for you. Check your email for your login details to view your order history.
                     </div>
                     {/* Receipt Quick Info Card */}
                     <div className="bg-black border border-white/10 rounded-2xl p-5 text-left divide-y divide-white/10 w-full text-xs space-y-3.5">
