@@ -654,19 +654,20 @@ export default function App() {
                       },
                     ].map(cat => {
                       const Icon = cat.icon;
+                      const borderColor = cat.accent === 'racing-red' ? 'border-racing-red/30' : cat.accent === 'blue-500' ? 'border-blue-500/30' : 'border-amber-500/30';
                       return (
                         <button
                           key={cat.label}
                           onClick={() => { setFilters({ ...filters, category: cat.label }); setSearchTriggered(true); setTimeout(() => document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth' }), 100); }}
-                          className={`group relative overflow-hidden bg-[#1e2121] hover:bg-[#252828] border border-white/5 ${cat.border} rounded-2xl p-4 sm:p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-xl`}
+                          className={`group relative overflow-hidden bg-[#252828] hover:bg-[#2a2e2e] border ${borderColor} rounded-2xl p-4 sm:p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-xl`}
                         >
-                          {/* Gradient wash on hover */}
-                          <div className={`absolute inset-0 bg-gradient-to-br ${cat.bg} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                          {/* Gradient wash — always visible */}
+                          <div className={`absolute inset-0 bg-gradient-to-br ${cat.bg} transition-opacity duration-300`} />
 
                           {/* Icon */}
                           <div className="relative mb-3">
-                            <div className={`absolute inset-0 ${cat.glow} blur-lg rounded-xl scale-90 opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-                            <div className={`relative w-11 h-11 sm:w-12 sm:h-12 bg-black/40 rounded-xl flex items-center justify-center border border-white/10 group-hover:border-white/20 transition`}>
+                            <div className={`absolute inset-0 ${cat.glow} blur-lg rounded-xl scale-90 transition-opacity duration-300`} />
+                            <div className={`relative w-11 h-11 sm:w-12 sm:h-12 bg-black/40 rounded-xl flex items-center justify-center border border-white/20 transition`}>
                               <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${cat.text} transition-transform duration-300 group-hover:scale-110`} />
                             </div>
                           </div>
@@ -678,10 +679,10 @@ export default function App() {
                             <p className="text-[10px] text-gray-500 mt-1 hidden sm:block leading-snug">{cat.longDesc}</p>
                           </div>
 
-                          {/* Arrow indicator */}
+                          {/* Arrow indicator — always visible */}
                           <div className="relative mt-3 flex items-center gap-1">
-                            <span className={`text-[10px] font-bold uppercase tracking-wider ${cat.text} opacity-0 group-hover:opacity-100 transition-opacity`}>Browse</span>
-                            <ArrowRight className={`w-3 h-3 ${cat.text} -translate-x-1 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300`} />
+                            <span className={`text-[10px] font-bold uppercase tracking-wider ${cat.text}`}>Browse</span>
+                            <ArrowRight className={`w-3 h-3 ${cat.text} transition-transform duration-300 group-hover:translate-x-0.5`} />
                           </div>
                         </button>
                       );
