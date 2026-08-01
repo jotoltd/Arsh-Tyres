@@ -611,25 +611,81 @@ export default function App() {
                   </div>
                 </section>
 
-                {/* CATEGORY CARDS — like Just Eat cuisine cards */}
+                {/* CATEGORY CARDS — premium tyre type selector */}
                 <section>
-                  <h3 className="font-display font-extrabold text-bright-snow text-lg mb-4 px-1">Browse by type</h3>
+                  <div className="flex items-center justify-between mb-4 px-1">
+                    <h3 className="font-display font-extrabold text-bright-snow text-lg">Browse by type</h3>
+                    <span className="text-[11px] text-gray-500 font-bold uppercase tracking-wider">Pick a category</span>
+                  </div>
                   <div className="grid grid-cols-3 gap-3 sm:gap-4">
                     {[
-                      { label: 'Standard', desc: 'Everyday car tyres', icon: '🚗', border: 'hover:border-racing-red/30' },
-                      { label: 'Runflat', desc: 'Puncture-safe tyres', icon: '🛡️', border: 'hover:border-blue-500/30' },
-                      { label: 'Commercial', desc: 'Van & heavy-duty', icon: '🚐', border: 'hover:border-amber-500/30' },
-                    ].map(cat => (
-                      <button
-                        key={cat.label}
-                        onClick={() => { setFilters({ ...filters, category: cat.label }); setSearchTriggered(true); setTimeout(() => document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth' }), 100); }}
-                        className={`bg-[#1e2121] hover:bg-[#252828] border border-white/5 ${cat.border} rounded-2xl p-4 sm:p-5 text-left transition-all duration-200 group hover:-translate-y-0.5 hover:shadow-lg`}
-                      >
-                        <span className="text-2xl sm:text-3xl block mb-2 transition-transform duration-200 group-hover:scale-110">{cat.icon}</span>
-                        <p className="font-display font-bold text-bright-snow text-sm sm:text-base">{cat.label}</p>
-                        <p className="text-[11px] text-gray-400 hidden sm:block">{cat.desc}</p>
-                      </button>
-                    ))}
+                      {
+                        label: 'Standard',
+                        desc: 'Everyday car tyres',
+                        longDesc: 'Reliable all-rounders for daily driving',
+                        icon: Car,
+                        accent: 'racing-red',
+                        glow: 'bg-racing-red/15',
+                        border: 'hover:border-racing-red/40',
+                        text: 'text-racing-red',
+                        bg: 'from-racing-red/10 to-transparent',
+                      },
+                      {
+                        label: 'Runflat',
+                        desc: 'Puncture-safe tyres',
+                        longDesc: 'Keep driving after a puncture — up to 50mph',
+                        icon: ShieldCheck,
+                        accent: 'blue-500',
+                        glow: 'bg-blue-500/15',
+                        border: 'hover:border-blue-500/40',
+                        text: 'text-blue-400',
+                        bg: 'from-blue-500/10 to-transparent',
+                      },
+                      {
+                        label: 'Commercial',
+                        desc: 'Van & heavy-duty',
+                        longDesc: 'Reinforced for vans and heavy loads',
+                        icon: Truck,
+                        accent: 'amber-500',
+                        glow: 'bg-amber-500/15',
+                        border: 'hover:border-amber-500/40',
+                        text: 'text-amber-400',
+                        bg: 'from-amber-500/10 to-transparent',
+                      },
+                    ].map(cat => {
+                      const Icon = cat.icon;
+                      return (
+                        <button
+                          key={cat.label}
+                          onClick={() => { setFilters({ ...filters, category: cat.label }); setSearchTriggered(true); setTimeout(() => document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth' }), 100); }}
+                          className={`group relative overflow-hidden bg-[#1e2121] hover:bg-[#252828] border border-white/5 ${cat.border} rounded-2xl p-4 sm:p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-xl`}
+                        >
+                          {/* Gradient wash on hover */}
+                          <div className={`absolute inset-0 bg-gradient-to-br ${cat.bg} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+
+                          {/* Icon */}
+                          <div className="relative mb-3">
+                            <div className={`absolute inset-0 ${cat.glow} blur-lg rounded-xl scale-90 opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                            <div className={`relative w-11 h-11 sm:w-12 sm:h-12 bg-black/40 rounded-xl flex items-center justify-center border border-white/10 group-hover:border-white/20 transition`}>
+                              <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${cat.text} transition-transform duration-300 group-hover:scale-110`} />
+                            </div>
+                          </div>
+
+                          {/* Text */}
+                          <div className="relative">
+                            <p className="font-display font-bold text-bright-snow text-sm sm:text-base leading-tight">{cat.label}</p>
+                            <p className="text-[11px] text-gray-400 sm:text-xs sm:mt-0.5">{cat.desc}</p>
+                            <p className="text-[10px] text-gray-500 mt-1 hidden sm:block leading-snug">{cat.longDesc}</p>
+                          </div>
+
+                          {/* Arrow indicator */}
+                          <div className="relative mt-3 flex items-center gap-1">
+                            <span className={`text-[10px] font-bold uppercase tracking-wider ${cat.text} opacity-0 group-hover:opacity-100 transition-opacity`}>Browse</span>
+                            <ArrowRight className={`w-3 h-3 ${cat.text} -translate-x-1 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300`} />
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 </section>
 
