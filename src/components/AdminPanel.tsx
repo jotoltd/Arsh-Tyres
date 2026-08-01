@@ -3,6 +3,7 @@ import { Tyre, Booking } from '../types';
 import { TYRE_DATABASE } from '../data';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { Trash2, Edit, Plus, Package, Calendar, CheckCircle, XCircle, Clock, ShieldCheck, Users, Download, AlertTriangle, Tag, TrendingUp, BarChart3, FileText, CreditCard, MessageSquare, Settings, FlaskConical, Zap, LogOut, Lock, Loader2, X, Check } from 'lucide-react';
+import { SkeletonRow, SkeletonStatCard } from './Skeleton';
 import { getStripeMode, setStripeMode, type StripeMode } from '../paymentSettings';
 import { isAdminAuthed, adminLogin, adminLogout } from '../adminAuth';
 
@@ -584,7 +585,12 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
       {/* Dashboard Section */}
       {activeSection === 'dashboard' && (
         <div className="space-y-6">
-          {/* Stats Cards */}
+          {/* Stats Cards or Skeletons */}
+          {dataLoading ? (
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {Array.from({ length: 4 }).map((_, i) => <SkeletonStatCard key={i} />)}
+            </div>
+          ) : (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-gradient-to-br from-racing-red/10 to-black rounded-2xl p-5 border border-racing-red/20 shadow-lg hover:scale-[1.02] transition-transform">
               <div className="flex items-center gap-2 mb-3">
@@ -623,6 +629,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
               <p className="text-2xl font-extrabold text-bright-snow">{stats.scheduledBookings}</p>
             </div>
           </div>
+          )}
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Top Selling Brands — visual bar chart */}
@@ -887,9 +894,10 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             </div>
           )}
           {inventoryLoading && (
-            <div className="flex items-center justify-center py-8 text-gray-400 text-sm gap-2">
-              <Loader2 className="w-5 h-5 animate-spin" />
-              Loading inventory...
+            <div className="p-6 space-y-3">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <SkeletonRow key={i} />
+              ))}
             </div>
           )}
           <div className="overflow-x-auto">

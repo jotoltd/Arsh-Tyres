@@ -246,7 +246,7 @@ export default function App() {
   const totalCartTyres = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
-    <div className="min-h-screen bg-black text-bright-snow/90 font-sans antialiased pb-16">
+    <div className="min-h-screen bg-black text-bright-snow/90 font-sans antialiased pb-16 sm:pb-0">
 
       {/* Top Banner Message */}
       <div className="bg-racing-red text-bright-snow text-xs py-2 px-4 text-center font-semibold border-b border-white/5">
@@ -276,8 +276,8 @@ export default function App() {
             </div>
           </div>
 
-          {/* Nav Tabs */}
-          <nav className="flex items-center gap-1 sm:gap-2">
+          {/* Nav Tabs — desktop only */}
+          <nav className="hidden sm:flex items-center gap-1 sm:gap-2">
             <button
               onClick={() => { navigate('/'); setActiveTab('shop'); setLastConfirmedBooking(null); }}
               className={`px-4 py-2 text-sm font-bold rounded-lg transition ${
@@ -945,24 +945,60 @@ export default function App() {
         </div>
       </footer>
 
-      {/* Sticky mobile order bar */}
-      {cartItems.length > 0 && activeTab !== 'cart' && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden">
+      {/* Mobile bottom tab bar */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-black/95 backdrop-blur-lg border-t border-white/10">
+        <div className="flex items-center justify-around h-16">
           <button
-            onClick={() => { navigate('/'); setActiveTab('cart'); }}
-            className="w-full bg-racing-red text-bright-snow font-bold px-4 py-3.5 flex items-center justify-between shadow-2xl shadow-racing-red/30 active:bg-racing-red/90 transition"
+            onClick={() => { navigate('/'); setActiveTab('shop'); setLastConfirmedBooking(null); }}
+            className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
+              activeTab === 'shop' && location.pathname === '/' ? 'text-racing-red' : 'text-gray-500'
+            }`}
           >
-            <span className="flex items-center gap-2 text-sm">
-              <ShoppingBag className="w-5 h-5" />
-              {totalCartTyres} {totalCartTyres === 1 ? 'tyre' : 'tyres'} in your order
-            </span>
-            <span className="flex items-center gap-1.5 text-sm font-extrabold">
-              £{cartItems.reduce((acc, item) => acc + getUnitPrice(item.tyre, item.quantity) * item.quantity, 0).toFixed(2)}
-              <ArrowRight className="w-4 h-4" />
-            </span>
+            <Search className="w-5 h-5" />
+            <span className="text-[10px] font-bold">Tyres</span>
+          </button>
+
+          <button
+            onClick={() => { navigate('/'); setActiveTab('bookings'); setLastConfirmedBooking(null); }}
+            className={`relative flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
+              activeTab === 'bookings' && location.pathname === '/' ? 'text-racing-red' : 'text-gray-500'
+            }`}
+          >
+            <Calendar className="w-5 h-5" />
+            <span className="text-[10px] font-bold">Bookings</span>
+            {bookings.filter(b => b.status === 'Scheduled').length > 0 && (
+              <span className="absolute top-1.5 right-[calc(50%-24px)] bg-racing-red text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                {bookings.filter(b => b.status === 'Scheduled').length}
+              </span>
+            )}
+          </button>
+
+          <button
+            onClick={() => { navigate('/'); setActiveTab('cart'); setLastConfirmedBooking(null); }}
+            className={`relative flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
+              activeTab === 'cart' && location.pathname === '/' ? 'text-racing-red' : 'text-gray-500'
+            }`}
+          >
+            <ShoppingBag className="w-5 h-5" />
+            <span className="text-[10px] font-bold">Order</span>
+            {cartItems.length > 0 && (
+              <span className="absolute top-1.5 right-[calc(50%-24px)] bg-racing-red text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                {totalCartTyres}
+              </span>
+            )}
+          </button>
+
+          <button
+            onClick={() => { navigate('/'); setActiveTab('admin'); setLastConfirmedBooking(null); }}
+            className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
+              activeTab === 'admin' && location.pathname === '/' ? 'text-racing-red' : 'text-gray-500'
+            }`}
+          >
+            <ShieldCheck className="w-5 h-5" />
+            <span className="text-[10px] font-bold">Admin</span>
           </button>
         </div>
-      )}
+      </nav>
 
     </div>
   );

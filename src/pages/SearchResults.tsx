@@ -3,7 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Tyre, SearchFilters } from '../types';
 import { useSupabase } from '../contexts/SupabaseContext';
 import TyreCard from '../components/TyreCard';
-import { Disc, ArrowLeft, Search } from 'lucide-react';
+import { Disc, ArrowLeft } from 'lucide-react';
+import { SkeletonGrid } from '../components/Skeleton';
 
 export default function SearchResults() {
   const navigate = useNavigate();
@@ -45,21 +46,36 @@ export default function SearchResults() {
 
   if (isLoading || tyresLoading) {
     return (
-      <div className="min-h-screen bg-black text-bright-snow font-sans antialiased flex items-center justify-center">
-        <div className="text-center space-y-6">
-          <div className="relative">
-            <div className="w-24 h-24 border-4 border-racing-red/30 rounded-full animate-spin mx-auto"></div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <Search className="w-10 h-10 text-racing-red" />
+      <div className="min-h-screen bg-black text-bright-snow font-sans antialiased pb-16">
+        <header className="bg-black/95 backdrop-blur-md border-b border-white/10 sticky top-0 z-40">
+          <div className="w-full px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 text-gray-400 hover:text-bright-snow transition"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              <span className="font-bold">Back to Search</span>
+            </button>
+            <h1 className="font-display font-black text-xl text-bright-snow">Search Results</h1>
+            <div className="w-24"></div>
+          </div>
+        </header>
+        <main className="w-full px-4 sm:px-6 lg:px-8 py-8">
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-white/5 pb-4">
+              <div>
+                <h2 className="font-display font-extrabold text-bright-snow text-xl flex items-center gap-2">
+                  <Disc className="w-5 h-5 text-racing-red" />
+                  Searching...
+                </h2>
+                <p className="text-xs text-gray-400 mt-1">
+                  Finding premium tyres matching your specification.
+                </p>
+              </div>
             </div>
+            <SkeletonGrid count={6} />
           </div>
-          <div className="space-y-2">
-            <h2 className="font-display font-extrabold text-2xl md:text-3xl text-bright-snow">
-              Finding your best match...
-            </h2>
-            <p className="text-gray-400 text-sm">Searching through our premium tyre database</p>
-          </div>
-        </div>
+        </main>
       </div>
     );
   }
