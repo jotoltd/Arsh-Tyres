@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SearchFilters } from '../types';
 import { WIDTHS, PROFILES, RIMS, TYRE_TYPES } from '../data';
-import { Search } from 'lucide-react';
+import { Search, HelpCircle, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface TyreSearcherProps {
   filters: SearchFilters;
@@ -16,6 +16,7 @@ export default function TyreSearcher({
   onSearch,
   onClear
 }: TyreSearcherProps) {
+  const [showGuide, setShowGuide] = useState(false);
   const handleSelectChange = (key: keyof SearchFilters, value: string) => {
     onFilterChange({
       ...filters,
@@ -94,6 +95,42 @@ export default function TyreSearcher({
           >
             Clear
           </button>
+        )}
+      </div>
+
+      {/* Tyre Size Guide */}
+      <div className="mt-3">
+        <button
+          type="button"
+          onClick={() => setShowGuide(!showGuide)}
+          className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-bright-snow transition"
+        >
+          <HelpCircle className="w-4 h-4 text-racing-red" />
+          How to find your tyre size
+          {showGuide ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+        </button>
+        {showGuide && (
+          <div className="mt-3 bg-[#1e2121] rounded-2xl border border-white/10 overflow-hidden animate-fade-in-up">
+            <img
+              src="/assets/how_to_tyres.png"
+              alt="How to find your tyre size guide"
+              className="w-full h-auto"
+            />
+            <div className="p-4 text-sm text-gray-400 leading-relaxed">
+              <p className="mb-2">
+                <span className="text-bright-snow font-bold">Width</span> — the first number (e.g. 205) is the tyre width in millimetres.
+              </p>
+              <p className="mb-2">
+                <span className="text-bright-snow font-bold">Profile</span> — the second number (e.g. 55) is the sidewall height as a percentage of the width.
+              </p>
+              <p className="mb-2">
+                <span className="text-bright-snow font-bold">Rim</span> — the number after 'R' (e.g. 16) is the wheel diameter in inches.
+              </p>
+              <p className="text-xs text-gray-500 mt-3 pt-3 border-t border-white/5">
+                You can find these numbers on the sidewall of your tyre, or in your vehicle's handbook.
+              </p>
+            </div>
+          </div>
         )}
       </div>
     </div>
