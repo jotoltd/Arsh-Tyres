@@ -11,6 +11,7 @@ interface SupabaseContextType {
   tyres: Tyre[];
   tyresLoading: boolean;
   tyresError: string | null;
+  refreshTyres: () => void;
   cartItems: CartItem[];
   setCartItems: (items: CartItem[]) => void;
   bookings: Booking[];
@@ -235,6 +236,22 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
     }
   }, [configured]);
 
+  const refreshTyres = useCallback(() => {
+    if (!configured) return;
+    setTyresLoading(true);
+    supabase
+      .from('tyres')
+      .select('*')
+      .then(({ data, error }) => {
+        if (error) {
+          console.error('Failed to refresh tyres:', error.message);
+        } else if (data && data.length > 0) {
+          setTyres(data.map(parseTyre));
+        }
+        setTyresLoading(false);
+      });
+  }, [configured]);
+
   // Load cart from localStorage on mount
   useEffect(() => {
     try {
@@ -443,6 +460,7 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
         tyres,
         tyresLoading,
         tyresError,
+        refreshTyres,
         cartItems,
         setCartItems,
         bookings,

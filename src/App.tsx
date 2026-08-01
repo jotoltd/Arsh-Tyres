@@ -58,6 +58,13 @@ export default function App() {
     window.scrollTo(0, 0);
   }, [activeTab, location.pathname]);
 
+  // Refresh tyres from Supabase when switching to shop tab
+  useEffect(() => {
+    if (activeTab === 'shop') {
+      refreshTyres();
+    }
+  }, [activeTab]);
+
   const {
     tyres,
     cartItems,
@@ -70,7 +77,8 @@ export default function App() {
     signIn,
     signOut,
     tyresError,
-    maintenanceMode
+    maintenanceMode,
+    refreshTyres
   } = useSupabase();
 
   // Cart operations
