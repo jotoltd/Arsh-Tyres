@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { TIME_SLOTS } from '../data';
 import { Calendar as CalendarIcon, Clock, Wrench, CheckCircle } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 interface BookingCalendarProps {
   selectedDate: string; // YYYY-MM-DD
@@ -17,6 +18,48 @@ export default function BookingCalendar({
   onTimeSlotChange,
   fittingType
 }: BookingCalendarProps) {
+  const [bookedSlots, setBookedSlots] = useState<Record<string, string[]>>({});
+  const configured = isSupabaseConfigured();
+
+  // Load booked slots from Supabase for the next 14 days
+  useEffect(() => {
+    if (!configured) return;
+
+    const today = new Date();
+    const startDate = new Date(today);
+    startDate.setDate(today.getDate() + 1);
+    const endDate = new Date(today);
+    endDate.setDate(today.getDate() + 15);
+
+    const startStr = startDate.toISOString().split('T')[0];
+    const endStr = endDate.toISOString().split('T')[0];
+
+    supabase
+      .from('bookings')
+      .select('booking_date, booking_time')
+      .gte('booking_date', startStr)
+      .lte('booking_date', endStr)
+      .neq('status', 'Cancelled')
+      .then(({ data, error }) => {
+        if (error || !data) return;
+        const map: Record<string, string[]> = {};
+        data.forEach((row: any) => {
+          const date = row.booking_date;
+          const time = row.booking_time;
+          if (!map[date]) map[date] = [];
+          map[date].push(time);
+        });
+        setBookedSlots(map);
+      });
+  }, [configured]);
+
+  // Clear selected time slot if it becomes booked
+  useEffect(() => {
+    if (selectedDate && selectedTimeSlot && bookedSlots[selectedDate]?.includes(selectedTimeSlot)) {
+      onTimeSlotChange('');
+    }
+  }, [bookedSlots, selectedDate, selectedTimeSlot, onTimeSlotChange]);
+
   // Generate next 14 days
   const getUpcomingDays = () => {
     const days = [];
@@ -112,19 +155,24 @@ export default function BookingCalendar({
         <div className="grid grid-cols-2 gap-3">
           {TIME_SLOTS.map((slot) => {
             const isSelected = selectedTimeSlot === slot;
+            const isBooked = selectedDate && bookedSlots[selectedDate]?.includes(slot);
             return (
               <button
                 key={slot}
                 type="button"
+                disabled={isBooked}
                 onClick={() => onTimeSlotChange(slot)}
                 className={`flex items-center justify-center gap-2 p-4 rounded-xl border text-sm font-bold transition ${
-                  isSelected
+                  isBooked
+                    ? 'bg-black/40 border-white/5 text-gray-600 cursor-not-allowed line-through opacity-50'
+                    : isSelected
                     ? 'bg-racing-red border-racing-red text-bright-snow shadow-md font-extrabold'
                     : 'bg-[#1e2121] border-white/5 text-bright-snow/90 hover:border-white/20 hover:text-bright-snow'
                 }`}
               >
                 <Clock className="w-4 h-4 shrink-0" />
                 {slot}
+                {isBooked && <span className="text-[9px] uppercase ml-1">Booked</span>}
               </button>
             );
           })}

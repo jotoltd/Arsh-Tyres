@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Tyre, Booking } from '../types';
 import { TYRE_DATABASE } from '../data';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
-import { Trash2, Edit, Plus, Package, Calendar, CheckCircle, XCircle, Clock, ShieldCheck, Users, Download, AlertTriangle, Tag, TrendingUp, BarChart3, FileText, CreditCard, MessageSquare, Settings, FlaskConical, Zap, LogOut, Lock, Loader2, X, Check, Search } from 'lucide-react';
+import { Trash2, Edit, Plus, Package, Calendar, CheckCircle, XCircle, Clock, ShieldCheck, Users, Download, AlertTriangle, Tag, TrendingUp, BarChart3, FileText, CreditCard, MessageSquare, Settings, FlaskConical, Zap, LogOut, Lock, Loader2, X, Check, Search, Upload } from 'lucide-react';
 import { SkeletonRow, SkeletonStatCard } from './Skeleton';
 import { getStripeMode, setStripeMode, type StripeMode } from '../paymentSettings';
 import { isAdminAuthed, adminLogin, adminLogout } from '../adminAuth';
@@ -68,9 +68,28 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
   const [invSearch, setInvSearch] = useState('');
   const [invBrandFilter, setInvBrandFilter] = useState<string>('All');
   const [invSort, setInvSort] = useState<'brand' | 'stock-low' | 'price-high' | 'size'>('brand');
+  const [imageUploading, setImageUploading] = useState(false);
+  const configured = isSupabaseConfigured();
+
+  const handleImageUpload = async (file: File, onDone: (url: string) => void) => {
+    if (!configured) {
+      alert('Supabase is not configured. Image upload requires Supabase Storage.');
+      return;
+    }
+    setImageUploading(true);
+    const ext = file.name.split('.').pop();
+    const fileName = `tyre-${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from('tyre-images').upload(fileName, file, { cacheControl: '3600', upsert: false });
+    setImageUploading(false);
+    if (error) {
+      alert('Upload failed: ' + error.message);
+      return;
+    }
+    const { data: urlData } = supabase.storage.from('tyre-images').getPublicUrl(fileName);
+    onDone(urlData.publicUrl);
+  };
 
   const [stripeMode, setStripeModeState] = useState<StripeMode>(getStripeMode());
-  const configured = isSupabaseConfigured();
 
   const handleToggleStripeMode = () => {
     const newMode = stripeMode === 'test' ? 'live' : 'test';
@@ -291,6 +310,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
         is_reinforced: tyre.isReinforced, fuel_efficiency: tyre.fuelEfficiency,
         wet_grip: tyre.wetGrip, noise_level: tyre.noiseLevel,
         stock: tyre.stock, rating: tyre.rating, reviews_count: tyre.reviewsCount,
+        image_url: tyre.imageUrl,
       }).then();
     }
     setShowAddForm(false);
@@ -925,9 +945,19 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   </select>
                 </div>
                 <div>
+                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Load Index</label>
+                  <input
+                    type="number"
+                    value={newTyre.loadIndex}
+                    onChange={(e) => setNewTyre({ ...newTyre, loadIndex: parseInt(e.target.value) || 91 })}
+                    className="w-full bg-[#1e2121] border border-white/10 text-bright-snow rounded px-3 py-2 text-sm focus:outline-none focus:border-racing-red"
+                  />
+                </div>
+                <div>
                   <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Price (£)</label>
                   <input
                     type="number"
+                    step="0.01"
                     value={newTyre.price}
                     onChange={(e) => setNewTyre({ ...newTyre, price: parseFloat(e.target.value) || 0 })}
                     className="w-full bg-[#1e2121] border border-white/10 text-bright-snow rounded px-3 py-2 text-sm focus:outline-none focus:border-racing-red"
@@ -935,12 +965,14 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Stock</label>
+                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Price x4 (£)</label>
                   <input
                     type="number"
-                    value={newTyre.stock}
-                    onChange={(e) => setNewTyre({ ...newTyre, stock: parseInt(e.target.value) || 0 })}
+                    step="0.01"
+                    value={newTyre.price4 ?? ''}
+                    onChange={(e) => setNewTyre({ ...newTyre, price4: e.target.value ? parseFloat(e.target.value) : undefined })}
                     className="w-full bg-[#1e2121] border border-white/10 text-bright-snow rounded px-3 py-2 text-sm focus:outline-none focus:border-racing-red"
+                    placeholder="Optional"
                   />
                 </div>
                 <div>
@@ -955,7 +987,84 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                     <option value="Commercial">Commercial (Van)</option>
                   </select>
                 </div>
+                <div>
+                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Fuel Efficiency</label>
+                  <select
+                    value={newTyre.fuelEfficiency}
+                    onChange={(e) => setNewTyre({ ...newTyre, fuelEfficiency: e.target.value as Tyre['fuelEfficiency'] })}
+                    className="w-full bg-[#1e2121] border border-white/10 text-bright-snow rounded px-3 py-2 text-sm focus:outline-none focus:border-racing-red"
+                  >
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Wet Grip</label>
+                  <select
+                    value={newTyre.wetGrip}
+                    onChange={(e) => setNewTyre({ ...newTyre, wetGrip: e.target.value as Tyre['wetGrip'] })}
+                    className="w-full bg-[#1e2121] border border-white/10 text-bright-snow rounded px-3 py-2 text-sm focus:outline-none focus:border-racing-red"
+                  >
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Noise (dB)</label>
+                  <input
+                    type="number"
+                    value={newTyre.noiseLevel}
+                    onChange={(e) => setNewTyre({ ...newTyre, noiseLevel: parseInt(e.target.value) || 72 })}
+                    className="w-full bg-[#1e2121] border border-white/10 text-bright-snow rounded px-3 py-2 text-sm focus:outline-none focus:border-racing-red"
+                  />
+                </div>
+                {stockManagementEnabled && (
+                  <div>
+                    <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Stock</label>
+                    <input
+                      type="number"
+                      value={newTyre.stock}
+                      onChange={(e) => setNewTyre({ ...newTyre, stock: parseInt(e.target.value) || 0 })}
+                      className="w-full bg-[#1e2121] border border-white/10 text-bright-snow rounded px-3 py-2 text-sm focus:outline-none focus:border-racing-red"
+                    />
+                  </div>
+                )}
+                <div className="flex items-end gap-4">
+                  <label className="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
+                    <input type="checkbox" checked={newTyre.isRunflat || false} onChange={(e) => setNewTyre({ ...newTyre, isRunflat: e.target.checked })} className="accent-racing-red" />
+                    Runflat
+                  </label>
+                  <label className="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
+                    <input type="checkbox" checked={newTyre.isReinforced || false} onChange={(e) => setNewTyre({ ...newTyre, isReinforced: e.target.checked })} className="accent-racing-red" />
+                    Reinforced
+                  </label>
+                </div>
               </div>
+
+              {/* Image upload */}
+              <div className="mt-4">
+                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Tyre Image</label>
+                <div className="flex items-center gap-3">
+                  {newTyre.imageUrl && (
+                    <img src={newTyre.imageUrl} alt="Preview" className="w-16 h-16 rounded-lg object-cover border border-white/10" />
+                  )}
+                  <label className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-bright-snow font-semibold text-xs px-4 py-2.5 rounded-lg transition cursor-pointer border border-white/10">
+                    {imageUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                    {imageUploading ? 'Uploading...' : 'Upload Image'}
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImageUpload(f, (url) => setNewTyre({ ...newTyre, imageUrl: url })); }} />
+                  </label>
+                  {newTyre.imageUrl && (
+                    <button onClick={() => setNewTyre({ ...newTyre, imageUrl: undefined })} className="text-xs text-racing-red hover:text-racing-red/80 font-semibold">Remove</button>
+                  )}
+                </div>
+              </div>
+
               <div className="flex gap-2 mt-4">
                 <button
                   onClick={handleAddTyre}
@@ -1145,9 +1254,35 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                 <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Price x4 (£)</label>
                 <input type="number" step="0.01" value={editingTyre.price4 ?? ''} onChange={e => setEditingTyre({ ...editingTyre, price4: e.target.value ? parseFloat(e.target.value) : undefined })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
               </div>
+              {stockManagementEnabled && (
+                <div>
+                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Stock</label>
+                  <input type="number" value={editingTyre.stock} onChange={e => setEditingTyre({ ...editingTyre, stock: parseInt(e.target.value) || 0 })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
+                </div>
+              )}
               <div>
-                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Stock</label>
-                <input type="number" value={editingTyre.stock} onChange={e => setEditingTyre({ ...editingTyre, stock: parseInt(e.target.value) || 0 })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
+                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Fuel Efficiency</label>
+                <select value={editingTyre.fuelEfficiency || 'C'} onChange={e => setEditingTyre({ ...editingTyre, fuelEfficiency: e.target.value as any })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none">
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+                  <option value="E">E</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Wet Grip</label>
+                <select value={editingTyre.wetGrip || 'C'} onChange={e => setEditingTyre({ ...editingTyre, wetGrip: e.target.value as any })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none">
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+                  <option value="E">E</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Noise (dB)</label>
+                <input type="number" value={editingTyre.noiseLevel || 72} onChange={e => setEditingTyre({ ...editingTyre, noiseLevel: parseInt(e.target.value) || 72 })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
               </div>
               <div className="flex items-end gap-4">
                 <label className="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
@@ -1160,6 +1295,25 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                 </label>
               </div>
             </div>
+
+            {/* Image upload in edit modal */}
+            <div className="mt-4">
+              <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Tyre Image</label>
+              <div className="flex items-center gap-3">
+                {editingTyre.imageUrl && (
+                  <img src={editingTyre.imageUrl} alt="Preview" className="w-16 h-16 rounded-lg object-cover border border-white/10" />
+                )}
+                <label className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-bright-snow font-semibold text-xs px-4 py-2.5 rounded-lg transition cursor-pointer border border-white/10">
+                  {imageUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                  {imageUploading ? 'Uploading...' : 'Upload Image'}
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImageUpload(f, (url) => setEditingTyre({ ...editingTyre, imageUrl: url })); }} />
+                </label>
+                {editingTyre.imageUrl && (
+                  <button onClick={() => setEditingTyre({ ...editingTyre, imageUrl: undefined })} className="text-xs text-racing-red hover:text-racing-red/80 font-semibold">Remove</button>
+                )}
+              </div>
+            </div>
+
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => {
@@ -1179,7 +1333,11 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                       category: editingTyre.category,
                       is_runflat: editingTyre.isRunflat,
                       is_reinforced: editingTyre.isReinforced,
+                      fuel_efficiency: editingTyre.fuelEfficiency,
+                      wet_grip: editingTyre.wetGrip,
+                      noise_level: editingTyre.noiseLevel,
                       stock: editingTyre.stock,
+                      image_url: editingTyre.imageUrl,
                     }).eq('id', editingTyre.id).then();
                   }
                   setEditingTyre(null);
