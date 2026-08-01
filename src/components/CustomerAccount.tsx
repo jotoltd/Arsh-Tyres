@@ -1,11 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Booking, CartItem } from '../types';
 import { useSupabase } from '../contexts/SupabaseContext';
 import { getUnitPrice } from '../data';
 import {
   User, Mail, LogOut, Calendar, Clock, Car, Package, CheckCircle2,
   ChevronDown, ChevronUp, ShoppingBag, Truck, MapPin, Phone, AlertTriangle,
-  Loader2, TrendingUp, CreditCard
+  Loader2, TrendingUp, CreditCard, KeyRound, Lock
 } from 'lucide-react';
 
 interface CustomerAccountProps {
@@ -13,12 +13,29 @@ interface CustomerAccountProps {
 }
 
 export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
-  const { user, bookings, signIn, signOut } = useSupabase();
+  const { user, bookings, signIn, signOut, resetPassword, updatePassword } = useSupabase();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [showForgot, setShowForgot] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetSent, setResetSent] = useState(false);
+  const [showChangePass, setShowChangePass] = useState(false);
+  const [newPass, setNewPass] = useState('');
+  const [passChanged, setPassChanged] = useState(false);
+  const [resetMode, setResetMode] = useState(() => {
+    return new URLSearchParams(window.location.search).get('reset_password') === '1'
+      || window.location.hash.includes('type=recovery');
+  });
+
+  // Auto-show change password form when arriving from reset email
+  useEffect(() => {
+    if (resetMode && user) {
+      setShowChangePass(true);
+    }
+  }, [resetMode, user]);
 
   const myBookings = useMemo(() => {
     if (!user) return [];
@@ -42,6 +59,34 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
     const { error } = await signIn(email, password);
     setLoading(false);
     if (error) setError(error.message);
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    const { error } = await resetPassword(resetEmail);
+    setLoading(false);
+    if (error) {
+      setError(error.message);
+    } else {
+      setResetSent(true);
+    }
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    const { error } = await updatePassword(newPass);
+    setLoading(false);
+    if (error) {
+      setError(error.message);
+    } else {
+      setPassChanged(true);
+      setNewPass('');
+      setTimeout(() => { setPassChanged(false); setShowChangePass(false); }, 3000);
+    }
   };
 
   const getStatusBadge = (status: Booking['status']) => {
@@ -133,7 +178,53 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
               <div className="text-center text-xs text-gray-400 pt-2 border-t border-white/5">
                 No account yet? An account is created automatically when you place your first order. We'll email you your login details.
               </div>
+
+              {/* Forgot password toggle */}
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={() => { setShowForgot(!showForgot); setError(''); setResetSent(false); }}
+                  className="text-xs text-racing-red hover:text-racing-red/80 font-semibold transition"
+                >
+                  {showForgot ? 'Back to sign in' : 'Forgot your password?'}
+                </button>
+              </div>
             </form>
+
+            {/* Forgot password form */}
+            {showForgot && (
+              <div className="px-8 pb-8 -mt-2">
+                {resetSent ? (
+                  <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 text-xs text-emerald-300 font-semibold flex items-center gap-2 animate-fade-in-up">
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
+                    Reset link sent! Check your email inbox (and spam folder) for a password reset link.
+                  </div>
+                ) : (
+                  <form onSubmit={handleForgotPassword} className="space-y-4">
+                    <p className="text-xs text-gray-400">Enter your email and we'll send you a link to reset your password.</p>
+                    <div>
+                      <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1.5">Email</label>
+                      <input
+                        type="email"
+                        required
+                        value={resetEmail}
+                        onChange={e => setResetEmail(e.target.value)}
+                        className="w-full bg-black/40 border border-white/10 text-bright-snow rounded-xl px-3 py-3 text-sm focus:outline-none focus:border-racing-red focus:ring-2 focus:ring-racing-red/20 transition"
+                        placeholder="you@email.com"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-bright-snow font-bold text-sm px-5 py-3 rounded-xl transition disabled:opacity-50"
+                    >
+                      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
+                      Send Reset Link
+                    </button>
+                  </form>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -164,6 +255,72 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
           <LogOut className="w-3.5 h-3.5" />
           Sign Out
         </button>
+      </div>
+
+      {/* Change Password */}
+      <div className="bg-black rounded-2xl border border-white/5 shadow-xl overflow-hidden">
+        <div className="p-5 border-b border-white/5 flex items-center justify-between">
+          <h3 className="font-display font-bold text-bright-snow text-lg flex items-center gap-2">
+            <KeyRound className="w-5 h-5 text-racing-red" />
+            Security
+          </h3>
+          <button
+            onClick={() => { setShowChangePass(!showChangePass); setError(''); setPassChanged(false); setResetMode(false); }}
+            className="text-xs font-bold text-racing-red hover:text-racing-red/80 transition"
+          >
+            {showChangePass ? 'Cancel' : 'Change Password'}
+          </button>
+        </div>
+        {resetMode && !showChangePass && (
+          <div className="p-4 bg-racing-red/5 border-b border-white/5">
+            <p className="text-xs text-racing-red font-semibold flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0" />
+              Please set a new password to complete your password reset.
+            </p>
+          </div>
+        )}
+        {showChangePass && (
+          <div className="p-5">
+            {passChanged ? (
+              <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 text-xs text-emerald-300 font-semibold flex items-center gap-2 animate-fade-in-up">
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                Password updated successfully!
+              </div>
+            ) : (
+              <form onSubmit={handleChangePassword} className="space-y-4">
+                <div>
+                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1.5">New Password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                    <input
+                      type="password"
+                      required
+                      minLength={6}
+                      value={newPass}
+                      onChange={e => setNewPass(e.target.value)}
+                      className="w-full bg-black/40 border border-white/10 text-bright-snow rounded-xl pl-10 pr-3 py-3 text-sm focus:outline-none focus:border-racing-red focus:ring-2 focus:ring-racing-red/20 transition"
+                      placeholder="Enter new password (min 6 characters)"
+                    />
+                  </div>
+                </div>
+                {error && (
+                  <div className="bg-racing-red/10 border border-racing-red/20 rounded-xl p-3 text-xs text-racing-red font-semibold flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 shrink-0" />
+                    {error}
+                  </div>
+                )}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex items-center justify-center gap-2 bg-racing-red hover:bg-racing-red/90 text-bright-snow font-bold text-sm px-5 py-3 rounded-xl transition shadow-lg shadow-racing-red/30 disabled:opacity-50"
+                >
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <KeyRound className="w-4 h-4" />}
+                  Update Password
+                </button>
+              </form>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Stats */}

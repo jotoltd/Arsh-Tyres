@@ -113,7 +113,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          from: 'Arsh Autos <noreply@arshtyres.com>',
+          from: 'Arsh Autos <bookings@arshtyres.com>',
           to: [email],
           subject: 'Your Arsh Autos Account is Ready',
           html: buildWelcomeHtml(email, password),

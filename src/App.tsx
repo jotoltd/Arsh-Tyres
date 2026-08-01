@@ -65,6 +65,16 @@ export default function App() {
     }
   }, [activeTab]);
 
+  // Handle password reset redirect — Supabase sends user back with ?reset_password=1
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('reset_password') === '1') {
+      setActiveTab('account');
+      // Clean the URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
   const {
     tyres,
     cartItems,

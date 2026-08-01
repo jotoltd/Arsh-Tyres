@@ -21,6 +21,8 @@ interface SupabaseContextType {
   signIn: (email: string, password: string) => Promise<{ error?: Error }>;
   signUp: (email: string, password: string) => Promise<{ error?: Error }>;
   signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error?: Error }>;
+  updatePassword: (newPassword: string) => Promise<{ error?: Error }>;
   stockManagementEnabled: boolean;
   setStockManagementEnabled: (enabled: boolean) => Promise<void>;
   maintenanceMode: boolean;
@@ -425,6 +427,20 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
   }, [configured]);
 
+  const resetPassword = useCallback(async (email: string) => {
+    if (!configured) return { error: new Error('Supabase is not configured') };
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/?reset_password=1`,
+    });
+    return { error: error || undefined };
+  }, [configured]);
+
+  const updatePassword = useCallback(async (newPassword: string) => {
+    if (!configured) return { error: new Error('Supabase is not configured') };
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    return { error: error || undefined };
+  }, [configured]);
+
   return (
     <SupabaseContext.Provider
       value={{
@@ -444,6 +460,8 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
         signIn,
         signUp,
         signOut,
+        resetPassword,
+        updatePassword,
         stockManagementEnabled,
         setStockManagementEnabled,
         maintenanceMode,
