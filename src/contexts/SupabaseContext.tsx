@@ -85,7 +85,6 @@ function dbBookingToBooking(row: any): Booking {
 }
 
 const CART_KEY = 'arsh_autos_cart';
-const BOOKINGS_KEY = 'arsh_autos_bookings';
 
 export function SupabaseProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
@@ -95,12 +94,8 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
   const [tyresError, setTyresError] = useState<string | null>(null);
   const [cartItems, setCartItemsState] = useState<CartItem[]>([]);
   const [bookings, setBookingsState] = useState<Booking[]>([]);
-  const [stockManagementEnabled, setStockManagementEnabledState] = useState(() => {
-    return localStorage.getItem('arsh_stock_management_enabled') === 'true';
-  });
-  const [maintenanceMode, setMaintenanceModeState] = useState(() => {
-    return localStorage.getItem('arsh_maintenance_mode') === 'true';
-  });
+  const [stockManagementEnabled, setStockManagementEnabledState] = useState(false);
+  const [maintenanceMode, setMaintenanceModeState] = useState(false);
   const [settingsLoading, setSettingsLoading] = useState(false);
 
   const configured = isSupabaseConfigured();
@@ -177,10 +172,8 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
           });
           const stockEnabled = settingsMap['stock_management_enabled'] === 'true';
           setStockManagementEnabledState(stockEnabled);
-          localStorage.setItem('arsh_stock_management_enabled', String(stockEnabled));
           const maintMode = settingsMap['maintenance_mode'] === 'true';
           setMaintenanceModeState(maintMode);
-          localStorage.setItem('arsh_maintenance_mode', String(maintMode));
         }
         setSettingsLoading(false);
       });
@@ -190,7 +183,6 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
 
   const setStockManagementEnabled = useCallback(async (enabled: boolean) => {
     setStockManagementEnabledState(enabled);
-    localStorage.setItem('arsh_stock_management_enabled', String(enabled));
 
     if (!configured) return;
 
@@ -214,7 +206,6 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
 
   const setMaintenanceMode = useCallback(async (enabled: boolean) => {
     setMaintenanceModeState(enabled);
-    localStorage.setItem('arsh_maintenance_mode', String(enabled));
 
     if (!configured) return;
 
@@ -319,16 +310,6 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
     }
   }, [configured, user]);
 
-  // Load bookings from localStorage on mount
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem(BOOKINGS_KEY);
-      if (saved) setBookingsState(JSON.parse(saved));
-    } catch (e) {
-      console.error(e);
-    }
-  }, []);
-
   // Load bookings from Supabase (all bookings, not just user-scoped)
   useEffect(() => {
     if (!configured) return;
@@ -352,10 +333,6 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
     };
   }, [configured]);
 
-  const persistBookings = useCallback((list: Booking[]) => {
-    localStorage.setItem(BOOKINGS_KEY, JSON.stringify(list));
-  }, []);
-
   const addBooking = useCallback(
     async (draft: Omit<Booking, 'id' | 'createdAt' | 'status'>): Promise<Booking | null> => {
       const id = 'ab' + Math.random().toString(36).substring(2, 8);
@@ -368,7 +345,6 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
 
       const updated = [newBooking, ...bookings];
       setBookingsState(updated);
-      persistBookings(updated);
 
       if (configured) {
         const { error } = await supabase.from('bookings').insert({
@@ -399,14 +375,13 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
 
       return newBooking;
     },
-    [bookings, configured, user, persistBookings]
+    [bookings, configured]
   );
 
   const cancelBooking = useCallback(
     async (id: string) => {
       const updated = bookings.map((b) => (b.id === id ? { ...b, status: 'Cancelled' as const } : b));
       setBookingsState(updated);
-      persistBookings(updated);
 
       if (configured) {
         await supabase
@@ -415,14 +390,13 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
           .eq('id', id);
       }
     },
-    [bookings, configured, persistBookings]
+    [bookings, configured]
   );
 
   const updateBookingStatus = useCallback(
     async (id: string, status: Booking['status']) => {
       const updated = bookings.map((b) => (b.id === id ? { ...b, status } : b));
       setBookingsState(updated);
-      persistBookings(updated);
 
       if (configured) {
         await supabase
@@ -431,7 +405,7 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
           .eq('id', id);
       }
     },
-    [bookings, configured, persistBookings]
+    [bookings, configured]
   );
 
   const signIn = useCallback(async (email: string, password: string) => {

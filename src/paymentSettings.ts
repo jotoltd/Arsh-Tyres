@@ -1,14 +1,13 @@
 export type StripeMode = 'test' | 'live';
 
-const STORAGE_KEY = 'stripe_mode';
+let currentMode: StripeMode = 'test';
 
 export function getStripeMode(): StripeMode {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  return stored === 'live' ? 'live' : 'test';
+  return currentMode;
 }
 
 export function setStripeMode(mode: StripeMode) {
-  localStorage.setItem(STORAGE_KEY, mode);
+  currentMode = mode;
   window.dispatchEvent(new Event('stripe-mode-changed'));
 }
 
