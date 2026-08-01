@@ -229,13 +229,57 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5);
 
+    // Top selling tyre models
+    const modelSales: Record<string, { brand: string; model: string; count: number; revenue: number }> = {};
+    bookings.forEach(b => {
+      b.cartItems.forEach(item => {
+        const key = `${item.tyre.brand} ${item.tyre.model}`;
+        if (!modelSales[key]) {
+          modelSales[key] = { brand: item.tyre.brand, model: item.tyre.model, count: 0, revenue: 0 };
+        }
+        modelSales[key].count += item.quantity;
+        modelSales[key].revenue += item.tyre.price * item.quantity;
+      });
+    });
+    const topTyres = Object.entries(modelSales)
+      .sort((a, b) => b[1].count - a[1].count)
+      .slice(0, 5)
+      .map(([key, val]) => ({ key, ...val }));
+
+    // Revenue over last 6 months
+    const now = new Date();
+    const months: { label: string; revenue: number; bookings: number }[] = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const label = d.toLocaleDateString('en-GB', { month: 'short' });
+      const monthBookings = bookings.filter(b => {
+        if (!b.date) return false;
+        const bd = new Date(b.date + 'T12:00:00');
+        return bd.getFullYear() === d.getFullYear() && bd.getMonth() === d.getMonth();
+      });
+      months.push({
+        label,
+        revenue: monthBookings.filter(b => b.status === 'Completed').reduce((s, b) => s + b.totalPrice, 0),
+        bookings: monthBookings.length,
+      });
+    }
+
+    const cancelledBookings = bookings.filter(b => b.status === 'Cancelled').length;
+    const avgOrderValue = completedBookings > 0 ? totalRevenue / completedBookings : 0;
+    const conversionRate = totalBookings > 0 ? (completedBookings / totalBookings) * 100 : 0;
+
     return {
       totalRevenue,
       totalBookings,
       completedBookings,
       scheduledBookings,
+      cancelledBookings,
       lowStockItems,
-      topBrands
+      topBrands,
+      topTyres,
+      monthlyRevenue: months,
+      avgOrderValue,
+      conversionRate,
     };
   }, [bookings, inventory]);
 
@@ -661,6 +705,76 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
           </div>
           )}
 
+          {/* Secondary stats row */}
+          {!dataLoading && (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-black rounded-2xl p-5 border border-white/5 shadow-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <CreditCard className="w-4 h-4 text-emerald-400" />
+                <p className="text-gray-400 text-[10px] uppercase tracking-wider font-bold">Avg Order</p>
+              </div>
+              <p className="text-xl font-extrabold text-emerald-400">£{stats.avgOrderValue.toFixed(2)}</p>
+            </div>
+            <div className="bg-black rounded-2xl p-5 border border-white/5 shadow-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <BarChart3 className="w-4 h-4 text-blue-400" />
+                <p className="text-gray-400 text-[10px] uppercase tracking-wider font-bold">Conversion</p>
+              </div>
+              <p className="text-xl font-extrabold text-blue-400">{stats.conversionRate.toFixed(1)}%</p>
+            </div>
+            <div className="bg-black rounded-2xl p-5 border border-white/5 shadow-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <XCircle className="w-4 h-4 text-racing-red" />
+                <p className="text-gray-400 text-[10px] uppercase tracking-wider font-bold">Cancelled</p>
+              </div>
+              <p className="text-xl font-extrabold text-racing-red">{stats.cancelledBookings}</p>
+            </div>
+            <div className="bg-black rounded-2xl p-5 border border-white/5 shadow-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <Users className="w-4 h-4 text-yellow-400" />
+                <p className="text-gray-400 text-[10px] uppercase tracking-wider font-bold">Customers</p>
+              </div>
+              <p className="text-xl font-extrabold text-yellow-400">{customers.length}</p>
+            </div>
+          </div>
+          )}
+
+          {/* Revenue chart — last 6 months */}
+          {!dataLoading && (
+          <div className="bg-black rounded-2xl border border-white/5 shadow-xl overflow-hidden">
+            <div className="p-4 border-b border-white/5 flex items-center gap-3">
+              <div className="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center border border-emerald-500/30">
+                <TrendingUp className="w-5 h-5 text-emerald-400" />
+              </div>
+              <h3 className="font-display font-bold text-bright-snow text-lg">Revenue — Last 6 Months</h3>
+            </div>
+            <div className="p-6">
+              {stats.monthlyRevenue.some(m => m.revenue > 0) ? (
+                <div className="flex items-end justify-between gap-3 h-48">
+                  {stats.monthlyRevenue.map((m, i) => {
+                    const maxRev = Math.max(...stats.monthlyRevenue.map(x => x.revenue), 1);
+                    const barHeight = (m.revenue / maxRev) * 100;
+                    return (
+                      <div key={i} className="flex-1 flex flex-col items-center gap-2">
+                        <span className="text-xs font-bold text-emerald-400">{m.revenue > 0 ? `£${m.revenue.toFixed(0)}` : ''}</span>
+                        <div className="w-full flex-1 flex items-end">
+                          <div
+                            className="w-full bg-gradient-to-t from-emerald-600 to-emerald-400 rounded-t-lg transition-all duration-500 min-h-[4px]"
+                            style={{ height: `${barHeight}%` }}
+                          />
+                        </div>
+                        <span className="text-xs text-gray-400 font-semibold">{m.label}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-gray-400 text-sm text-center py-8">No revenue data yet</p>
+              )}
+            </div>
+          </div>
+          )}
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Top Selling Brands — visual bar chart */}
             <div className="bg-black rounded-2xl border border-white/5 shadow-xl overflow-hidden">
@@ -701,38 +815,80 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
               </div>
             </div>
 
-            {/* Recent Bookings */}
+            {/* Top Selling Tyres — specific models */}
             <div className="bg-black rounded-2xl border border-white/5 shadow-xl overflow-hidden">
               <div className="p-4 border-b border-white/5 flex items-center gap-3">
-                <div className="w-10 h-10 bg-racing-red/20 rounded-lg flex items-center justify-center border border-racing-red/30">
-                  <Calendar className="w-5 h-5 text-racing-red" />
+                <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center border border-blue-500/30">
+                  <Package className="w-5 h-5 text-blue-400" />
                 </div>
-                <h3 className="font-display font-bold text-bright-snow text-lg">Recent Bookings</h3>
+                <h3 className="font-display font-bold text-bright-snow text-lg">Top Selling Tyres</h3>
               </div>
-              <div className="p-4">
-                {bookings.length > 0 ? (
-                  <div className="space-y-2">
-                    {bookings.slice(0, 5).map(booking => (
-                      <div key={booking.id} className="flex items-center justify-between bg-[#1e2121] rounded-lg p-3 border border-white/5">
-                        <div className="min-w-0 flex-1">
-                          <p className="text-bright-snow text-sm font-semibold truncate">{booking.customerName}</p>
-                          <p className="text-gray-400 text-xs truncate">{booking.vehicleRegistration} · {booking.date || 'Collection'}</p>
+              <div className="p-5">
+                {stats.topTyres.length > 0 ? (
+                  <div className="space-y-3">
+                    {stats.topTyres.map((tyre, index) => {
+                      const maxCount = stats.topTyres[0].count;
+                      const pct = (tyre.count / maxCount) * 100;
+                      return (
+                        <div key={tyre.key}>
+                          <div className="flex items-center justify-between mb-1.5">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span className="text-blue-400 font-bold text-xs shrink-0">#{index + 1}</span>
+                              <span className="text-bright-snow font-semibold text-sm truncate">{tyre.key}</span>
+                            </div>
+                            <div className="flex items-center gap-3 shrink-0">
+                              <span className="text-emerald-400 text-xs font-bold">£{tyre.revenue.toFixed(0)}</span>
+                              <span className="text-gray-400 text-xs font-bold">{tyre.count} sold</span>
+                            </div>
+                          </div>
+                          <div className="h-2.5 bg-[#1e2121] rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-gradient-to-r from-blue-500 to-blue-400/60 rounded-full transition-all duration-500"
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2 shrink-0 ml-3">
-                          <span className="text-bright-snow font-bold text-sm">£{booking.totalPrice.toFixed(0)}</span>
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                            booking.status === 'Completed' ? 'bg-emerald-500/20 text-emerald-400' :
-                            booking.status === 'Cancelled' ? 'bg-racing-red/20 text-racing-red' :
-                            'bg-yellow-500/20 text-yellow-400'
-                          }`}>{booking.status}</span>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
-                  <p className="text-gray-400 text-sm">No bookings yet</p>
+                  <p className="text-gray-400 text-sm">No sales data yet</p>
                 )}
               </div>
+            </div>
+          </div>
+
+          {/* Recent Bookings — full width */}
+          <div className="bg-black rounded-2xl border border-white/5 shadow-xl overflow-hidden">
+            <div className="p-4 border-b border-white/5 flex items-center gap-3">
+              <div className="w-10 h-10 bg-racing-red/20 rounded-lg flex items-center justify-center border border-racing-red/30">
+                <Calendar className="w-5 h-5 text-racing-red" />
+              </div>
+              <h3 className="font-display font-bold text-bright-snow text-lg">Recent Bookings</h3>
+            </div>
+            <div className="p-4">
+              {bookings.length > 0 ? (
+                <div className="space-y-2">
+                  {bookings.slice(0, 5).map(booking => (
+                    <div key={booking.id} className="flex items-center justify-between bg-[#1e2121] rounded-lg p-3 border border-white/5">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-bright-snow text-sm font-semibold truncate">{booking.customerName}</p>
+                        <p className="text-gray-400 text-xs truncate">{booking.vehicleRegistration} · {booking.date || 'Collection'}</p>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0 ml-3">
+                        <span className="text-bright-snow font-bold text-sm">£{booking.totalPrice.toFixed(0)}</span>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                          booking.status === 'Completed' ? 'bg-emerald-500/20 text-emerald-400' :
+                          booking.status === 'Cancelled' ? 'bg-racing-red/20 text-racing-red' :
+                          'bg-yellow-500/20 text-yellow-400'
+                        }`}>{booking.status}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-400 text-sm">No bookings yet</p>
+              )}
             </div>
           </div>
 
