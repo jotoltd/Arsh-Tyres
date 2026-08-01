@@ -16,6 +16,7 @@ function buildWelcomeHtml(email: string, password: string): string {
 <body style="margin:0;padding:0;background:#0d0e0e;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;">
   <div style="max-width:560px;margin:0 auto;padding:24px;">
     <div style="background:#ef1219;border-radius:12px 12px 0 0;padding:20px;text-align:center;">
+      <img src="https://www.arshtyres.com/assets/logo.jpg" alt="Arsh Autos" style="width:64px;height:64px;border-radius:10px;margin:0 auto 8px;display:block;" />
       <h1 style="margin:0;color:#fff;font-size:22px;font-weight:900;letter-spacing:-0.5px;">Arsh Autos</h1>
       <p style="margin:4px 0 0;color:rgba(255,255,255,0.8);font-size:12px;text-transform:uppercase;letter-spacing:2px;">Your Account Is Ready</p>
     </div>
@@ -30,7 +31,7 @@ function buildWelcomeHtml(email: string, password: string): string {
         <p style="color:#aaa;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin:0 0 12px;font-weight:bold;">Your Login Details</p>
         <p style="color:#fff;font-size:15px;margin:0 0 8px;"><strong>Email:</strong> ${email}</p>
         <p style="color:#fff;font-size:15px;margin:0 0 16px;"><strong>Password:</strong> ${password}</p>
-        <a href="https://arsh-autos-auto-tyre-shop.vercel.app/" style="display:inline-block;background:#ef1219;color:#fff;text-decoration:none;font-weight:bold;font-size:14px;padding:12px 28px;border-radius:8px;">Go to My Account</a>
+        <a href="https://www.arshtyres.com/" style="display:inline-block;background:#ef1219;color:#fff;text-decoration:none;font-weight:bold;font-size:14px;padding:12px 28px;border-radius:8px;">Go to My Account</a>
       </div>
 
       <div style="background:#0d0e0e;border-radius:10px;padding:16px;border:1px solid #2a2c2c;">

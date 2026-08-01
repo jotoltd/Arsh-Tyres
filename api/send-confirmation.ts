@@ -19,7 +19,7 @@ function buildEmailHtml(data: BookingEmailData): string {
       <td style="padding:8px 12px;border-bottom:1px solid #333;">
         ${item.tyre.brand} ${item.tyre.model}
       </td>
-      <td style="padding:8px 12px;border-bottom:1px solid #333;color:#aaa;">
+      <td style="padding:8px 12px;border-bottom:1px solid #333;color:#ddd;">
         ${item.tyre.width}/${item.tyre.profile} R${item.tyre.rim}
       </td>
       <td style="padding:8px 12px;border-bottom:1px solid #333;text-align:center;">
@@ -45,6 +45,7 @@ function buildEmailHtml(data: BookingEmailData): string {
   <div style="max-width:560px;margin:0 auto;padding:24px;">
     <!-- Logo header -->
     <div style="background:#ef1219;border-radius:12px 12px 0 0;padding:20px;text-align:center;">
+      <img src="https://www.arshtyres.com/assets/logo.jpg" alt="Arsh Autos" style="width:64px;height:64px;border-radius:10px;margin:0 auto 8px;display:block;" />
       <h1 style="margin:0;color:#fff;font-size:22px;font-weight:900;letter-spacing:-0.5px;">Arsh Autos</h1>
       <p style="margin:4px 0 0;color:rgba(255,255,255,0.8);font-size:12px;text-transform:uppercase;letter-spacing:2px;">Booking Confirmed</p>
     </div>
