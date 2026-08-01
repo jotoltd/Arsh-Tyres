@@ -139,6 +139,33 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
           </span>
         </div>
 
+        {/* EU Tyre Label Ratings */}
+        <div className="flex items-center gap-2 mb-3 bg-black/30 rounded-lg p-2">
+          <div className="flex-1 text-center">
+            <p className="text-[8px] uppercase text-gray-500 font-bold tracking-wider mb-0.5">Fuel</p>
+            <div className="flex items-center justify-center gap-0.5">
+              <span className={`text-sm font-black ${tyre.fuelEfficiency <= 'B' ? 'text-emerald-400' : tyre.fuelEfficiency <= 'D' ? 'text-yellow-400' : 'text-racing-red'}`}>{tyre.fuelEfficiency || '?'}</span>
+              <span className="text-[8px] text-gray-600">/G</span>
+            </div>
+          </div>
+          <div className="w-px h-7 bg-white/5" />
+          <div className="flex-1 text-center">
+            <p className="text-[8px] uppercase text-gray-500 font-bold tracking-wider mb-0.5">Wet</p>
+            <div className="flex items-center justify-center gap-0.5">
+              <span className={`text-sm font-black ${tyre.wetGrip <= 'B' ? 'text-emerald-400' : tyre.wetGrip <= 'D' ? 'text-yellow-400' : 'text-racing-red'}`}>{tyre.wetGrip || '?'}</span>
+              <span className="text-[8px] text-gray-600">/G</span>
+            </div>
+          </div>
+          <div className="w-px h-7 bg-white/5" />
+          <div className="flex-1 text-center">
+            <p className="text-[8px] uppercase text-gray-500 font-bold tracking-wider mb-0.5">Noise</p>
+            <div className="flex items-center justify-center gap-0.5">
+              <span className="text-sm font-black text-bright-snow">{tyre.noiseLevel || '?'}</span>
+              <span className="text-[8px] text-gray-600">dB</span>
+            </div>
+          </div>
+        </div>
+
         {/* Price */}
         <div className="mt-auto">
           <div className="flex items-baseline gap-1.5 mb-1">

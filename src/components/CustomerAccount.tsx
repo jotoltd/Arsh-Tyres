@@ -64,64 +64,77 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
   if (!user) {
     return (
       <div className="max-w-md mx-auto my-12 px-4">
-        <div className="bg-black rounded-2xl border border-white/5 shadow-xl overflow-hidden">
-          <div className="p-6 border-b border-white/5 text-center">
-            <div className="w-16 h-16 bg-racing-red/20 rounded-full flex items-center justify-center mx-auto mb-3 border border-racing-red/30">
-              <User className="w-8 h-8 text-racing-red" />
+        <div className="relative">
+          {/* Glow backdrop */}
+          <div className="absolute inset-0 bg-racing-red/10 blur-3xl rounded-full scale-90 -z-10" />
+
+          <div className="bg-gradient-to-b from-[#1a1c1c] to-black rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+            {/* Top accent bar */}
+            <div className="h-1 w-full bg-gradient-to-r from-transparent via-racing-red to-transparent" />
+
+            <div className="p-8 border-b border-white/5 text-center">
+              <div className="relative inline-block mb-4">
+                <div className="absolute inset-0 bg-racing-red/30 blur-xl rounded-full" />
+                <div className="relative w-20 h-20 bg-gradient-to-br from-racing-red/20 to-black rounded-2xl flex items-center justify-center mx-auto border border-racing-red/30">
+                  <img src="/assets/logo.jpg" alt="Arsh Autos" className="w-14 h-14 rounded-xl object-contain" />
+                </div>
+              </div>
+              <h2 className="font-display font-black text-bright-snow text-2xl">Welcome Back</h2>
+              <p className="text-gray-400 text-sm mt-1">
+                Sign in to view your orders and bookings
+              </p>
             </div>
-            <h2 className="font-display font-extrabold text-bright-snow text-2xl">My Account</h2>
-            <p className="text-gray-400 text-sm mt-1">
-              Sign in to view your orders and bookings
-            </p>
+
+            <form onSubmit={handleAuth} className="p-8 space-y-5">
+              <div>
+                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1.5">Email</label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    className="w-full bg-black/40 border border-white/10 text-bright-snow rounded-xl pl-10 pr-3 py-3 text-sm focus:outline-none focus:border-racing-red focus:ring-2 focus:ring-racing-red/20 transition"
+                    placeholder="you@email.com"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1.5">Password</label>
+                <div className="relative">
+                  <input
+                    type="password"
+                    required
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    className="w-full bg-black/40 border border-white/10 text-bright-snow rounded-xl px-3 py-3 text-sm focus:outline-none focus:border-racing-red focus:ring-2 focus:ring-racing-red/20 transition"
+                    placeholder="••••••••"
+                  />
+                </div>
+              </div>
+
+              {error && (
+                <div className="bg-racing-red/10 border border-racing-red/20 rounded-xl p-3 text-xs text-racing-red font-semibold flex items-center gap-2 animate-fade-in-up">
+                  <AlertTriangle className="w-4 h-4 shrink-0" />
+                  {error}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex items-center justify-center gap-2 bg-racing-red hover:bg-racing-red/90 text-bright-snow font-extrabold text-sm px-5 py-3.5 rounded-xl transition shadow-lg shadow-racing-red/30 disabled:opacity-50 hover:shadow-racing-red/40"
+              >
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <User className="w-4 h-4" />}
+                Sign In
+              </button>
+
+              <div className="text-center text-xs text-gray-400 pt-2 border-t border-white/5">
+                No account yet? An account is created automatically when you place your first order. We'll email you your login details.
+              </div>
+            </form>
           </div>
-
-          <form onSubmit={handleAuth} className="p-6 space-y-4">
-            <div>
-              <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1.5">Email</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  className="w-full bg-[#1e2121] border border-white/10 text-bright-snow rounded-lg pl-10 pr-3 py-2.5 text-sm focus:outline-none focus:border-racing-red"
-                  placeholder="you@email.com"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1.5">Password</label>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                className="w-full bg-[#1e2121] border border-white/10 text-bright-snow rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-racing-red"
-                placeholder="••••••••"
-              />
-            </div>
-
-            {error && (
-              <div className="bg-racing-red/10 border border-racing-red/20 rounded-lg p-3 text-xs text-racing-red font-semibold flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 shrink-0" />
-                {error}
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex items-center justify-center gap-2 bg-racing-red hover:bg-racing-red/90 text-bright-snow font-extrabold text-sm px-5 py-3 rounded-xl transition shadow-lg shadow-racing-red/30 disabled:opacity-50"
-            >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <User className="w-4 h-4" />}
-              Sign In
-            </button>
-
-            <div className="text-center text-xs text-gray-400 pt-2">
-              No account yet? An account is created automatically when you place your first order. We'll email you your login details.
-            </div>
-          </form>
         </div>
       </div>
     );
@@ -131,13 +144,16 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
   return (
     <div className="max-w-4xl mx-auto my-8 px-4 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
+      <div className="bg-gradient-to-r from-racing-red/10 via-black to-black rounded-2xl border border-white/5 p-6 flex items-center justify-between flex-wrap gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-racing-red/20 rounded-xl flex items-center justify-center border border-racing-red/30">
-            <User className="w-6 h-6 text-racing-red" />
+          <div className="relative">
+            <div className="absolute inset-0 bg-racing-red/20 blur-lg rounded-xl" />
+            <div className="relative w-14 h-14 bg-gradient-to-br from-racing-red/20 to-black rounded-xl flex items-center justify-center border border-racing-red/30">
+              <User className="w-7 h-7 text-racing-red" />
+            </div>
           </div>
           <div>
-            <h2 className="font-display font-extrabold text-bright-snow text-2xl">My Account</h2>
+            <h2 className="font-display font-black text-bright-snow text-2xl">My Account</h2>
             <p className="text-xs text-gray-400">{user.email}</p>
           </div>
         </div>
@@ -152,28 +168,28 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-black rounded-xl p-4 border border-white/5">
+        <div className="bg-gradient-to-br from-blue-500/5 to-black rounded-xl p-4 border border-blue-500/10">
           <div className="flex items-center gap-2 mb-1">
             <Calendar className="w-4 h-4 text-blue-400" />
             <span className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Scheduled</span>
           </div>
           <p className="text-2xl font-extrabold text-bright-snow">{stats.scheduled}</p>
         </div>
-        <div className="bg-black rounded-xl p-4 border border-white/5">
+        <div className="bg-gradient-to-br from-emerald-500/5 to-black rounded-xl p-4 border border-emerald-500/10">
           <div className="flex items-center gap-2 mb-1">
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
             <span className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Completed</span>
           </div>
           <p className="text-2xl font-extrabold text-bright-snow">{stats.completed}</p>
         </div>
-        <div className="bg-black rounded-xl p-4 border border-white/5">
+        <div className="bg-gradient-to-br from-racing-red/5 to-black rounded-xl p-4 border border-racing-red/10">
           <div className="flex items-center gap-2 mb-1">
             <Package className="w-4 h-4 text-racing-red" />
             <span className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Tyres Bought</span>
           </div>
           <p className="text-2xl font-extrabold text-bright-snow">{stats.tyresBought}</p>
         </div>
-        <div className="bg-black rounded-xl p-4 border border-white/5">
+        <div className="bg-gradient-to-br from-emerald-500/5 to-black rounded-xl p-4 border border-emerald-500/10">
           <div className="flex items-center gap-2 mb-1">
             <TrendingUp className="w-4 h-4 text-emerald-400" />
             <span className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Total Spent</span>

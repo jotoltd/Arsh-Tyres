@@ -181,3 +181,61 @@
   opacity: 0;
 }
 
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0d0e0e;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2c2c;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3c3c;
+}
+
+/* Safe area for notched phones */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.h-safe {
+  height: calc(4rem + env(safe-area-inset-bottom, 0px));
+}
+
+/* Shimmer for skeletons */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, #1e2121 25%, #2a2d2d 50%, #1e2121 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Success checkmark pop */
+@keyframes check-pop {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-check-pop {
+  animation: check-pop 0.5s ease-out forwards;
+}
+
+/* Slide in from right */
+@keyframes slideInRight {
+  from { transform: translateX(30px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.animate-slide-in-right {
+  animation: slideInRight 0.4s ease-out forwards;
+}

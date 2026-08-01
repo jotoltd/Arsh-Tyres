@@ -409,16 +409,19 @@ export default function App() {
       )}
 
       {/* Main Body Grid */}
-      <main className="w-full px-4 sm:px-6 lg:px-8 py-8">
+      <main className="w-full px-4 sm:px-6 lg:px-8 py-8 pb-24 sm:pb-8">
         <Routes>
           <Route path="/search-results" element={<SearchResults />} />
           <Route path="/" element={
             <>
               {/* SUCCESS CONFIRMATION RECEIPT SCREEN */}
               {lastConfirmedBooking && (
-                <div className="bg-black border border-emerald-500/20 rounded-3xl p-6 md:p-8 shadow-xl w-full text-center mb-12 space-y-6">
-                  <div className="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto border border-emerald-500/20">
-                    <CheckCircle2 className="w-10 h-10" />
+                <div className="bg-gradient-to-b from-black to-[#0a0a0a] border border-emerald-500/20 rounded-3xl p-6 md:p-10 shadow-2xl w-full text-center mb-12 space-y-6 animate-fade-in-up">
+                  <div className="relative inline-block">
+                    <div className="absolute inset-0 bg-emerald-500/20 blur-2xl rounded-full scale-150" />
+                    <div className="relative w-20 h-20 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto border-2 border-emerald-500/30 animate-check-pop">
+                      <CheckCircle2 className="w-12 h-12" />
+                    </div>
                   </div>
 
                   <div className="space-y-2">
@@ -613,16 +616,16 @@ export default function App() {
                   <h3 className="font-display font-extrabold text-bright-snow text-lg mb-4 px-1">Browse by type</h3>
                   <div className="grid grid-cols-3 gap-3 sm:gap-4">
                     {[
-                      { label: 'Standard', desc: 'Everyday car tyres', icon: '🚗', color: 'racing-red' },
-                      { label: 'Runflat', desc: 'Puncture-safe tyres', icon: '🛡️', color: 'blue-500' },
-                      { label: 'Commercial', desc: 'Van & heavy-duty', icon: '🚐', color: 'amber-500' },
+                      { label: 'Standard', desc: 'Everyday car tyres', icon: '🚗', border: 'hover:border-racing-red/30' },
+                      { label: 'Runflat', desc: 'Puncture-safe tyres', icon: '🛡️', border: 'hover:border-blue-500/30' },
+                      { label: 'Commercial', desc: 'Van & heavy-duty', icon: '🚐', border: 'hover:border-amber-500/30' },
                     ].map(cat => (
                       <button
                         key={cat.label}
                         onClick={() => { setFilters({ ...filters, category: cat.label }); setSearchTriggered(true); setTimeout(() => document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth' }), 100); }}
-                        className="bg-[#1e2121] hover:bg-[#252828] border border-white/5 hover:border-white/15 rounded-2xl p-4 sm:p-5 text-left transition group"
+                        className={`bg-[#1e2121] hover:bg-[#252828] border border-white/5 ${cat.border} rounded-2xl p-4 sm:p-5 text-left transition-all duration-200 group hover:-translate-y-0.5 hover:shadow-lg`}
                       >
-                        <span className="text-2xl sm:text-3xl block mb-2">{cat.icon}</span>
+                        <span className="text-2xl sm:text-3xl block mb-2 transition-transform duration-200 group-hover:scale-110">{cat.icon}</span>
                         <p className="font-display font-bold text-bright-snow text-sm sm:text-base">{cat.label}</p>
                         <p className="text-[11px] text-gray-400 hidden sm:block">{cat.desc}</p>
                       </button>
@@ -734,12 +737,16 @@ export default function App() {
 
                 {/* Empty state */}
                 {filteredTyres.length === 0 && (
-                  <div className="bg-[#1e2121] border border-white/10 rounded-2xl p-8 text-center w-full">
-                    <div className="text-4xl mb-3">🔍</div>
+                  <div className="bg-gradient-to-b from-[#1e2121] to-black border border-white/10 rounded-2xl p-10 text-center w-full">
+                    <div className="relative inline-block mb-4">
+                      <div className="absolute inset-0 bg-racing-red/10 blur-2xl rounded-full" />
+                      <div className="relative w-16 h-16 bg-racing-red/10 rounded-2xl flex items-center justify-center mx-auto border border-racing-red/20">
+                        <Search className="w-8 h-8 text-racing-red" />
+                      </div>
+                    </div>
                     <h4 className="font-display font-bold text-bright-snow text-lg mb-1">No tyres found</h4>
-                    <p className="text-sm text-gray-400 mb-5">
-                      We couldn't find tyres matching {filters.width || '?'}/{filters.profile || '?'} R{filters.rim || '?'}.<br />
-                      We can still source them — give us a call.
+                    <p className="text-sm text-gray-400 mb-5 max-w-sm mx-auto">
+                      We couldn't find tyres matching {filters.width || '?'}/{filters.profile || '?'} R{filters.rim || '?'}. We can still source them — give us a call.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
                       <a
@@ -887,7 +894,7 @@ export default function App() {
       </footer>
 
       {/* Mobile bottom tab bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-black/95 backdrop-blur-lg border-t border-white/10">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-black/95 backdrop-blur-lg border-t border-white/10 pb-safe">
         <div className="flex items-center justify-around h-16">
           <button
             onClick={() => { navigate('/'); setActiveTab('shop'); setLastConfirmedBooking(null); }}
