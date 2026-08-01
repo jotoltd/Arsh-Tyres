@@ -549,7 +549,7 @@ export default function App() {
                       <div className="pt-3 space-y-2">
                         <div className="flex justify-between font-medium">
                           <span className="text-gray-500">Vehicle:</span>
-                          <span className="text-bright-snow font-bold font-mono bg-yellow-400 text-black px-1.5 py-0.5 rounded tracking-wider">{lastConfirmedBooking.vehicleRegistration}</span>
+                          <span className="font-bold font-mono bg-yellow-400 text-black px-1.5 py-0.5 rounded tracking-wider">{lastConfirmedBooking.vehicleRegistration}</span>
                         </div>
                         <div className="flex justify-between font-medium">
                           <span className="text-gray-500">Total Charged:</span>
