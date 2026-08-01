@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Tyre, Booking } from '../types';
 import { TYRE_DATABASE } from '../data';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
-import { Trash2, Edit, Plus, Package, Calendar, CheckCircle, XCircle, Clock, ShieldCheck, Users, Download, AlertTriangle, Tag, TrendingUp, BarChart3, FileText, CreditCard, MessageSquare, Settings, FlaskConical, Zap, LogOut, Lock, Loader2, X, Check, Search, Upload } from 'lucide-react';
+import { Trash2, Edit, Plus, Package, Calendar, CheckCircle, XCircle, Clock, ShieldCheck, Users, Download, AlertTriangle, Tag, TrendingUp, BarChart3, FileText, CreditCard, MessageSquare, Settings, FlaskConical, Zap, LogOut, Lock, Loader2, X, Check, Search, Upload, ChevronUp, ChevronDown } from 'lucide-react';
 import { SkeletonRow, SkeletonStatCard } from './Skeleton';
 import { getStripeMode, setStripeMode, type StripeMode } from '../paymentSettings';
 import { isAdminAuthed, adminLogin, adminLogout } from '../adminAuth';
@@ -69,6 +69,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
   const [invBrandFilter, setInvBrandFilter] = useState<string>('All');
   const [invSort, setInvSort] = useState<'brand' | 'stock-low' | 'price-high' | 'size'>('brand');
   const [imageUploading, setImageUploading] = useState(false);
+  const [expandedCustomerId, setExpandedCustomerId] = useState<string | null>(null);
   const configured = isSupabaseConfigured();
 
   const handleImageUpload = async (file: File, onDone: (url: string) => void) => {
@@ -1455,6 +1456,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
         <div className="carbon-fiber rounded-2xl border border-white/5 shadow-xl overflow-hidden">
           <div className="p-6 border-b border-white/5">
             <h3 className="font-display font-bold text-bright-snow text-lg">Customer Management</h3>
+            <p className="text-xs text-gray-400 mt-1">{customers.length} registered customers</p>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -1465,25 +1467,61 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Phone</th>
                   <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Total Spent</th>
                   <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Bookings</th>
+                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
                 {customers.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-gray-400">
+                    <td colSpan={6} className="px-6 py-12 text-center text-gray-400">
                       No customers yet
                     </td>
                   </tr>
                 ) : (
-                  customers.map((customer, index) => (
-                    <tr key={index} className="hover:bg-white/5 transition">
-                      <td className="px-6 py-4 text-sm font-medium text-bright-snow">{customer.name}</td>
-                      <td className="px-6 py-4 text-sm text-gray-400">{customer.email}</td>
-                      <td className="px-6 py-4 text-sm text-gray-400">{customer.phone}</td>
-                      <td className="px-6 py-4 text-sm font-bold text-emerald-400">£{customer.totalSpent.toLocaleString()}</td>
-                      <td className="px-6 py-4 text-sm text-gray-400">{customer.bookingCount}</td>
-                    </tr>
-                  ))
+                  customers.map((customer, index) => {
+                    const customerBookings = bookings.filter(b => b.customerEmail === customer.email);
+                    const isExpanded = expandedCustomerId === customer.email;
+                    return (
+                      <React.Fragment key={index}>
+                        <tr className="hover:bg-white/5 transition cursor-pointer" onClick={() => setExpandedCustomerId(isExpanded ? null : customer.email)}>
+                          <td className="px-6 py-4 text-sm font-medium text-bright-snow">{customer.name}</td>
+                          <td className="px-6 py-4 text-sm text-gray-400">{customer.email}</td>
+                          <td className="px-6 py-4 text-sm text-gray-400">{customer.phone}</td>
+                          <td className="px-6 py-4 text-sm font-bold text-emerald-400">£{customer.totalSpent.toLocaleString()}</td>
+                          <td className="px-6 py-4 text-sm text-gray-400">{customer.bookingCount}</td>
+                          <td className="px-6 py-4 text-sm text-gray-500">
+                            {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                          </td>
+                        </tr>
+                        {isExpanded && (
+                          <tr className="bg-black/30">
+                            <td colSpan={6} className="px-6 py-4">
+                              <div className="space-y-2">
+                                <p className="text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-2">Booking History</p>
+                                {customerBookings.map(b => (
+                                  <div key={b.id} className="flex items-center justify-between bg-[#1e2121] rounded-lg p-3 text-xs">
+                                    <div className="flex items-center gap-3">
+                                      <span className="font-mono font-bold text-racing-red">{b.id.toUpperCase()}</span>
+                                      <span className="text-gray-300">{b.date} · {b.timeSlot}</span>
+                                      <span className="text-gray-400">{b.cartItems.reduce((s, i) => s + i.quantity, 0)} tyres</span>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                      <span className="font-bold text-bright-snow">£{b.totalPrice.toFixed(2)}</span>
+                                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                        b.status === 'Completed' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                                        b.status === 'Scheduled' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' :
+                                        'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                                      }`}>{b.status}</span>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    );
+                  })
                 )}
               </tbody>
             </table>
