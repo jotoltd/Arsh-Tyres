@@ -94,7 +94,7 @@ function buildEmailHtml(data: BookingEmailData): string {
       <div style="background:#0d0e0e;border-radius:10px;padding:16px;border:1px solid #2a2c2c;">
         <p style="color:#aaa;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px;font-weight:bold;">Need to change anything?</p>
         <p style="color:#ccc;font-size:14px;margin:0 0 4px;">Call us: <a href="tel:02084271234" style="color:#ef1219;text-decoration:none;font-weight:bold;">020 8427 1234</a></p>
-        <p style="color:#ccc;font-size:14px;margin:0;">48 Harrow Road, London, HA1 2YF</p>
+        <p style="color:#ccc;font-size:14px;margin:0;">5 Rowan Rd, London, SW16 5JF</p>
       </div>
 
       <p style="color:#666;font-size:12px;text-align:center;margin:24px 0 0;">

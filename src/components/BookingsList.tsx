@@ -201,8 +201,8 @@ export default function BookingsList({ bookings, onCancelBooking }: BookingsList
                           </h4>
                           <div className="text-xs text-gray-400 space-y-1">
                             <p className="font-bold text-bright-snow">Arsh Autos Auto Tyre Shop</p>
-                            <p>48 Harrow Road, Harrow</p>
-                            <p>London, HA1 2YF</p>
+                            <p>5 Rowan Rd, Streatham</p>
+                            <p>London, SW16 5JF</p>
                             <p className="font-semibold text-racing-red pt-1">Tel: 020 8427 1234</p>
                           </div>
                         </>

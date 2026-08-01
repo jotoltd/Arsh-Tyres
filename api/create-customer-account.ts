@@ -40,7 +40,7 @@ function buildWelcomeHtml(email: string, password: string): string {
       </div>
 
       <p style="color:#666;font-size:12px;text-align:center;margin:24px 0 0;">
-        Arsh Autos Auto Tyre Shop — 48 Harrow Road, London, HA1 2YF — 020 8427 1234
+        Arsh Autos Auto Tyre Shop — 5 Rowan Rd, London, SW16 5JF — 020 8427 1234
       </p>
     </div>
   </div>

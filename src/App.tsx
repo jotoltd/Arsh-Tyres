@@ -291,7 +291,7 @@ export default function App() {
       {/* Top Banner Message */}
       <div className="bg-racing-red text-bright-snow text-xs py-2 px-4 text-center font-semibold border-b border-white/5">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-4">
-          <span>📍 48 Harrow Road, London, HA1 2YF</span>
+          <span>📍 5 Rowan Rd, London, SW16 5JF</span>
           <span className="hidden sm:inline text-bright-snow/40">|</span>
           <span>📞 020 8427 1234</span>
           <span className="hidden md:inline text-bright-snow/40">|</span>
@@ -475,7 +475,7 @@ export default function App() {
                   <div className="w-9 h-9 bg-racing-red/10 rounded-lg flex items-center justify-center border border-racing-red/20 shrink-0">
                     <MapPin className="w-4 h-4 text-racing-red" />
                   </div>
-                  <span className="text-gray-400">48 Harrow Road, London, HA1 2YF</span>
+                  <span className="text-gray-400">5 Rowan Rd, London, SW16 5JF</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
                   <div className="w-9 h-9 bg-racing-red/10 rounded-lg flex items-center justify-center border border-racing-red/20 shrink-0">
@@ -544,7 +544,7 @@ export default function App() {
                             <MapPin className="w-4 h-4 text-racing-red shrink-0" />
                             <span>
                               {lastConfirmedBooking.fittingType === 'shop'
-                                ? 'Fitting Location: Arsh Autos, 48 Harrow Road, London, HA1 2YF'
+                                ? 'Fitting Location: Arsh Autos, 5 Rowan Rd, London, SW16 5JF'
                                 : <>Mobile Fitting: Sent to customer contact address for reg plate <span className="font-mono bg-yellow-400 text-black font-black px-1.5 py-0.5 rounded tracking-wider text-xs">{lastConfirmedBooking.vehicleRegistration}</span></>}
                             </span>
                           </div>
@@ -738,7 +738,7 @@ export default function App() {
                   {/* Bottom location strip */}
                   <div className="absolute bottom-0 left-0 right-0 z-10 bg-black/60 backdrop-blur-md border-t border-white/5 py-2.5">
                     <div className="flex items-center justify-center gap-4 text-[11px] text-white/70">
-                      <span className="flex items-center gap-1.5"><MapPin className="w-3 h-3 text-racing-red" /> 48 Harrow Road, HA1 2YF</span>
+                      <span className="flex items-center gap-1.5"><MapPin className="w-3 h-3 text-racing-red" /> 5 Rowan Rd, SW16 5JF</span>
                       <span className="hidden sm:inline text-gray-600">·</span>
                       <span className="hidden sm:flex items-center gap-1.5"><Phone className="w-3 h-3 text-racing-red" /> 020 8427 1234</span>
                       <span className="hidden sm:inline text-gray-600">·</span>
@@ -1000,14 +1000,14 @@ export default function App() {
               </div>
             </div>
             <p className="leading-relaxed text-gray-400/80">
-              Premier tyre fitting and wheel alignment specialist in Harrow, London. Premium brands, expert fitting, and competitive prices.
+              Premier tyre fitting and wheel alignment specialist in Streatham, London. Premium brands, expert fitting, and competitive prices.
             </p>
             {/* Social links */}
             <div className="flex items-center gap-2 pt-1">
               <a href="tel:02084271234" className="w-9 h-9 rounded-lg bg-[#1e2121] border border-white/5 flex items-center justify-center text-gray-400 hover:text-racing-red hover:border-racing-red/30 transition">
                 <Phone className="w-4 h-4" />
               </a>
-              <a href="https://maps.google.com/?q=48+Harrow+Road+London+HA1+2YF" target="_blank" rel="noopener" className="w-9 h-9 rounded-lg bg-[#1e2121] border border-white/5 flex items-center justify-center text-gray-400 hover:text-racing-red hover:border-racing-red/30 transition">
+              <a href="https://maps.google.com/?q=5+Rowan+Rd+London+SW16+5JF" target="_blank" rel="noopener" className="w-9 h-9 rounded-lg bg-[#1e2121] border border-white/5 flex items-center justify-center text-gray-400 hover:text-racing-red hover:border-racing-red/30 transition">
                 <MapPin className="w-4 h-4" />
               </a>
               <a href="https://facebook.com" target="_blank" rel="noopener" className="w-9 h-9 rounded-lg bg-[#1e2121] border border-white/5 flex items-center justify-center text-gray-400 hover:text-racing-red hover:border-racing-red/30 transition">
@@ -1048,7 +1048,7 @@ export default function App() {
             <div className="space-y-2 text-bright-snow/80">
               <p className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-racing-red shrink-0 mt-0.5" />
-                <span>48 Harrow Road<br />London, HA1 2YF</span>
+                <span>5 Rowan Rd<br />London, SW16 5JF</span>
               </p>
               <p className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-racing-red shrink-0" />
@@ -1058,7 +1058,7 @@ export default function App() {
             {/* Map embed */}
             <div className="mt-4 rounded-xl overflow-hidden border border-white/5 h-32">
               <iframe
-                src="https://maps.google.com/maps?q=48%20Harrow%20Road%20London%20HA1%202YF&t=&z=14&ie=UTF8&iwloc=&output=embed"
+                src="https://maps.google.com/maps?q=5%20Rowan%20Rd%20London%20SW16%205JF&t=&z=14&ie=UTF8&iwloc=&output=embed"
                 className="w-full h-full grayscale opacity-60"
                 loading="lazy"
                 title="Arsh Autos Location"

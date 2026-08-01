@@ -550,7 +550,7 @@ export default function CartSection({
                   </>
                 ) : (
                   <>
-                    <p>Collect from: 48 Harrow Road, London, HA1 2YF</p>
+                    <p>Collect from: 5 Rowan Rd, London, SW16 5JF</p>
                     <p>Opening hours: Mon-Sat 8:30am - 6pm, Sun closed</p>
                     <p>Pay in shop when you collect - no upfront payment</p>
                   </>
@@ -790,7 +790,7 @@ export default function CartSection({
                   ) : (
                     <div className="text-xs">
                       <span className="text-gray-400 block">Pick up from</span>
-                      <span className="text-bright-snow font-bold">48 Harrow Road, London, HA1 2YF</span>
+                      <span className="text-bright-snow font-bold">5 Rowan Rd, London, SW16 5JF</span>
                       <span className="text-gray-400 block mt-1.5">Opening hours</span>
                       <span className="text-bright-snow font-bold">Mon-Sat 8:30am - 6pm</span>
                     </div>
