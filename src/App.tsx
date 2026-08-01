@@ -613,16 +613,29 @@ export default function App() {
                           </div>
                         </div>
                         <h2 className="font-display font-black text-bright-snow text-2xl mb-2">Sign In to View Your Bookings</h2>
-                        <p className="text-gray-400 text-sm mb-6">
+                        <p className="text-gray-400 text-sm mb-4">
                           Log in to see your fitting appointments, track orders, and manage your bookings.
                         </p>
-                        <button
-                          onClick={() => setActiveTab('account')}
-                          className="bg-racing-red hover:bg-racing-red/90 text-bright-snow font-extrabold text-sm px-6 py-3 rounded-xl transition shadow-lg shadow-racing-red/30 inline-flex items-center gap-2"
-                        >
-                          <User className="w-4 h-4" />
-                          Go to Sign In
-                        </button>
+                        <div className="bg-racing-red/5 border border-racing-red/10 rounded-xl p-4 mb-6 text-left">
+                          <p className="text-xs text-gray-300 leading-relaxed">
+                            <span className="text-racing-red font-bold">Don't have an account yet?</span> No worries — an account is created automatically when you place your first order. We'll email you your login details so you can track and manage all your bookings online.
+                          </p>
+                        </div>
+                        <div className="flex flex-col gap-3">
+                          <button
+                            onClick={() => setActiveTab('account')}
+                            className="bg-racing-red hover:bg-racing-red/90 text-bright-snow font-extrabold text-sm px-6 py-3 rounded-xl transition shadow-lg shadow-racing-red/30 inline-flex items-center justify-center gap-2"
+                          >
+                            <User className="w-4 h-4" />
+                            Sign In
+                          </button>
+                          <button
+                            onClick={() => setActiveTab('shop')}
+                            className="text-gray-400 hover:text-bright-snow font-semibold text-xs transition"
+                          >
+                            Browse tyres & place an order →
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
