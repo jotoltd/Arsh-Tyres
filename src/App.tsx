@@ -8,6 +8,7 @@ import TyreCard from './components/TyreCard';
 import CartSection from './components/CartSection';
 import BookingsList from './components/BookingsList';
 import AdminPanel from './components/AdminPanel';
+import CustomerAccount from './components/CustomerAccount';
 import SearchResults from './pages/SearchResults';
 import {
   Wrench,
@@ -48,7 +49,7 @@ export default function App() {
 
   const [selectedReg, setSelectedReg] = useState('');
   const [selectedMakeModel, setSelectedMakeModel] = useState('');
-  const [activeTab, setActiveTab] = useState<'shop' | 'bookings' | 'cart' | 'admin'>('shop');
+  const [activeTab, setActiveTab] = useState<'shop' | 'bookings' | 'cart' | 'admin' | 'account'>('shop');
   const [searchTriggered, setSearchTriggered] = useState(false);
   const [sortBy, setSortBy] = useState<'price-low' | 'price-high' | 'size'>('price-low');
   const [lastConfirmedBooking, setLastConfirmedBooking] = useState<Booking | null>(null);
@@ -174,6 +175,20 @@ export default function App() {
 
   const handleCancelBooking = async (bookingId: string) => {
     await cancelBooking(bookingId);
+  };
+
+  const handleReorder = (items: CartItem[]) => {
+    const updated = [...cartItems];
+    items.forEach(item => {
+      const existingIndex = updated.findIndex(i => i.tyre.id === item.tyre.id);
+      if (existingIndex >= 0) {
+        updated[existingIndex].quantity += item.quantity;
+      } else {
+        updated.push({ ...item });
+      }
+    });
+    setCartItems(updated);
+    setActiveTab('cart');
   };
 
   const handleUpdateBookingStatus = async (bookingId: string, status: Booking['status']) => {
@@ -333,6 +348,18 @@ export default function App() {
             >
               <ShieldCheck className="w-4 h-4" />
               Admin
+            </button>
+
+            <button
+              onClick={() => { navigate('/'); setActiveTab('account'); setLastConfirmedBooking(null); }}
+              className={`px-4 py-2 text-sm font-bold rounded-lg transition flex items-center gap-1.5 ${
+                activeTab === 'account' && location.pathname === '/'
+                  ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
+                  : 'text-gray-400 hover:bg-bright-snow/5 hover:text-bright-snow'
+              }`}
+            >
+              <User className="w-4 h-4" />
+              Account
             </button>
           </nav>
 
@@ -570,6 +597,11 @@ export default function App() {
               {/* ADMIN TAB */}
               {activeTab === 'admin' && (
                 <AdminPanel bookings={bookings} onUpdateBooking={handleUpdateBookingStatus} />
+              )}
+
+              {/* ACCOUNT TAB */}
+              {activeTab === 'account' && (
+                <CustomerAccount onReorder={handleReorder} />
               )}
 
               {/* FIND & SHOP TAB */}
@@ -996,6 +1028,16 @@ export default function App() {
           >
             <ShieldCheck className="w-5 h-5" />
             <span className="text-[10px] font-bold">Admin</span>
+          </button>
+
+          <button
+            onClick={() => { navigate('/'); setActiveTab('account'); setLastConfirmedBooking(null); }}
+            className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
+              activeTab === 'account' && location.pathname === '/' ? 'text-racing-red' : 'text-gray-500'
+            }`}
+          >
+            <User className="w-5 h-5" />
+            <span className="text-[10px] font-bold">Account</span>
           </button>
         </div>
       </nav>
