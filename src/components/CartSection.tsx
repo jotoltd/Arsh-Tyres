@@ -8,7 +8,7 @@ import StripePaymentForm from './StripePayment';
 import { getStripePublishableKey, getStripeMode } from '../paymentSettings';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { ShoppingBag, Trash2, ChevronRight, ChevronLeft, Search, KeyRound, Check, Car, Calendar, User, Sparkles, ShieldCheck, Wrench, Package, CreditCard, Lock, Loader2, Tag, X } from 'lucide-react';
-import { isStockManagementEnabled } from '../stockSettings';
+import { useSupabase } from '../contexts/SupabaseContext';
 
 let stripePromiseCache: Promise<any> | null = null;
 function getStripePromise() {
@@ -59,6 +59,7 @@ export default function CartSection({
   selectedReg,
   selectedMakeModel
 }: CartSectionProps) {
+  const { stockManagementEnabled } = useSupabase();
   const [step, setStep] = useState(0);
   const [fittingType, setFittingType] = useState<'shop' | 'collection'>('shop');
   const [selectedDate, setSelectedDate] = useState('');
@@ -406,7 +407,7 @@ export default function CartSection({
                       <div className="flex items-center border border-white/5 rounded-lg overflow-hidden h-9 bg-[#1e2121]">
                         <button type="button" onClick={() => onUpdateQuantity(item.tyre.id, Math.max(1, item.quantity - 1))} className="px-3 py-0.5 hover:bg-racing-red/20 hover:text-racing-red font-semibold text-gray-400 text-sm transition">-</button>
                         <span className="px-3 font-mono font-bold text-xs text-bright-snow">{item.quantity}</span>
-                        <button type="button" onClick={() => onUpdateQuantity(item.tyre.id, isStockManagementEnabled() ? Math.min(item.tyre.stock, item.quantity + 1) : item.quantity + 1)} className="px-3 py-0.5 hover:bg-racing-red/20 hover:text-racing-red font-semibold text-gray-400 text-sm transition">+</button>
+                        <button type="button" onClick={() => onUpdateQuantity(item.tyre.id, stockManagementEnabled ? Math.min(item.tyre.stock, item.quantity + 1) : item.quantity + 1)} className="px-3 py-0.5 hover:bg-racing-red/20 hover:text-racing-red font-semibold text-gray-400 text-sm transition">+</button>
                       </div>
                       <div className="text-right">
                         <p className="font-display font-extrabold text-bright-snow text-sm">£{(getUnitPrice(item.tyre, item.quantity) * item.quantity).toFixed(2)}</p>

@@ -6,7 +6,7 @@ import { Trash2, Edit, Plus, Package, Calendar, CheckCircle, XCircle, Clock, Shi
 import { SkeletonRow, SkeletonStatCard } from './Skeleton';
 import { getStripeMode, setStripeMode, type StripeMode } from '../paymentSettings';
 import { isAdminAuthed, adminLogin, adminLogout } from '../adminAuth';
-import { isStockManagementEnabled, setStockManagementEnabled } from '../stockSettings';
+import { useSupabase } from '../contexts/SupabaseContext';
 
 interface AdminPanelProps {
   bookings: Booking[];
@@ -29,6 +29,7 @@ interface Staff {
 }
 
 export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProps) {
+  const { stockManagementEnabled, setStockManagementEnabled: setStockManagementSupabase } = useSupabase();
   const [authed, setAuthed] = useState(isAdminAuthed());
   const [loginUser, setLoginUser] = useState('');
   const [loginPass, setLoginPass] = useState('');
@@ -69,7 +70,6 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
   const [invSort, setInvSort] = useState<'brand' | 'stock-low' | 'price-high' | 'size'>('brand');
 
   const [stripeMode, setStripeModeState] = useState<StripeMode>(getStripeMode());
-  const [stockManagementEnabled, setStockManagementEnabledState] = useState(isStockManagementEnabled());
   const configured = isSupabaseConfigured();
 
   const handleToggleStripeMode = () => {
@@ -79,9 +79,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
   };
 
   const handleToggleStockManagement = () => {
-    const newVal = !stockManagementEnabled;
-    setStockManagementEnabled(newVal);
-    setStockManagementEnabledState(newVal);
+    setStockManagementSupabase(!stockManagementEnabled);
   };
 
   const handleLogin = () => {

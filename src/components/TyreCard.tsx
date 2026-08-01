@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Tyre } from '../types';
 import { getUnitPrice } from '../data';
 import { ShoppingBag, ShieldCheck, Truck, Layers, Disc, Wrench, Check, Gauge } from 'lucide-react';
-import { isStockManagementEnabled } from '../stockSettings';
+import { useSupabase } from '../contexts/SupabaseContext';
 
 interface TyreCardProps {
   tyre: Tyre;
@@ -32,6 +32,7 @@ const BRAND_COLORS: Record<string, string> = {
 };
 
 export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
+  const { stockManagementEnabled } = useSupabase();
   const [quantity, setQuantity] = useState(4);
   const [isAdded, setIsAdded] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -86,8 +87,7 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
         </span>
         {/* Stock badge */}
         {(() => {
-          const stockOn = isStockManagementEnabled();
-          if (!stockOn) return (
+          if (!stockManagementEnabled) return (
             <span className="absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
               In stock
             </span>
@@ -166,9 +166,9 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
               </button>
               <span className="px-3 font-mono font-bold text-sm text-bright-snow">{quantity}</span>
               <button
-                onClick={() => setQuantity(prev => isStockManagementEnabled() ? Math.min(tyre.stock, prev + 1) : prev + 1)}
+                onClick={() => setQuantity(prev => stockManagementEnabled ? Math.min(tyre.stock, prev + 1) : prev + 1)}
                 className="px-3 py-1 hover:bg-white/5 font-bold text-gray-400 transition disabled:opacity-30"
-                disabled={isStockManagementEnabled() && quantity >= tyre.stock}
+                disabled={stockManagementEnabled && quantity >= tyre.stock}
               >
                 +
               </button>

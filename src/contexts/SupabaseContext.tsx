@@ -20,6 +20,9 @@ interface SupabaseContextType {
   signIn: (email: string, password: string) => Promise<{ error?: Error }>;
   signUp: (email: string, password: string) => Promise<{ error?: Error }>;
   signOut: () => Promise<void>;
+  stockManagementEnabled: boolean;
+  setStockManagementEnabled: (enabled: boolean) => Promise<void>;
+  settingsLoading: boolean;
 }
 
 const SupabaseContext = createContext<SupabaseContextType | null>(null);
@@ -89,6 +92,10 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
   const [tyresError, setTyresError] = useState<string | null>(null);
   const [cartItems, setCartItemsState] = useState<CartItem[]>([]);
   const [bookings, setBookingsState] = useState<Booking[]>([]);
+  const [stockManagementEnabled, setStockManagementEnabledState] = useState(() => {
+    return localStorage.getItem('arsh_stock_management_enabled') === 'true';
+  });
+  const [settingsLoading, setSettingsLoading] = useState(false);
 
   const configured = isSupabaseConfigured();
   const user = session?.user ?? null;
@@ -144,6 +151,56 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
     return () => {
       mounted = false;
     };
+  }, [configured]);
+
+  // Load settings from Supabase
+  useEffect(() => {
+    if (!configured) return;
+
+    let mounted = true;
+    setSettingsLoading(true);
+    supabase
+      .from('settings')
+      .select('key, value')
+      .then(({ data, error }) => {
+        if (!mounted) return;
+        if (!error && data) {
+          const settingsMap: Record<string, string> = {};
+          data.forEach((row: any) => {
+            settingsMap[row.key] = row.value;
+          });
+          const stockEnabled = settingsMap['stock_management_enabled'] === 'true';
+          setStockManagementEnabledState(stockEnabled);
+          localStorage.setItem('arsh_stock_management_enabled', String(stockEnabled));
+        }
+        setSettingsLoading(false);
+      });
+
+    return () => { mounted = false; };
+  }, [configured]);
+
+  const setStockManagementEnabled = useCallback(async (enabled: boolean) => {
+    setStockManagementEnabledState(enabled);
+    localStorage.setItem('arsh_stock_management_enabled', String(enabled));
+
+    if (!configured) return;
+
+    const { data: existing } = await supabase
+      .from('settings')
+      .select('id')
+      .eq('key', 'stock_management_enabled')
+      .single();
+
+    if (existing) {
+      await supabase
+        .from('settings')
+        .update({ value: String(enabled), updated_at: new Date().toISOString() })
+        .eq('key', 'stock_management_enabled');
+    } else {
+      await supabase
+        .from('settings')
+        .insert({ key: 'stock_management_enabled', value: String(enabled) });
+    }
   }, [configured]);
 
   // Load cart from localStorage on mount
@@ -363,6 +420,9 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
         signIn,
         signUp,
         signOut,
+        stockManagementEnabled,
+        setStockManagementEnabled,
+        settingsLoading,
       }}
     >
       {children}
