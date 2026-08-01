@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Tyre, Booking } from '../types';
 import { TYRE_DATABASE } from '../data';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
-import { Trash2, Edit, Plus, Package, Calendar, CheckCircle, XCircle, Clock, ShieldCheck, Users, Download, AlertTriangle, Tag, TrendingUp, BarChart3, FileText, CreditCard, MessageSquare, Settings, FlaskConical, Zap, LogOut, Lock, Loader2, X, Check } from 'lucide-react';
+import { Trash2, Edit, Plus, Package, Calendar, CheckCircle, XCircle, Clock, ShieldCheck, Users, Download, AlertTriangle, Tag, TrendingUp, BarChart3, FileText, CreditCard, MessageSquare, Settings, FlaskConical, Zap, LogOut, Lock, Loader2, X, Check, Search } from 'lucide-react';
 import { SkeletonRow, SkeletonStatCard } from './Skeleton';
 import { getStripeMode, setStripeMode, type StripeMode } from '../paymentSettings';
 import { isAdminAuthed, adminLogin, adminLogout } from '../adminAuth';
@@ -63,6 +63,9 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
   const [showPromoForm, setShowPromoForm] = useState(false);
   const [newPromo, setNewPromo] = useState({ code: '', discount: 10, expiry: '' });
   const [dataLoading, setDataLoading] = useState(true);
+  const [invSearch, setInvSearch] = useState('');
+  const [invBrandFilter, setInvBrandFilter] = useState<string>('All');
+  const [invSort, setInvSort] = useState<'brand' | 'stock-low' | 'price-high' | 'size'>('brand');
 
   const [stripeMode, setStripeModeState] = useState<StripeMode>(getStripeMode());
   const configured = isSupabaseConfigured();
@@ -740,42 +743,110 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
       {/* Inventory Section */}
       {activeSection === 'inventory' && (
         <div className="bg-black rounded-2xl border border-white/5 shadow-xl overflow-hidden shadow-[0_0_40px_rgba(239,18,25,0.2)]">
-          <div className="p-6 border-b border-white/5 flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-racing-red/20 rounded-xl flex items-center justify-center border border-racing-red/30">
-                <Package className="w-6 h-6 text-racing-red" />
+          <div className="p-6 border-b border-white/5">
+            {/* Header row */}
+            <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-racing-red/20 rounded-xl flex items-center justify-center border border-racing-red/30">
+                  <Package className="w-6 h-6 text-racing-red" />
+                </div>
+                <div>
+                  <h3 className="font-display font-extrabold text-bright-snow text-xl">Inventory Management</h3>
+                  <p className="text-xs text-gray-400 mt-0.5">{inventory.length} tyres in stock across {new Set(inventory.map(t => t.brand)).size} brands</p>
+                </div>
               </div>
-              <h3 className="font-display font-extrabold text-bright-snow text-xl">Inventory Management</h3>
+              <div className="flex gap-2 flex-wrap">
+                <button
+                  onClick={() => setShowAddForm(!showAddForm)}
+                  className="inline-flex items-center gap-2 bg-racing-red hover:bg-racing-red/90 text-bright-snow font-bold text-sm px-5 py-2.5 rounded-xl transition shadow-lg shadow-racing-red/30 border border-racing-red"
+                >
+                  <Plus className="w-4 h-4" />
+                  Add Tyre
+                </button>
+                <button
+                  onClick={() => handleBulkPriceUpdate(5)}
+                  className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm px-5 py-2.5 rounded-xl transition shadow-lg shadow-emerald-600/30"
+                >
+                  <TrendingUp className="w-4 h-4" />
+                  +5% Prices
+                </button>
+                <button
+                  onClick={() => handleBulkPriceUpdate(-5)}
+                  className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-500 text-white font-bold text-sm px-5 py-2.5 rounded-xl transition shadow-lg shadow-orange-600/30"
+                >
+                  <TrendingUp className="w-4 h-4 rotate-180" />
+                  -5% Prices
+                </button>
+                <button
+                  onClick={() => handleExportCSV('inventory')}
+                  className="inline-flex items-center gap-2 bg-[#1e2121] hover:bg-[#252828] text-bright-snow font-bold text-sm px-5 py-2.5 rounded-xl transition shadow-lg border border-white/10"
+                >
+                  <Download className="w-4 h-4" />
+                  Export CSV
+                </button>
+              </div>
             </div>
-            <div className="flex gap-2 flex-wrap">
-              <button
-                onClick={() => setShowAddForm(!showAddForm)}
-                className="inline-flex items-center gap-2 bg-racing-red hover:bg-racing-red/90 text-bright-snow font-bold text-sm px-5 py-2.5 rounded-xl transition shadow-lg shadow-racing-red/30 border border-racing-red"
+
+            {/* Quick stats */}
+            <div className="grid grid-cols-3 gap-3 mb-4">
+              <div className="bg-[#1e2121] rounded-lg px-4 py-2.5 border border-white/5">
+                <p className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Total Units</p>
+                <p className="text-lg font-extrabold text-bright-snow">{inventory.reduce((s, t) => s + t.stock, 0)}</p>
+              </div>
+              <div className="bg-yellow-500/10 rounded-lg px-4 py-2.5 border border-yellow-500/20">
+                <p className="text-[10px] uppercase text-yellow-400 font-bold tracking-wider">Low Stock</p>
+                <p className="text-lg font-extrabold text-yellow-400">{inventory.filter(t => t.stock > 0 && t.stock <= 4).length}</p>
+              </div>
+              <div className="bg-racing-red/10 rounded-lg px-4 py-2.5 border border-racing-red/20">
+                <p className="text-[10px] uppercase text-racing-red font-bold tracking-wider">Out of Stock</p>
+                <p className="text-lg font-extrabold text-racing-red">{inventory.filter(t => t.stock === 0).length}</p>
+              </div>
+            </div>
+
+            {/* Search + filter + sort */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <input
+                  type="text"
+                  value={invSearch}
+                  onChange={e => setInvSearch(e.target.value)}
+                  placeholder="Search brand, model, or size (e.g. 225/45 R17)..."
+                  className="w-full bg-[#1e2121] border border-white/10 text-bright-snow rounded-lg pl-10 pr-3 py-2.5 text-sm focus:outline-none focus:border-racing-red"
+                />
+              </div>
+              <select
+                value={invSort}
+                onChange={e => setInvSort(e.target.value as any)}
+                className="bg-[#1e2121] border border-white/10 text-bright-snow rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-racing-red"
               >
-                <Plus className="w-4 h-4" />
-                Add Tyre
-              </button>
+                <option value="brand">Sort: Brand A-Z</option>
+                <option value="stock-low">Sort: Low Stock First</option>
+                <option value="price-high">Sort: Price High-Low</option>
+                <option value="size">Sort: By Size</option>
+              </select>
+            </div>
+
+            {/* Brand filter chips */}
+            <div className="flex flex-wrap gap-1.5 mt-3">
               <button
-                onClick={() => handleBulkPriceUpdate(5)}
-                className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm px-5 py-2.5 rounded-xl transition shadow-lg shadow-emerald-600/30"
+                onClick={() => setInvBrandFilter('All')}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition ${invBrandFilter === 'All' ? 'bg-racing-red text-bright-snow' : 'bg-white/5 text-gray-400 hover:text-bright-snow'}`}
               >
-                <TrendingUp className="w-4 h-4" />
-                +5% Prices
+                All ({inventory.length})
               </button>
-              <button
-                onClick={() => handleBulkPriceUpdate(-5)}
-                className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-500 text-white font-bold text-sm px-5 py-2.5 rounded-xl transition shadow-lg shadow-orange-600/30"
-              >
-                <TrendingUp className="w-4 h-4 rotate-180" />
-                -5% Prices
-              </button>
-              <button
-                onClick={() => handleExportCSV('inventory')}
-                className="inline-flex items-center gap-2 bg-[#1e2121] hover:bg-[#252828] text-bright-snow font-bold text-sm px-5 py-2.5 rounded-xl transition shadow-lg border border-white/10"
-              >
-                <Download className="w-4 h-4" />
-                Export CSV
-              </button>
+              {[...new Set(inventory.map(t => t.brand))].sort().map(brand => {
+                const count = inventory.filter(t => t.brand === brand).length;
+                return (
+                  <button
+                    key={brand}
+                    onClick={() => setInvBrandFilter(brand)}
+                    className={`px-3 py-1 rounded-full text-xs font-bold transition ${invBrandFilter === brand ? 'bg-racing-red text-bright-snow' : 'bg-white/5 text-gray-400 hover:text-bright-snow'}`}
+                  >
+                    {brand} ({count})
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -907,51 +978,101 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Brand</th>
                   <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Model</th>
                   <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Size</th>
+                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Category</th>
                   <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Stock</th>
                   <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Price</th>
                   <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {inventory.map((tyre) => (
-                  <tr key={tyre.id} className="hover:bg-white/5 transition">
-                    <td className="px-6 py-4 text-sm font-medium text-bright-snow">{tyre.brand}</td>
-                    <td className="px-6 py-4 text-sm text-gray-400">{tyre.model}</td>
-                    <td className="px-6 py-4 text-sm text-gray-400">{tyre.width}/{tyre.profile} R{tyre.rim}</td>
-                    <td className="px-6 py-4">
-                      <input
-                        type="number"
-                        value={tyre.stock}
-                        onChange={(e) => handleUpdateStock(tyre.id, parseInt(e.target.value) || 0)}
-                        className="w-20 bg-[#1e2121] border border-white/10 text-bright-snow rounded px-2 py-1 text-sm focus:outline-none focus:border-racing-red"
-                      />
-                    </td>
-                    <td className="px-6 py-4">
-                      <input
-                        type="number"
-                        value={tyre.price}
-                        onChange={(e) => handleUpdatePrice(tyre.id, parseFloat(e.target.value) || 0)}
-                        className="w-24 bg-[#1e2121] border border-white/10 text-bright-snow rounded px-2 py-1 text-sm focus:outline-none focus:border-racing-red"
-                      />
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => setEditingTyre(tyre)}
-                          className="p-2 text-gray-400 hover:text-racing-red hover:bg-racing-red/10 rounded-lg transition"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteTyre(tyre.id)}
-                          className="p-2 text-gray-400 hover:text-racing-red hover:bg-racing-red/10 rounded-lg transition"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {(() => {
+                  let filtered = inventory;
+                  if (invBrandFilter !== 'All') filtered = filtered.filter(t => t.brand === invBrandFilter);
+                  if (invSearch.trim()) {
+                    const q = invSearch.toLowerCase();
+                    filtered = filtered.filter(t =>
+                      t.brand.toLowerCase().includes(q) ||
+                      t.model.toLowerCase().includes(q) ||
+                      `${t.width}/${t.profile} R${t.rim}`.toLowerCase().includes(q) ||
+                      `${t.width}${t.profile}${t.rim}`.includes(q.replace(/[^\d]/g, ''))
+                    );
+                  }
+                  if (invSort === 'brand') filtered = [...filtered].sort((a, b) => a.brand.localeCompare(b.brand) || a.model.localeCompare(b.model));
+                  else if (invSort === 'stock-low') filtered = [...filtered].sort((a, b) => a.stock - b.stock);
+                  else if (invSort === 'price-high') filtered = [...filtered].sort((a, b) => b.price - a.price);
+                  else if (invSort === 'size') filtered = [...filtered].sort((a, b) => (a.width * a.profile * a.rim) - (b.width * b.profile * b.rim));
+
+                  if (filtered.length === 0) {
+                    return (
+                      <tr>
+                        <td colSpan={7} className="px-6 py-12 text-center text-gray-500 text-sm">
+                          No tyres match your search.
+                        </td>
+                      </tr>
+                    );
+                  }
+
+                  return filtered.map((tyre) => {
+                    const stockStatus = tyre.stock === 0 ? 'out' : tyre.stock <= 4 ? 'low' : 'ok';
+                    return (
+                      <tr key={tyre.id} className="hover:bg-white/5 transition">
+                        <td className="px-6 py-4 text-sm font-bold text-bright-snow">{tyre.brand}</td>
+                        <td className="px-6 py-4 text-sm text-gray-400">{tyre.model}</td>
+                        <td className="px-6 py-4 text-sm text-gray-400 font-mono">{tyre.width}/{tyre.profile} R{tyre.rim}</td>
+                        <td className="px-6 py-4">
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            tyre.category === 'Runflat' ? 'bg-blue-500/15 text-blue-400' :
+                            tyre.category === 'Commercial' ? 'bg-orange-500/15 text-orange-400' :
+                            'bg-white/5 text-gray-400'
+                          }`}>{tyre.category}</span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="number"
+                              value={tyre.stock}
+                              onChange={(e) => handleUpdateStock(tyre.id, parseInt(e.target.value) || 0)}
+                              className={`w-16 bg-[#1e2121] border rounded px-2 py-1 text-sm focus:outline-none ${
+                                stockStatus === 'out' ? 'border-racing-red/50 text-racing-red' :
+                                stockStatus === 'low' ? 'border-yellow-500/50 text-yellow-400' :
+                                'border-white/10 text-bright-snow'
+                              } focus:border-racing-red`}
+                            />
+                            {stockStatus === 'out' && <span className="text-[10px] font-bold text-racing-red">OUT</span>}
+                            {stockStatus === 'low' && <span className="text-[10px] font-bold text-yellow-400">LOW</span>}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-1">
+                            <span className="text-gray-500 text-sm">£</span>
+                            <input
+                              type="number"
+                              value={tyre.price}
+                              onChange={(e) => handleUpdatePrice(tyre.id, parseFloat(e.target.value) || 0)}
+                              className="w-20 bg-[#1e2121] border border-white/10 text-bright-snow rounded px-2 py-1 text-sm focus:outline-none focus:border-racing-red"
+                            />
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => setEditingTyre(tyre)}
+                              className="p-2 text-gray-400 hover:text-racing-red hover:bg-racing-red/10 rounded-lg transition"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteTyre(tyre.id)}
+                              className="p-2 text-gray-400 hover:text-racing-red hover:bg-racing-red/10 rounded-lg transition"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  });
+                })()}
               </tbody>
             </table>
           </div>
