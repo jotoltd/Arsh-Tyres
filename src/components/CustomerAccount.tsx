@@ -266,7 +266,7 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                         <div className="flex items-center gap-2 text-gray-400">
                           <Car className="w-4 h-4 text-racing-red shrink-0" />
-                          <span>{booking.vehicleRegistration} — {booking.vehicleMakeModel}</span>
+                          <span><span className="font-mono bg-yellow-400 text-black font-black px-1.5 py-0.5 rounded tracking-wider text-[11px]">{booking.vehicleRegistration}</span> — {booking.vehicleMakeModel}</span>
                         </div>
                         <div className="flex items-center gap-2 text-gray-400">
                           <Clock className="w-4 h-4 text-racing-red shrink-0" />

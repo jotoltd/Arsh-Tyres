@@ -904,7 +904,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                     <div key={booking.id} className="flex items-center justify-between bg-[#1e2121] rounded-lg p-3 border border-white/5">
                       <div className="min-w-0 flex-1">
                         <p className="text-bright-snow text-sm font-semibold truncate">{booking.customerName}</p>
-                        <p className="text-gray-400 text-xs truncate">{booking.vehicleRegistration} · {booking.date || 'Collection'}</p>
+                        <p className="text-gray-400 text-xs truncate"><span className="font-mono bg-yellow-400 text-black font-black px-1 py-0.5 rounded tracking-wider text-[10px]">{booking.vehicleRegistration}</span> · {booking.date || 'Collection'}</p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0 ml-3">
                         <span className="text-bright-snow font-bold text-sm">£{booking.totalPrice.toFixed(0)}</span>
@@ -1583,7 +1583,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   bookings.map((booking) => (
                     <tr key={booking.id} className="hover:bg-white/5 transition">
                       <td className="px-6 py-4 text-sm font-medium text-bright-snow">{booking.customerName}</td>
-                      <td className="px-6 py-4 text-sm text-gray-400">{booking.vehicleRegistration}</td>
+                      <td className="px-6 py-4 text-sm"><span className="font-mono bg-yellow-400 text-black font-black px-1.5 py-0.5 rounded tracking-wider text-[11px]">{booking.vehicleRegistration}</span></td>
                       <td className="px-6 py-4 text-sm text-gray-400">{booking.date}</td>
                       <td className="px-6 py-4 text-sm text-gray-400">{booking.fittingType}</td>
                       <td className="px-6 py-4">
@@ -1847,7 +1847,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="font-semibold text-bright-snow">{booking.date} - {booking.timeSlot}</p>
-                          <p className="text-sm text-gray-400">{booking.customerName} - {booking.vehicleRegistration}</p>
+                          <p className="text-sm text-gray-400">{booking.customerName} - <span className="font-mono bg-yellow-400 text-black font-black px-1 py-0.5 rounded tracking-wider text-[10px]">{booking.vehicleRegistration}</span></p>
                           <p className="text-xs text-gray-500 mt-1">{booking.fittingType} fitting</p>
                         </div>
                         <div className="text-right">

@@ -584,8 +584,8 @@ export default function CartSection({
                 <div className="grid grid-cols-3 gap-3">
                   <div className="col-span-1">
                     <label className="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">Reg Plate</label>
-                    <input type="text" placeholder="PLATE" value={vehicleRegistration} onChange={(e) => setVehicleRegistration(e.target.value.toUpperCase())}
-                      className="w-full bg-[#1e2121] border border-white/5 text-bright-snow rounded-lg p-2.5 font-mono font-bold text-sm text-center uppercase tracking-wider focus:ring-2 focus:ring-racing-red/20 focus:border-racing-red transition" />
+                    <input type="text" placeholder="AB12 CDE" value={vehicleRegistration} onChange={(e) => setVehicleRegistration(e.target.value.toUpperCase())}
+                      className="w-full bg-yellow-400 border-2 border-yellow-500 text-black rounded-lg p-2.5 font-mono font-black text-base text-center uppercase tracking-[0.15em] focus:ring-2 focus:ring-yellow-400/40 focus:border-yellow-500 transition" />
                   </div>
                   <div className="col-span-2">
                     <label className="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">Make & Model</label>
@@ -800,7 +800,7 @@ export default function CartSection({
                   <p className="text-xs font-bold uppercase tracking-wider text-racing-red mb-2">Customer</p>
                   <div className="grid grid-cols-2 gap-3 text-xs">
                     <div><span className="text-gray-400 block">Name</span><span className="text-bright-snow font-bold">{customerName}</span></div>
-                    <div><span className="text-gray-400 block">Vehicle</span><span className="text-bright-snow font-bold">{vehicleRegistration} - {vehicleMakeModel}</span></div>
+                    <div><span className="text-gray-400 block">Vehicle</span><span className="text-bright-snow font-bold">{vehicleRegistration && <span className="font-mono bg-yellow-400 text-black font-black px-1.5 py-0.5 rounded tracking-wider text-[11px]">{vehicleRegistration}</span>} {vehicleMakeModel}</span></div>
                     <div><span className="text-gray-400 block">Email</span><span className="text-bright-snow font-bold">{customerEmail}</span></div>
                     <div><span className="text-gray-400 block">Phone</span><span className="text-bright-snow font-bold">{customerPhone}</span></div>
                   </div>
