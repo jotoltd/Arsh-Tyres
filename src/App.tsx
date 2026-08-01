@@ -168,6 +168,12 @@ export default function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: bookingData.customerEmail }),
+      }).then(res => {
+        if (!res.ok) {
+          console.error('Account creation failed:', res.status, res.statusText);
+        } else {
+          console.log('Customer account created/sent welcome email for:', bookingData.customerEmail);
+        }
       }).catch(err => console.error('Auto account creation failed:', err));
     }
 
@@ -543,11 +549,22 @@ export default function App() {
                       <div className="pt-3 space-y-2">
                         <div className="flex justify-between font-medium">
                           <span className="text-gray-500">Vehicle:</span>
-                          <span className="text-bright-snow font-bold font-mono bg-racing-red px-1.5 py-0.5 rounded">{lastConfirmedBooking.vehicleRegistration}</span>
+                          <span className="text-bright-snow font-bold font-mono bg-yellow-400 text-black px-1.5 py-0.5 rounded tracking-wider">{lastConfirmedBooking.vehicleRegistration}</span>
                         </div>
                         <div className="flex justify-between font-medium">
                           <span className="text-gray-500">Total Charged:</span>
                           <span className="text-racing-red font-bold text-sm">£{lastConfirmedBooking.totalPrice.toFixed(2)}</span>
+                        </div>
+                      </div>
+
+                      {/* Account created notice */}
+                      <div className="mt-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 flex items-center gap-3">
+                        <div className="w-9 h-9 bg-emerald-500/20 rounded-lg flex items-center justify-center border border-emerald-500/30 shrink-0">
+                          <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                        </div>
+                        <div>
+                          <p className="text-emerald-400 text-xs font-bold">Account Created</p>
+                          <p className="text-gray-400 text-xs mt-0.5">We've created an account for {lastConfirmedBooking.customerEmail} and sent your login details by email. You can use it to track and manage your bookings.</p>
                         </div>
                       </div>
                     </div>

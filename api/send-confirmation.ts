@@ -138,7 +138,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (!emailResponse.ok) {
       const errText = await emailResponse.text();
       console.error('Resend API error:', errText);
-      res.status(500).json({ error: 'Failed to send email' });
+      res.status(500).json({ error: 'Failed to send email', detail: errText });
       return;
     }
 

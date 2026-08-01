@@ -88,16 +88,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }),
     });
 
-    // If user already exists, that's fine — just send the email with a note
+    // If user already exists, that's fine — don't send a new password email
     if (!createRes.ok) {
       const errBody = await createRes.text();
       const alreadyExists = errBody.includes('already') || errBody.includes('registered') || createRes.status === 422;
 
-      if (!alreadyExists) {
-        console.error('Supabase admin create user error:', errBody);
-        res.status(500).json({ error: 'Failed to create account' });
+      if (alreadyExists) {
+        // User already has an account — no need to send credentials again
+        res.status(200).json({ success: true, message: 'Account already exists' });
         return;
       }
+
+      console.error('Supabase admin create user error:', errBody);
+      res.status(500).json({ error: 'Failed to create account', detail: errBody });
+      return;
     }
 
     // Send our own welcome email via Resend
