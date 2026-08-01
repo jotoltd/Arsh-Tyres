@@ -1,0 +1,25 @@
+project_id = "llvszcxnmcmuaosvxbng"
+
+[api]
+enabled = true
+port = 54321
+
+[db]
+port = 54322
+
+[studio]
+port = 54323
+
+[auth]
+enabled = true
+site_url = "https://www.arshtyres.com"
+additional_redirect_urls = [
+  "https://www.arshtyres.com/",
+  "https://www.arshtyres.com/?reset_password=1",
+  "https://arshtyres.com/",
+]
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = true
