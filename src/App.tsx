@@ -465,7 +465,8 @@ export default function App() {
           </button>
           )}
 
-          {/* Auth + Order — desktop only, mobile uses hamburger */}
+          {/* Auth + Order — desktop only, mobile uses hamburger (hidden in maintenance) */}
+          {showChrome && (
           <div className="hidden md:flex items-center gap-3 shrink-0">
             {user ? (
               <div className="flex items-center gap-2">
@@ -500,6 +501,7 @@ export default function App() {
               </a>
             )}
           </div>
+          )}
         </div>
       </header>
 
