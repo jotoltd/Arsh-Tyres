@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Tyre, SearchFilters } from '../types';
 import { useSupabase } from '../contexts/SupabaseContext';
 import TyreCard from '../components/TyreCard';
-import { Disc, ArrowLeft, Search, Calendar, ShoppingBag, ShieldCheck, User } from 'lucide-react';
+import { Disc, ArrowLeft, Search, Calendar, ShoppingBag, ShieldCheck, User, Phone } from 'lucide-react';
 import { SkeletonGrid } from '../components/Skeleton';
 
 export default function SearchResults() {
@@ -48,23 +48,23 @@ export default function SearchResults() {
   const scheduledCount = bookings.filter(b => b.status === 'Scheduled').length;
 
   const MobileNav = () => (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-black/95 backdrop-blur-lg border-t border-white/10 pb-safe">
-      <div className="flex items-center justify-around h-16">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-black/95 backdrop-blur-lg border-t border-white/10 pb-safe">
+      <div className="flex items-center justify-around h-14">
         <button
           onClick={() => navigate('/')}
           className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition text-racing-red"
         >
-          <Search className="w-5 h-5" />
-          <span className="text-[10px] font-bold">Tyres</span>
+          <Search className="w-4 h-4" />
+          <span className="text-[9px] font-bold">Tyres</span>
         </button>
         <button
           onClick={() => navigate('/')}
           className={`relative flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition text-bright-snow/40`}
         >
-          <Calendar className="w-5 h-5" />
-          <span className="text-[10px] font-bold">Bookings</span>
+          <Calendar className="w-4 h-4" />
+          <span className="text-[9px] font-bold">Bookings</span>
           {scheduledCount > 0 && (
-            <span className="absolute top-1.5 right-[calc(50%-24px)] bg-racing-red text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+            <span className="absolute top-1 right-[calc(50%-22px)] bg-racing-red text-white text-[8px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">
               {scheduledCount}
             </span>
           )}
@@ -73,27 +73,34 @@ export default function SearchResults() {
           onClick={() => navigate('/')}
           className={`relative flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition text-bright-snow/40`}
         >
-          <ShoppingBag className="w-5 h-5" />
-          <span className="text-[10px] font-bold">Order</span>
+          <ShoppingBag className="w-4 h-4" />
+          <span className="text-[9px] font-bold">Order</span>
           {cartItems.length > 0 && (
-            <span className="absolute top-1.5 right-[calc(50%-24px)] bg-racing-red text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+            <span className="absolute top-1 right-[calc(50%-22px)] bg-racing-red text-white text-[8px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">
               {totalCartTyres}
             </span>
           )}
         </button>
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/contact')}
           className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition text-bright-snow/40"
         >
-          <ShieldCheck className="w-5 h-5" />
-          <span className="text-[10px] font-bold">Admin</span>
+          <Phone className="w-4 h-4" />
+          <span className="text-[9px] font-bold">Contact</span>
         </button>
         <button
           onClick={() => navigate('/')}
           className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition text-bright-snow/40"
         >
-          <User className="w-5 h-5" />
-          <span className="text-[10px] font-bold">Account</span>
+          <ShieldCheck className="w-4 h-4" />
+          <span className="text-[9px] font-bold">Admin</span>
+        </button>
+        <button
+          onClick={() => navigate('/')}
+          className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition text-bright-snow/40"
+        >
+          <User className="w-4 h-4" />
+          <span className="text-[9px] font-bold">Account</span>
         </button>
       </div>
     </nav>
@@ -101,7 +108,7 @@ export default function SearchResults() {
 
   if (isLoading || tyresLoading) {
     return (
-      <div className="min-h-screen bg-black text-bright-snow font-sans antialiased pb-16">
+      <div className="min-h-screen bg-black text-bright-snow font-sans antialiased pb-20 md:pb-8">
         <header className="bg-black/95 backdrop-blur-md border-b border-white/10 sticky top-0 z-40">
           <div className="w-full px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
             <button
@@ -137,7 +144,7 @@ export default function SearchResults() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-bright-snow font-sans antialiased pb-16">
+    <div className="min-h-screen bg-black text-bright-snow font-sans antialiased pb-20 md:pb-8">
       {/* Header */}
       <header className="bg-black/95 backdrop-blur-md border-b border-white/10 sticky top-0 z-40">
         <div className="w-full px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">

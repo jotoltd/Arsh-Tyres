@@ -326,37 +326,38 @@ export default function App() {
 
       {/* Main Brand Header */}
       <header className="bg-black/95 backdrop-blur-md border-b border-white/10 sticky top-0 z-40">
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+        <div className="w-full px-3 sm:px-4 lg:px-8 py-2 sm:py-3 flex items-center justify-between gap-2">
 
           {/* Logo */}
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => { navigate('/'); setActiveTab('shop'); setLastConfirmedBooking(null); }}>
-            <img src="/assets/logo.jpg" alt="Arsh Autos Logo" className="w-36 h-36 object-contain" />
+          <div className="flex items-center gap-2 cursor-pointer shrink-0" onClick={() => { navigate('/'); setActiveTab('shop'); setLastConfirmedBooking(null); }}>
+            <img src="/assets/logo.jpg" alt="Arsh Autos Logo" className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28 object-contain" />
           </div>
 
           {/* Nav Tabs — desktop only (hidden in maintenance mode) */}
           {(!maintenanceMode || activeTab === 'admin') && (
-          <nav className="hidden sm:flex items-center gap-1 sm:gap-2">
+          <nav className="hidden md:flex items-center gap-0.5 lg:gap-2">
             <button
               onClick={() => { navigate('/'); setActiveTab('shop'); setLastConfirmedBooking(null); }}
-              className={`px-5 py-2.5 text-base font-bold rounded-lg transition ${
+              className={`px-3 lg:px-5 py-2 text-sm lg:text-base font-bold rounded-lg transition whitespace-nowrap ${
                 activeTab === 'shop' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
                   : 'text-bright-snow/60 hover:bg-bright-snow/5 hover:text-bright-snow'
               }`}
             >
-              Find & Buy Tyres
+              Find & Buy
             </button>
 
             <button
               onClick={() => { navigate('/'); setActiveTab('bookings'); setLastConfirmedBooking(null); }}
-              className={`px-5 py-2.5 text-base font-bold rounded-lg transition flex items-center gap-1.5 ${
+              className={`px-3 lg:px-5 py-2 text-sm lg:text-base font-bold rounded-lg transition flex items-center gap-1.5 whitespace-nowrap ${
                 activeTab === 'bookings' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
                   : 'text-bright-snow/60 hover:bg-bright-snow/5 hover:text-bright-snow'
               }`}
             >
-              <Calendar className="w-5 h-5" />
-              My Bookings
+              <Calendar className="w-4 h-4 lg:w-5 lg:h-5" />
+              <span className="hidden lg:inline">My Bookings</span>
+              <span className="lg:hidden">Bookings</span>
               {bookings.length > 0 && (
                 <span className="bg-white/10 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-1">
                   {bookings.filter(b => b.status === 'Scheduled').length}
@@ -366,14 +367,15 @@ export default function App() {
 
             <button
               onClick={() => { navigate('/'); setActiveTab('cart'); setLastConfirmedBooking(null); }}
-              className={`px-5 py-2.5 text-base font-bold rounded-lg transition flex items-center gap-1.5 ${
+              className={`px-3 lg:px-5 py-2 text-sm lg:text-base font-bold rounded-lg transition flex items-center gap-1.5 whitespace-nowrap ${
                 activeTab === 'cart' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
                   : 'text-bright-snow/60 hover:bg-bright-snow/5 hover:text-bright-snow'
               }`}
             >
-              <ShoppingBag className="w-5 h-5" />
-              My Order
+              <ShoppingBag className="w-4 h-4 lg:w-5 lg:h-5" />
+              <span className="hidden lg:inline">My Order</span>
+              <span className="lg:hidden">Order</span>
               {cartItems.length > 0 && (
                 <span className="bg-white/10 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-1">
                   {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
@@ -383,36 +385,36 @@ export default function App() {
 
             <button
               onClick={() => { navigate('/'); setActiveTab('admin'); setLastConfirmedBooking(null); }}
-              className={`px-5 py-2.5 text-base font-bold rounded-lg transition flex items-center gap-1.5 ${
+              className={`px-3 lg:px-5 py-2 text-sm lg:text-base font-bold rounded-lg transition flex items-center gap-1.5 whitespace-nowrap ${
                 activeTab === 'admin' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
                   : 'text-bright-snow/60 hover:bg-bright-snow/5 hover:text-bright-snow'
               }`}
             >
-              <ShieldCheck className="w-5 h-5" />
+              <ShieldCheck className="w-4 h-4 lg:w-5 lg:h-5" />
               Admin
             </button>
 
             <button
               onClick={() => { navigate('/'); setActiveTab('account'); setLastConfirmedBooking(null); }}
-              className={`px-5 py-2.5 text-base font-bold rounded-lg transition flex items-center gap-1.5 ${
+              className={`px-3 lg:px-5 py-2 text-sm lg:text-base font-bold rounded-lg transition flex items-center gap-1.5 whitespace-nowrap ${
                 activeTab === 'account' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
                   : 'text-bright-snow/60 hover:bg-bright-snow/5 hover:text-bright-snow'
               }`}
             >
-              <User className="w-5 h-5" />
+              <User className="w-4 h-4 lg:w-5 lg:h-5" />
               Account
             </button>
             <button
               onClick={() => { navigate('/contact'); setLastConfirmedBooking(null); }}
-              className={`px-5 py-2.5 text-base font-bold rounded-lg transition flex items-center gap-1.5 ${
+              className={`px-3 lg:px-5 py-2 text-sm lg:text-base font-bold rounded-lg transition flex items-center gap-1.5 whitespace-nowrap ${
                 location.pathname === '/contact'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
                   : 'text-bright-snow/60 hover:bg-bright-snow/5 hover:text-bright-snow'
               }`}
             >
-              <Phone className="w-5 h-5" />
+              <Phone className="w-4 h-4 lg:w-5 lg:h-5" />
               Contact
             </button>
           </nav>
@@ -422,29 +424,29 @@ export default function App() {
           {(!maintenanceMode || activeTab === 'admin') && (
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="sm:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-white/5 border border-white/10 text-bright-snow transition"
+            className="md:hidden flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white/5 border border-white/10 text-bright-snow transition shrink-0"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
           )}
 
-          {/* Auth + Order */}
-          <div className="flex items-center gap-4">
+          {/* Auth + Order — desktop only, mobile uses hamburger */}
+          <div className="hidden md:flex items-center gap-3 shrink-0">
             {user ? (
               <div className="flex items-center gap-2">
-                <span className="hidden sm:inline text-xs text-bright-snow/60">{user.email}</span>
+                <span className="hidden lg:inline text-xs text-bright-snow/60 max-w-[150px] truncate">{user.email}</span>
                 <button
                   onClick={() => signOut()}
-                  className="flex items-center gap-1.5 text-xs font-bold text-bright-snow bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-2 rounded-lg transition"
+                  className="flex items-center gap-1.5 text-xs font-bold text-bright-snow bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-2 rounded-lg transition whitespace-nowrap"
                 >
                   <LogOut className="w-3.5 h-3.5" />
-                  Sign Out
+                  <span className="hidden lg:inline">Sign Out</span>
                 </button>
               </div>
             ) : (
               <button
                 onClick={() => { navigate('/'); setActiveTab('account'); setLastConfirmedBooking(null); }}
-                className="flex items-center gap-1.5 text-xs font-bold text-bright-snow bg-racing-red hover:bg-racing-red/90 px-3 py-2 rounded-lg transition"
+                className="flex items-center gap-1.5 text-xs font-bold text-bright-snow bg-racing-red hover:bg-racing-red/90 px-3 py-2 rounded-lg transition whitespace-nowrap"
               >
                 <User className="w-3.5 h-3.5" />
                 Sign In
@@ -453,10 +455,10 @@ export default function App() {
             {cartItems.length > 0 && (
               <a
                 onClick={() => { navigate('/'); setActiveTab('cart'); }}
-                className="bg-[#1e2121] hover:bg-[#252828] text-bright-snow border border-gray-500/20 rounded-xl px-4 py-2 text-sm font-bold flex items-center gap-2 transition shadow-md hover:shadow-lg cursor-pointer"
+                className="bg-[#1e2121] hover:bg-[#252828] text-bright-snow border border-gray-500/20 rounded-xl px-3 lg:px-4 py-2 text-sm font-bold flex items-center gap-2 transition shadow-md hover:shadow-lg cursor-pointer whitespace-nowrap"
               >
                 <ShoppingBag className="w-4 h-4 text-racing-red" />
-                <span className="hidden sm:inline">My Order:</span>
+                <span className="hidden lg:inline">My Order:</span>
                 <span className="bg-racing-red text-bright-snow text-xs font-black w-6 h-6 rounded-full flex items-center justify-center font-mono">
                   {totalCartTyres}
                 </span>
@@ -468,7 +470,7 @@ export default function App() {
 
       {/* Mobile slide-down menu */}
       {mobileMenuOpen && (!maintenanceMode || activeTab === 'admin') && (
-        <div className="sm:hidden fixed top-[120px] left-0 right-0 z-30 bg-black/98 backdrop-blur-lg border-b border-white/10 shadow-2xl">
+        <div className="md:hidden fixed top-0 left-0 right-0 z-[45] bg-black/98 backdrop-blur-lg border-b border-white/10 shadow-2xl min-h-screen pt-2">
           <nav className="flex flex-col p-4 gap-2">
             <button
               onClick={() => { navigate('/'); setActiveTab('shop'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
@@ -567,7 +569,7 @@ export default function App() {
       )}
 
       {/* Main Body Grid */}
-      <main className="w-full px-4 sm:px-6 lg:px-8 py-8 pb-24 sm:pb-8">
+      <main className="w-full px-4 sm:px-6 lg:px-8 py-8 pb-20 md:pb-8">
         {maintenanceMode && activeTab !== 'admin' ? (
           <div className="min-h-[60vh] flex items-center justify-center">
             <div className="max-w-lg w-full text-center space-y-8 animate-fade-in-up">
@@ -1260,16 +1262,16 @@ export default function App() {
 
       {/* Mobile bottom tab bar — hidden in maintenance mode */}
       {(!maintenanceMode || activeTab === 'admin') && (
-      <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-black/95 backdrop-blur-lg border-t border-white/10 pb-safe">
-        <div className="flex items-center justify-around h-16">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-black/95 backdrop-blur-lg border-t border-white/10 pb-safe">
+        <div className="flex items-center justify-around h-14">
           <button
             onClick={() => { navigate('/'); setActiveTab('shop'); setLastConfirmedBooking(null); }}
             className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
               activeTab === 'shop' && location.pathname === '/' ? 'text-racing-red' : 'text-bright-snow/40'
             }`}
           >
-            <Search className="w-5 h-5" />
-            <span className="text-[10px] font-bold">Tyres</span>
+            <Search className="w-4 h-4" />
+            <span className="text-[9px] font-bold">Tyres</span>
           </button>
 
           <button
@@ -1278,10 +1280,10 @@ export default function App() {
               activeTab === 'bookings' && location.pathname === '/' ? 'text-racing-red' : 'text-bright-snow/40'
             }`}
           >
-            <Calendar className="w-5 h-5" />
-            <span className="text-[10px] font-bold">Bookings</span>
+            <Calendar className="w-4 h-4" />
+            <span className="text-[9px] font-bold">Bookings</span>
             {bookings.filter(b => b.status === 'Scheduled').length > 0 && (
-              <span className="absolute top-1.5 right-[calc(50%-24px)] bg-racing-red text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+              <span className="absolute top-1 right-[calc(50%-22px)] bg-racing-red text-white text-[8px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">
                 {bookings.filter(b => b.status === 'Scheduled').length}
               </span>
             )}
@@ -1293,13 +1295,23 @@ export default function App() {
               activeTab === 'cart' && location.pathname === '/' ? 'text-racing-red' : 'text-bright-snow/40'
             }`}
           >
-            <ShoppingBag className="w-5 h-5" />
-            <span className="text-[10px] font-bold">Order</span>
+            <ShoppingBag className="w-4 h-4" />
+            <span className="text-[9px] font-bold">Order</span>
             {cartItems.length > 0 && (
-              <span className="absolute top-1.5 right-[calc(50%-24px)] bg-racing-red text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+              <span className="absolute top-1 right-[calc(50%-22px)] bg-racing-red text-white text-[8px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">
                 {totalCartTyres}
               </span>
             )}
+          </button>
+
+          <button
+            onClick={() => { navigate('/contact'); setLastConfirmedBooking(null); }}
+            className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
+              location.pathname === '/contact' ? 'text-racing-red' : 'text-bright-snow/40'
+            }`}
+          >
+            <Phone className="w-4 h-4" />
+            <span className="text-[9px] font-bold">Contact</span>
           </button>
 
           <button
@@ -1308,8 +1320,8 @@ export default function App() {
               activeTab === 'admin' && location.pathname === '/' ? 'text-racing-red' : 'text-bright-snow/40'
             }`}
           >
-            <ShieldCheck className="w-5 h-5" />
-            <span className="text-[10px] font-bold">Admin</span>
+            <ShieldCheck className="w-4 h-4" />
+            <span className="text-[9px] font-bold">Admin</span>
           </button>
 
           <button
@@ -1318,8 +1330,8 @@ export default function App() {
               activeTab === 'account' && location.pathname === '/' ? 'text-racing-red' : 'text-bright-snow/40'
             }`}
           >
-            <User className="w-5 h-5" />
-            <span className="text-[10px] font-bold">Account</span>
+            <User className="w-4 h-4" />
+            <span className="text-[9px] font-bold">Account</span>
           </button>
         </div>
       </nav>
