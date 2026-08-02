@@ -136,6 +136,8 @@ export default function App() {
     return () => clearInterval(interval);
   }, [maintenanceMode, maintenanceEndTime, setMaintenanceMode]);
 
+  const showChrome = !maintenanceMode || activeTab === 'admin';
+
   // Cart operations
   const handleAddToCart = (tyre: Tyre, quantity: number) => {
     const updated = [...cartItems];
@@ -379,7 +381,7 @@ export default function App() {
           </div>
 
           {/* Nav Tabs — desktop only (hidden in maintenance mode) */}
-          {(!maintenanceMode || activeTab === 'admin') && (
+          {showChrome && (
           <nav className="hidden md:flex items-center gap-0.5 lg:gap-2">
             <button
               onClick={() => { setActiveTab('shop'); setLastConfirmedBooking(null); }}
@@ -454,7 +456,7 @@ export default function App() {
           )}
 
           {/* Mobile hamburger button */}
-          {(!maintenanceMode || activeTab === 'admin') && (
+          {showChrome && (
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white/5 border border-white/10 text-bright-snow transition shrink-0"
@@ -502,7 +504,7 @@ export default function App() {
       </header>
 
       {/* Mobile slide-down menu */}
-      {mobileMenuOpen && (!maintenanceMode || activeTab === 'admin') && (
+      {mobileMenuOpen && showChrome && (
         <div className="md:hidden fixed top-0 left-0 right-0 z-[45] bg-black/98 backdrop-blur-lg border-b border-white/10 shadow-2xl min-h-screen pt-2 overflow-y-auto">
           <nav className="flex flex-col p-4 gap-2">
             {/* Quick CTA buttons */}
@@ -640,7 +642,7 @@ export default function App() {
 
       {/* Main Body Grid */}
       <main className="w-full px-4 sm:px-6 lg:px-8 py-8 pb-20 md:pb-8">
-        {maintenanceMode && activeTab !== 'admin' ? (
+        {!showChrome ? (
           <div className="min-h-[60vh] flex items-center justify-center">
             <div className="max-w-lg w-full text-center space-y-8 animate-fade-in-up">
               {/* Logo */}
@@ -1254,7 +1256,7 @@ export default function App() {
       </main>
 
       {/* FOOTER — hidden in maintenance mode */}
-      {(!maintenanceMode || activeTab === 'admin') && (
+      {showChrome && (
       <footer className="border-t border-white/5 bg-black text-bright-snow/60 text-xs mt-16">
         {/* Top section — info columns */}
         <div className="w-full px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -1386,7 +1388,7 @@ export default function App() {
       )}
 
       {/* Mobile bottom tab bar — hidden in maintenance mode */}
-      {(!maintenanceMode || activeTab === 'admin') && (
+      {showChrome && (
       <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-black/95 backdrop-blur-lg border-t border-white/10 pb-safe">
         <div className="flex items-center justify-around h-14">
           <button
