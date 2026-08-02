@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { SearchFilters } from '../types';
 import { WIDTHS, PROFILES, RIMS, TYRE_TYPES } from '../data';
-import { Search, HelpCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { Search, HelpCircle, X } from 'lucide-react';
 
 interface TyreSearcherProps {
   filters: SearchFilters;
@@ -98,41 +98,75 @@ export default function TyreSearcher({
         )}
       </div>
 
-      {/* Tyre Size Guide */}
-      <div className="mt-3">
+      {/* Tyre Size Guide — centered trigger */}
+      <div className="mt-3 flex justify-center">
         <button
           type="button"
-          onClick={() => setShowGuide(!showGuide)}
+          onClick={() => setShowGuide(true)}
           className="flex items-center gap-2 text-xs font-bold text-bright-snow/60 hover:text-bright-snow transition"
         >
           <HelpCircle className="w-4 h-4 text-racing-red" />
           How to find your tyre size
-          {showGuide ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
         </button>
-        {showGuide && (
-          <div className="mt-3 bg-[#1e2121] rounded-2xl border border-white/10 overflow-hidden animate-fade-in-up">
+      </div>
+
+      {/* Tyre Size Guide — Modal */}
+      {showGuide && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in-up"
+          onClick={() => setShowGuide(false)}
+        >
+          <div
+            className="relative bg-[#1e2121] rounded-3xl border border-white/10 overflow-hidden shadow-2xl max-w-lg w-full max-h-[85vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button
+              type="button"
+              onClick={() => setShowGuide(false)}
+              className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-black/60 border border-white/10 flex items-center justify-center text-bright-snow/60 hover:text-bright-snow hover:bg-white/10 transition"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            {/* Header */}
+            <div className="bg-racing-red/10 border-b border-racing-red/20 px-6 py-4 flex items-center gap-3">
+              <HelpCircle className="w-5 h-5 text-racing-red shrink-0" />
+              <h3 className="font-display font-bold text-bright-snow text-base">How to Find Your Tyre Size</h3>
+            </div>
+
+            {/* Image */}
             <img
               src="/assets/how_to_tyres.png"
               alt="How to find your tyre size guide"
               className="w-full h-auto"
             />
-            <div className="p-4 text-sm text-bright-snow/60 leading-relaxed">
-              <p className="mb-2">
+
+            {/* Content */}
+            <div className="p-6 text-sm text-bright-snow/70 leading-relaxed space-y-3">
+              <p>
                 <span className="text-bright-snow font-bold">Width</span> — the first number (e.g. 205) is the tyre width in millimetres.
               </p>
-              <p className="mb-2">
+              <p>
                 <span className="text-bright-snow font-bold">Profile</span> — the second number (e.g. 55) is the sidewall height as a percentage of the width.
               </p>
-              <p className="mb-2">
+              <p>
                 <span className="text-bright-snow font-bold">Rim</span> — the number after 'R' (e.g. 16) is the wheel diameter in inches.
               </p>
-              <p className="text-xs text-bright-snow/40 mt-3 pt-3 border-t border-white/5">
+              <p className="text-xs text-bright-snow/40 pt-3 border-t border-white/5">
                 You can find these numbers on the sidewall of your tyre, or in your vehicle's handbook.
               </p>
+              <button
+                type="button"
+                onClick={() => setShowGuide(false)}
+                className="w-full mt-2 bg-racing-red hover:bg-racing-red/90 text-bright-snow font-extrabold text-sm py-3 rounded-xl transition"
+              >
+                Got it
+              </button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
