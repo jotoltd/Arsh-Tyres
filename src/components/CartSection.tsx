@@ -7,7 +7,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import StripePaymentForm from './StripePayment';
 import { getStripePublishableKey, getStripeMode } from '../paymentSettings';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
-import { ShoppingBag, Trash2, ChevronRight, ChevronLeft, Search, KeyRound, Check, Car, Calendar, User, Sparkles, ShieldCheck, Wrench, Package, CreditCard, Lock, Loader2, Tag, X } from 'lucide-react';
+import { ShoppingBag, Trash2, ChevronRight, ChevronLeft, Search, KeyRound, Check, Car, Calendar, User, Sparkles, ShieldCheck, Wrench, Package, CreditCard, Lock, Loader2, Tag, X, LogIn, AlertCircle } from 'lucide-react';
 import { useSupabase } from '../contexts/SupabaseContext';
 
 let stripePromiseCache: Promise<any> | null = null;
@@ -58,7 +58,7 @@ export default function CartSection({
   selectedReg,
   selectedMakeModel
 }: CartSectionProps) {
-  const { stockManagementEnabled } = useSupabase();
+  const { stockManagementEnabled, user, signIn } = useSupabase();
   const [step, setStep] = useState(0);
   const [fittingType, setFittingType] = useState<'fitting' | 'collection'>('fitting');
   const [selectedDate, setSelectedDate] = useState('');
@@ -74,11 +74,82 @@ export default function CartSection({
   const [paymentIntentId, setPaymentIntentId] = useState('');
   const [paymentError, setPaymentError] = useState('');
   const [isFetchingIntent, setIsFetchingIntent] = useState(false);
-  const [promoInput, setPromoInput] = useState('');
   const [promoCode, setPromoCode] = useState('');
+  const [promoInput, setPromoInput] = useState('');
   const [promoDiscount, setPromoDiscount] = useState(0);
+  const [promoError, setPromoError] = useState('');
   const [promoChecking, setPromoChecking] = useState(false);
+
+  // Account detection / sign-in state
+  const [emailExists, setEmailExists] = useState(false);
+  const [emailCheckLoading, setEmailCheckLoading] = useState(false);
+  const [showSignInBox, setShowSignInBox] = useState(false);
+  const [signInPassword, setSignInPassword] = useState('');
+  const [signInLoading, setSignInLoading] = useState(false);
+  const [signInError, setSignInError] = useState('');
+  const [signedInEmail, setSignedInEmail] = useState<string | null>(null);
   const [promoMessage, setPromoMessage] = useState('');
+
+  // Pre-fill details when user is logged in
+  useEffect(() => {
+    if (user?.email && !signedInEmail) {
+      setCustomerEmail(user.email);
+      setSignedInEmail(user.email);
+      setEmailExists(false);
+      setShowSignInBox(false);
+    }
+  }, [user, signedInEmail]);
+
+  // Debounced email check — detect if email has an existing account
+  useEffect(() => {
+    if (!customerEmail.trim() || !customerEmail.includes('@')) {
+      setEmailExists(false);
+      setShowSignInBox(false);
+      return;
+    }
+    if (user?.email === customerEmail.trim().toLowerCase()) return; // already signed in
+    if (signedInEmail === customerEmail.trim().toLowerCase()) return;
+
+    setEmailCheckLoading(true);
+    const timer = setTimeout(async () => {
+      if (!isSupabaseConfigured()) {
+        setEmailCheckLoading(false);
+        return;
+      }
+      try {
+        const { data: bookingData } = await supabase
+          .from('bookings')
+          .select('customer_email')
+          .eq('customer_email', customerEmail.trim())
+          .limit(1);
+        if (bookingData && bookingData.length > 0) {
+          setEmailExists(true);
+        } else {
+          setEmailExists(false);
+        }
+      } catch {
+        setEmailExists(false);
+      }
+      setEmailCheckLoading(false);
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, [customerEmail, user, signedInEmail]);
+
+  const handleSignInFromCheckout = async () => {
+    setSignInError('');
+    setSignInLoading(true);
+    const { error } = await signIn(customerEmail.trim(), signInPassword);
+    setSignInLoading(false);
+    if (error) {
+      setSignInError('Wrong password. Try again or reset your password from the Account page.');
+    } else {
+      setSignedInEmail(customerEmail.trim().toLowerCase());
+      setShowSignInBox(false);
+      setEmailExists(false);
+      setSignInPassword('');
+    }
+  };
 
   const handleApplyPromo = async () => {
     if (!promoInput.trim()) return;
@@ -608,6 +679,87 @@ export default function CartSection({
                         className="w-full bg-[#1e2121] border border-white/5 text-bright-snow rounded-lg p-2.5 text-sm font-medium focus:ring-2 focus:ring-racing-red/20 focus:border-racing-red transition" />
                     </div>
                   </div>
+
+                  {/* Already signed in banner */}
+                  {signedInEmail && (
+                    <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 flex items-center gap-2">
+                      <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span className="text-xs text-emerald-400 font-semibold">
+                        Signed in as {signedInEmail} — your booking will be saved to your account.
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Email has existing account — prompt to sign in */}
+                  {emailExists && !signedInEmail && !showSignInBox && (
+                    <div className="bg-racing-red/10 border border-racing-red/20 rounded-xl p-4 space-y-3">
+                      <div className="flex items-start gap-2">
+                        <AlertCircle className="w-4 h-4 text-racing-red shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-xs text-racing-red font-bold">You have an account with this email</p>
+                          <p className="text-[11px] text-bright-snow/60 mt-0.5">Sign in to save this booking to your account and see your history.</p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowSignInBox(true)}
+                        className="flex items-center gap-2 bg-racing-red hover:bg-racing-red/90 text-bright-snow font-bold text-xs px-4 py-2.5 rounded-lg transition w-full justify-center"
+                      >
+                        <LogIn className="w-4 h-4" />
+                        Sign In
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Sign-in box */}
+                  {showSignInBox && !signedInEmail && (
+                    <div className="bg-[#1e2121] border border-racing-red/20 rounded-xl p-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-bright-snow flex items-center gap-1.5">
+                          <LogIn className="w-4 h-4 text-racing-red" />
+                          Sign in to your account
+                        </span>
+                        <button type="button" onClick={() => { setShowSignInBox(false); setSignInError(''); setSignInPassword(''); }} className="text-bright-snow/40 hover:text-bright-snow transition">
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <div>
+                        <label className="block text-[11px] text-bright-snow/60 mb-1 font-semibold uppercase">Password</label>
+                        <input
+                          type="password"
+                          placeholder="Enter your password"
+                          value={signInPassword}
+                          onChange={(e) => setSignInPassword(e.target.value)}
+                          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleSignInFromCheckout(); } }}
+                          className="w-full bg-black/40 border border-white/10 text-bright-snow rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-racing-red/20 focus:border-racing-red transition"
+                          autoFocus
+                        />
+                      </div>
+                      {signInError && (
+                        <p className="text-[11px] text-racing-red font-semibold">{signInError}</p>
+                      )}
+                      <button
+                        type="button"
+                        onClick={handleSignInFromCheckout}
+                        disabled={signInLoading || !signInPassword}
+                        className="w-full flex items-center justify-center gap-2 bg-racing-red hover:bg-racing-red/90 disabled:opacity-50 text-bright-snow font-bold text-xs px-4 py-2.5 rounded-lg transition"
+                      >
+                        {signInLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <LogIn className="w-4 h-4" />}
+                        {signInLoading ? 'Signing in...' : 'Sign In'}
+                      </button>
+                      <p className="text-[10px] text-bright-snow/40 text-center">
+                        Don't know your password? Reset it from the Account page.
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Email checking indicator */}
+                  {emailCheckLoading && !emailExists && !signedInEmail && (
+                    <div className="flex items-center gap-1.5 text-[11px] text-bright-snow/40">
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      Checking account...
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
