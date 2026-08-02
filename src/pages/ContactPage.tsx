@@ -230,6 +230,7 @@ export default function ContactPage() {
                     style={{ border: 0, filter: 'invert(0.9) hue-rotate(180deg) contrast(0.8)' }}
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
+                    allow="fullscreen"
                     title="Arsh Autos Location Map"
                   />
                 </div>

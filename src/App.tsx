@@ -1258,6 +1258,7 @@ export default function App() {
                 src="https://maps.google.com/maps?q=5%20Rowan%20Rd%20London%20SW16%205JF&t=&z=14&ie=UTF8&iwloc=&output=embed"
                 className="w-full h-full grayscale opacity-60"
                 loading="lazy"
+                allow="fullscreen"
                 title="Arsh Autos Location"
               />
             </div>
