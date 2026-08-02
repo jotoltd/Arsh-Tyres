@@ -325,13 +325,7 @@ export default function App() {
           {/* Logo */}
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => { navigate('/'); setActiveTab('shop'); setLastConfirmedBooking(null); }}>
             <div className="bg-racing-red text-bright-snow p-2 rounded-xl flex items-center justify-center shadow-md overflow-hidden racing-glow-sm">
-              <img src="/assets/logo.jpg" alt="Arsh Autos Logo" className="w-20 h-20 object-contain" />
-            </div>
-            <div>
-              <span className="text-xs uppercase font-extrabold tracking-widest text-racing-red block leading-none">ARSH AUTOS</span>
-              <h1 className="font-display font-black text-xl text-bright-snow tracking-tight flex items-center gap-1.5 leading-none mt-1">
-                Auto Tyre Shop
-              </h1>
+              <img src="/assets/logo.jpg" alt="Arsh Autos Logo" className="w-28 h-28 object-contain" />
             </div>
           </div>
 
@@ -340,7 +334,7 @@ export default function App() {
           <nav className="hidden sm:flex items-center gap-1 sm:gap-2">
             <button
               onClick={() => { navigate('/'); setActiveTab('shop'); setLastConfirmedBooking(null); }}
-              className={`px-4 py-2 text-sm font-bold rounded-lg transition ${
+              className={`px-5 py-2.5 text-base font-bold rounded-lg transition ${
                 activeTab === 'shop' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
                   : 'text-gray-400 hover:bg-bright-snow/5 hover:text-bright-snow'
@@ -351,13 +345,13 @@ export default function App() {
 
             <button
               onClick={() => { navigate('/'); setActiveTab('bookings'); setLastConfirmedBooking(null); }}
-              className={`px-4 py-2 text-sm font-bold rounded-lg transition flex items-center gap-1.5 ${
+              className={`px-5 py-2.5 text-base font-bold rounded-lg transition flex items-center gap-1.5 ${
                 activeTab === 'bookings' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
                   : 'text-gray-400 hover:bg-bright-snow/5 hover:text-bright-snow'
               }`}
             >
-              <Calendar className="w-4 h-4" />
+              <Calendar className="w-5 h-5" />
               My Bookings
               {bookings.length > 0 && (
                 <span className="bg-white/10 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-1">
@@ -368,13 +362,13 @@ export default function App() {
 
             <button
               onClick={() => { navigate('/'); setActiveTab('cart'); setLastConfirmedBooking(null); }}
-              className={`px-4 py-2 text-sm font-bold rounded-lg transition flex items-center gap-1.5 ${
+              className={`px-5 py-2.5 text-base font-bold rounded-lg transition flex items-center gap-1.5 ${
                 activeTab === 'cart' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
                   : 'text-gray-400 hover:bg-bright-snow/5 hover:text-bright-snow'
               }`}
             >
-              <ShoppingBag className="w-4 h-4" />
+              <ShoppingBag className="w-5 h-5" />
               My Order
               {cartItems.length > 0 && (
                 <span className="bg-white/10 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-1">
@@ -385,25 +379,25 @@ export default function App() {
 
             <button
               onClick={() => { navigate('/'); setActiveTab('admin'); setLastConfirmedBooking(null); }}
-              className={`px-4 py-2 text-sm font-bold rounded-lg transition flex items-center gap-1.5 ${
+              className={`px-5 py-2.5 text-base font-bold rounded-lg transition flex items-center gap-1.5 ${
                 activeTab === 'admin' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
                   : 'text-gray-400 hover:bg-bright-snow/5 hover:text-bright-snow'
               }`}
             >
-              <ShieldCheck className="w-4 h-4" />
+              <ShieldCheck className="w-5 h-5" />
               Admin
             </button>
 
             <button
               onClick={() => { navigate('/'); setActiveTab('account'); setLastConfirmedBooking(null); }}
-              className={`px-4 py-2 text-sm font-bold rounded-lg transition flex items-center gap-1.5 ${
+              className={`px-5 py-2.5 text-base font-bold rounded-lg transition flex items-center gap-1.5 ${
                 activeTab === 'account' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
                   : 'text-gray-400 hover:bg-bright-snow/5 hover:text-bright-snow'
               }`}
             >
-              <User className="w-4 h-4" />
+              <User className="w-5 h-5" />
               Account
             </button>
           </nav>
