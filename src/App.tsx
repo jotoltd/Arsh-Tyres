@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Routes, Route, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { Tyre, CartItem, Booking, SearchFilters } from './types';
 import { getUnitPrice } from './data';
 import { useSupabase } from './contexts/SupabaseContext';
@@ -41,6 +41,16 @@ import {
 export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+
+  // Deep linking: derive activeTab from ?tab= query param
+  const validTabs = ['shop', 'bookings', 'cart', 'admin', 'account'] as const;
+  type Tab = typeof validTabs[number];
+  const tabParam = searchParams.get('tab') as Tab | null;
+  const activeTab: Tab = tabParam && validTabs.includes(tabParam) ? tabParam : 'shop';
+  const setActiveTab = useCallback((tab: Tab) => {
+    navigate(`/?tab=${tab}`);
+  }, [navigate]);
 
   // State variables
   const [filters, setFilters] = useState<SearchFilters>({
@@ -53,7 +63,6 @@ export default function App() {
 
   const [selectedReg, setSelectedReg] = useState('');
   const [selectedMakeModel, setSelectedMakeModel] = useState('');
-  const [activeTab, setActiveTab] = useState<'shop' | 'bookings' | 'cart' | 'admin' | 'account'>('shop');
   const [searchTriggered, setSearchTriggered] = useState(false);
   const [sortBy, setSortBy] = useState<'price-low' | 'price-high' | 'size'>('price-low');
   const [lastConfirmedBooking, setLastConfirmedBooking] = useState<Booking | null>(null);
@@ -75,10 +84,8 @@ export default function App() {
     const params = new URLSearchParams(window.location.search);
     if (params.get('reset_password') === '1') {
       setActiveTab('account');
-      // Clean the URL
-      window.history.replaceState({}, document.title, window.location.pathname);
     }
-  }, []);
+  }, [setActiveTab]);
 
   const {
     tyres,
@@ -329,7 +336,7 @@ export default function App() {
         <div className="w-full px-3 sm:px-4 lg:px-8 py-2 sm:py-3 flex items-center justify-between gap-2">
 
           {/* Logo */}
-          <div className="flex items-center gap-2 cursor-pointer shrink-0" onClick={() => { navigate('/'); setActiveTab('shop'); setLastConfirmedBooking(null); }}>
+          <div className="flex items-center gap-2 cursor-pointer shrink-0" onClick={() => { setActiveTab('shop'); setLastConfirmedBooking(null); }}>
             <img src="/assets/logo.jpg" alt="Arsh Autos Logo" className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28 object-contain" />
           </div>
 
@@ -337,7 +344,7 @@ export default function App() {
           {(!maintenanceMode || activeTab === 'admin') && (
           <nav className="hidden md:flex items-center gap-0.5 lg:gap-2">
             <button
-              onClick={() => { navigate('/'); setActiveTab('shop'); setLastConfirmedBooking(null); }}
+              onClick={() => { setActiveTab('shop'); setLastConfirmedBooking(null); }}
               className={`px-3 lg:px-5 py-2 text-sm lg:text-base font-bold rounded-lg transition whitespace-nowrap ${
                 activeTab === 'shop' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
@@ -348,7 +355,7 @@ export default function App() {
             </button>
 
             <button
-              onClick={() => { navigate('/'); setActiveTab('bookings'); setLastConfirmedBooking(null); }}
+              onClick={() => { setActiveTab('bookings'); setLastConfirmedBooking(null); }}
               className={`px-3 lg:px-5 py-2 text-sm lg:text-base font-bold rounded-lg transition flex items-center gap-1.5 whitespace-nowrap ${
                 activeTab === 'bookings' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
@@ -366,7 +373,7 @@ export default function App() {
             </button>
 
             <button
-              onClick={() => { navigate('/'); setActiveTab('cart'); setLastConfirmedBooking(null); }}
+              onClick={() => { setActiveTab('cart'); setLastConfirmedBooking(null); }}
               className={`px-3 lg:px-5 py-2 text-sm lg:text-base font-bold rounded-lg transition flex items-center gap-1.5 whitespace-nowrap ${
                 activeTab === 'cart' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
@@ -384,7 +391,7 @@ export default function App() {
             </button>
 
             <button
-              onClick={() => { navigate('/'); setActiveTab('account'); setLastConfirmedBooking(null); }}
+              onClick={() => { setActiveTab('account'); setLastConfirmedBooking(null); }}
               className={`px-3 lg:px-5 py-2 text-sm lg:text-base font-bold rounded-lg transition flex items-center gap-1.5 whitespace-nowrap ${
                 activeTab === 'account' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
@@ -433,7 +440,7 @@ export default function App() {
               </div>
             ) : (
               <button
-                onClick={() => { navigate('/'); setActiveTab('account'); setLastConfirmedBooking(null); }}
+                onClick={() => { setActiveTab('account'); setLastConfirmedBooking(null); }}
                 className="flex items-center gap-1.5 text-xs font-bold text-bright-snow bg-racing-red hover:bg-racing-red/90 px-3 py-2 rounded-lg transition whitespace-nowrap"
               >
                 <User className="w-3.5 h-3.5" />
@@ -442,7 +449,7 @@ export default function App() {
             )}
             {cartItems.length > 0 && (
               <a
-                onClick={() => { navigate('/'); setActiveTab('cart'); }}
+                onClick={() => { setActiveTab('cart'); }}
                 className="bg-[#1e2121] hover:bg-[#252828] text-bright-snow border border-gray-500/20 rounded-xl px-3 lg:px-4 py-2 text-sm font-bold flex items-center gap-2 transition shadow-md hover:shadow-lg cursor-pointer whitespace-nowrap"
               >
                 <ShoppingBag className="w-4 h-4 text-racing-red" />
@@ -461,7 +468,7 @@ export default function App() {
         <div className="md:hidden fixed top-0 left-0 right-0 z-[45] bg-black/98 backdrop-blur-lg border-b border-white/10 shadow-2xl min-h-screen pt-2">
           <nav className="flex flex-col p-4 gap-2">
             <button
-              onClick={() => { navigate('/'); setActiveTab('shop'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
+              onClick={() => { setActiveTab('shop'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition ${
                 activeTab === 'shop' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow'
@@ -472,7 +479,7 @@ export default function App() {
               Find & Buy Tyres
             </button>
             <button
-              onClick={() => { navigate('/'); setActiveTab('bookings'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
+              onClick={() => { setActiveTab('bookings'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition ${
                 activeTab === 'bookings' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow'
@@ -488,7 +495,7 @@ export default function App() {
               )}
             </button>
             <button
-              onClick={() => { navigate('/'); setActiveTab('cart'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
+              onClick={() => { setActiveTab('cart'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition ${
                 activeTab === 'cart' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow'
@@ -504,7 +511,7 @@ export default function App() {
               )}
             </button>
             <button
-              onClick={() => { navigate('/'); setActiveTab('account'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
+              onClick={() => { setActiveTab('account'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition ${
                 activeTab === 'account' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow'
@@ -1232,7 +1239,7 @@ export default function App() {
       <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-black/95 backdrop-blur-lg border-t border-white/10 pb-safe">
         <div className="flex items-center justify-around h-14">
           <button
-            onClick={() => { navigate('/'); setActiveTab('shop'); setLastConfirmedBooking(null); }}
+            onClick={() => { setActiveTab('shop'); setLastConfirmedBooking(null); }}
             className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
               activeTab === 'shop' && location.pathname === '/' ? 'text-racing-red' : 'text-bright-snow/40'
             }`}
@@ -1242,7 +1249,7 @@ export default function App() {
           </button>
 
           <button
-            onClick={() => { navigate('/'); setActiveTab('bookings'); setLastConfirmedBooking(null); }}
+            onClick={() => { setActiveTab('bookings'); setLastConfirmedBooking(null); }}
             className={`relative flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
               activeTab === 'bookings' && location.pathname === '/' ? 'text-racing-red' : 'text-bright-snow/40'
             }`}
@@ -1257,7 +1264,7 @@ export default function App() {
           </button>
 
           <button
-            onClick={() => { navigate('/'); setActiveTab('cart'); setLastConfirmedBooking(null); }}
+            onClick={() => { setActiveTab('cart'); setLastConfirmedBooking(null); }}
             className={`relative flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
               activeTab === 'cart' && location.pathname === '/' ? 'text-racing-red' : 'text-bright-snow/40'
             }`}
@@ -1282,7 +1289,7 @@ export default function App() {
           </button>
 
           <button
-            onClick={() => { navigate('/'); setActiveTab('account'); setLastConfirmedBooking(null); }}
+            onClick={() => { setActiveTab('account'); setLastConfirmedBooking(null); }}
             className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
               activeTab === 'account' && location.pathname === '/' ? 'text-racing-red' : 'text-bright-snow/40'
             }`}
