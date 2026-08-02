@@ -197,7 +197,7 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
                 {resetSent ? (
                   <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 text-xs text-emerald-300 font-semibold flex items-center gap-2 animate-fade-in-up">
                     <CheckCircle2 className="w-4 h-4 shrink-0" />
-                    Reset link sent! Check your email inbox (and spam folder) for a password reset link.
+                    Reset link sent! Check your email inbox (and spam folder) for a password reset email from Arsh Autos.
                   </div>
                 ) : (
                   <form onSubmit={handleForgotPassword} className="space-y-4">

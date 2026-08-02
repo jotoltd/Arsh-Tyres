@@ -532,10 +532,20 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
 
   const resetPassword = useCallback(async (email: string) => {
     if (!configured) return { error: new Error('Supabase is not configured') };
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/?reset_password=1`,
-    });
-    return { error: error || undefined };
+    try {
+      const res = await fetch('/api/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        return { error: new Error(data.error || 'Failed to send reset email') };
+      }
+      return {};
+    } catch (err: any) {
+      return { error: new Error(err.message || 'Failed to send reset email') };
+    }
   }, [configured]);
 
   const updatePassword = useCallback(async (newPassword: string) => {
