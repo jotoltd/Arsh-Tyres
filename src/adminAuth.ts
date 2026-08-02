@@ -12,7 +12,8 @@ export type AdminPermission =
   | 'schedule'
   | 'staff'
   | 'reports'
-  | 'settings';
+  | 'settings'
+  | 'messages';
 
 export interface AdminUser {
   username: string;
@@ -24,7 +25,7 @@ export interface AdminUser {
 }
 
 export const ALL_PERMISSIONS: AdminPermission[] = [
-  'dashboard', 'inventory', 'bookings', 'customers', 'promos', 'schedule', 'staff', 'reports', 'settings'
+  'dashboard', 'inventory', 'bookings', 'customers', 'promos', 'schedule', 'staff', 'reports', 'settings', 'messages'
 ];
 
 export const STAFF_USERS: AdminUser[] = [

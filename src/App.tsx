@@ -11,6 +11,7 @@ import AdminPanel from './components/AdminPanel';
 import CustomerAccount from './components/CustomerAccount';
 import SearchResults from './pages/SearchResults';
 import NotFound from './pages/NotFound';
+import ContactPage from './pages/ContactPage';
 import {
   Wrench,
   Truck,
@@ -33,7 +34,8 @@ import {
   Search,
   User,
   LogOut,
-  Menu
+  Menu,
+  MessageSquare
 } from 'lucide-react';
 
 export default function App() {
@@ -402,6 +404,17 @@ export default function App() {
               <User className="w-5 h-5" />
               Account
             </button>
+            <button
+              onClick={() => { navigate('/contact'); setLastConfirmedBooking(null); }}
+              className={`px-5 py-2.5 text-base font-bold rounded-lg transition flex items-center gap-1.5 ${
+                location.pathname === '/contact'
+                  ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
+                  : 'text-bright-snow/60 hover:bg-bright-snow/5 hover:text-bright-snow'
+              }`}
+            >
+              <Phone className="w-5 h-5" />
+              Contact
+            </button>
           </nav>
           )}
 
@@ -522,6 +535,17 @@ export default function App() {
               <ShieldCheck className="w-5 h-5" />
               Admin
             </button>
+            <button
+              onClick={() => { navigate('/contact'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition ${
+                location.pathname === '/contact'
+                  ? 'bg-racing-red text-bright-snow'
+                  : 'text-bright-snow/60 hover:bg-white/5 hover:text-bright-snow'
+              }`}
+            >
+              <Phone className="w-5 h-5" />
+              Contact
+            </button>
             {user && (
               <button
                 onClick={() => { signOut(); setMobileMenuOpen(false); }}
@@ -604,6 +628,7 @@ export default function App() {
         ) : (
         <Routes>
           <Route path="/search-results" element={<SearchResults />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/" element={
             <>
@@ -1182,6 +1207,13 @@ export default function App() {
                 <Phone className="w-4 h-4 text-racing-red shrink-0" />
                 <a href="tel:02084271234" className="hover:text-racing-red transition font-bold">020 8427 1234</a>
               </p>
+              <button
+                onClick={() => navigate('/contact')}
+                className="flex items-center gap-2 text-racing-red hover:text-racing-red/80 transition font-bold pt-1"
+              >
+                <MessageSquare className="w-4 h-4" />
+                Send us a message
+              </button>
             </div>
             {/* Map embed */}
             <div className="mt-4 rounded-xl overflow-hidden border border-white/5 h-32">

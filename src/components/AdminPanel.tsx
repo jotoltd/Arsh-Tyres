@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Tyre, Booking } from '../types';
 import { TYRE_DATABASE } from '../data';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
-import { Trash2, Edit, Plus, Package, Calendar, CheckCircle, XCircle, Clock, ShieldCheck, Users, Download, AlertTriangle, Tag, TrendingUp, BarChart3, FileText, CreditCard, MessageSquare, Settings, FlaskConical, Zap, LogOut, Lock, Loader2, X, Check, Search, Upload, ChevronUp, ChevronDown, Disc } from 'lucide-react';
+import { Trash2, Edit, Plus, Package, Calendar, CheckCircle, XCircle, Clock, ShieldCheck, Users, Download, AlertTriangle, Tag, TrendingUp, BarChart3, FileText, CreditCard, MessageSquare, Settings, FlaskConical, Zap, LogOut, Lock, Loader2, X, Check, Search, Upload, ChevronUp, ChevronDown, Disc, Mail, Phone } from 'lucide-react';
 import { SkeletonRow, SkeletonStatCard } from './Skeleton';
 import { getStripeMode, setStripeMode, type StripeMode } from '../paymentSettings';
 import { isAdminAuthed, adminLogin, adminLogout, getCurrentAdminUser, hasPermission, type AdminPermission, STAFF_USERS, ALL_PERMISSIONS } from '../adminAuth';
@@ -36,7 +36,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
   const [loginPass, setLoginPass] = useState('');
   const [loginError, setLoginError] = useState('');
 
-  const [activeSection, setActiveSection] = useState<'dashboard' | 'inventory' | 'bookings' | 'customers' | 'promos' | 'schedule' | 'staff' | 'reports' | 'settings'>('dashboard');
+  const [activeSection, setActiveSection] = useState<'dashboard' | 'inventory' | 'bookings' | 'customers' | 'promos' | 'schedule' | 'staff' | 'reports' | 'settings' | 'messages'>('dashboard');
   const [inventory, setInventory] = useState<Tyre[]>(TYRE_DATABASE);
   const [inventoryLoading, setInventoryLoading] = useState(false);
   const [editingTyre, setEditingTyre] = useState<Tyre | null>(null);
@@ -71,6 +71,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
   const [invSort, setInvSort] = useState<'brand' | 'stock-low' | 'price-high' | 'size'>('brand');
   const [imageUploading, setImageUploading] = useState(false);
   const [expandedCustomerId, setExpandedCustomerId] = useState<string | null>(null);
+  const [contactMessages, setContactMessages] = useState<any[]>([]);
   const configured = isSupabaseConfigured();
 
   const handleImageUpload = async (file: File, onDone: (url: string) => void) => {
@@ -199,6 +200,21 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
     }
   }, [configured]);
 
+  // Load contact messages from Supabase or localStorage
+  const loadMessages = useCallback(async () => {
+    if (configured) {
+      const { data, error } = await supabase.from('contact_messages').select('*').order('created_at', { ascending: false });
+      if (!error && data) {
+        setContactMessages(data);
+        return;
+      }
+    }
+    try {
+      const local = JSON.parse(localStorage.getItem('arsh_contact_messages') || '[]');
+      setContactMessages(local.reverse());
+    } catch { /* ignore */ }
+  }, [configured]);
+
   // Load all data on mount (when authed)
   useEffect(() => {
     if (!authed) return;
@@ -206,7 +222,8 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
     loadPromos();
     loadStaff();
     loadBookingNotes();
-  }, [authed, loadInventory, loadPromos, loadStaff, loadBookingNotes]);
+    loadMessages();
+  }, [authed, loadInventory, loadPromos, loadStaff, loadBookingNotes, loadMessages]);
 
   // Calculate dashboard stats
   const stats = useMemo(() => {
@@ -682,6 +699,24 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
           >
             <Settings className="w-4 h-4" />
             Settings
+          </button>
+          )}
+          {hasPermission('messages') && (
+          <button
+            onClick={() => setActiveSection('messages')}
+            className={`px-4 py-3 text-sm font-bold rounded-xl transition flex items-center gap-2 ${
+              activeSection === 'messages'
+                ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/30 border border-racing-red'
+                : 'bg-[#1e2121] text-bright-snow/60 hover:bg-racing-red/10 hover:text-bright-snow border border-white/5'
+            }`}
+          >
+            <MessageSquare className="w-4 h-4" />
+            Messages
+            {contactMessages.filter(m => m.status === 'new').length > 0 && (
+              <span className="bg-racing-red text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                {contactMessages.filter(m => m.status === 'new').length}
+              </span>
+            )}
           </button>
           )}
         </div>
@@ -2252,6 +2287,102 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
               )}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Messages Section */}
+      {activeSection === 'messages' && (
+        <div className="bg-black rounded-2xl border border-white/5 shadow-xl overflow-hidden">
+          <div className="p-6 border-b border-white/5 flex items-center justify-between">
+            <div>
+              <h3 className="font-display font-bold text-bright-snow text-lg">Contact Messages</h3>
+              <p className="text-xs text-bright-snow/60 mt-1">
+                {contactMessages.length} total · {contactMessages.filter(m => m.status === 'new').length} new
+              </p>
+            </div>
+            <button
+              onClick={() => loadMessages()}
+              className="text-xs font-bold text-bright-snow/60 hover:text-bright-snow transition flex items-center gap-1.5"
+            >
+              <Search className="w-3.5 h-3.5" /> Refresh
+            </button>
+          </div>
+
+          {contactMessages.length === 0 ? (
+            <div className="p-12 text-center">
+              <MessageSquare className="w-12 h-12 text-bright-snow/20 mx-auto mb-3" />
+              <p className="text-sm text-bright-snow/60">No messages yet. Submissions from the contact page will appear here.</p>
+            </div>
+          ) : (
+            <div className="divide-y divide-white/5">
+              {contactMessages.map((msg: any) => (
+                <div key={msg.id} className={`p-5 ${msg.status === 'new' ? 'bg-racing-red/5' : ''}`}>
+                  <div className="flex items-start justify-between gap-4 mb-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-bold text-bright-snow text-sm">{msg.name}</span>
+                        {msg.status === 'new' && (
+                          <span className="bg-racing-red text-white text-[9px] font-bold px-1.5 py-0.5 rounded uppercase">New</span>
+                        )}
+                        {msg.status === 'read' && (
+                          <span className="bg-white/10 text-bright-snow/60 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase">Read</span>
+                        )}
+                        {msg.status === 'archived' && (
+                          <span className="bg-white/5 text-bright-snow/40 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase">Archived</span>
+                        )}
+                      </div>
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-bright-snow/60">
+                        <a href={`mailto:${msg.email}`} className="hover:text-racing-red transition flex items-center gap-1">
+                          <Mail className="w-3 h-3" /> {msg.email}
+                        </a>
+                        {msg.phone && (
+                          <a href={`tel:${msg.phone}`} className="hover:text-racing-red transition flex items-center gap-1">
+                            <Phone className="w-3 h-3" /> {msg.phone}
+                          </a>
+                        )}
+                        <span className="flex items-center gap-1">
+                          <Tag className="w-3 h-3" /> {msg.subject || 'General Enquiry'}
+                        </span>
+                        <span className="text-bright-snow/40">
+                          {new Date(msg.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}{' '}
+                          {new Date(msg.created_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {msg.status === 'new' && (
+                        <button
+                          onClick={async () => {
+                            setContactMessages(prev => prev.map(m => m.id === msg.id ? { ...m, status: 'read' } : m));
+                            if (configured) {
+                              await supabase.from('contact_messages').update({ status: 'read' }).eq('id', msg.id);
+                            }
+                          }}
+                          className="text-[10px] font-bold text-bright-snow/60 hover:text-bright-snow bg-white/5 hover:bg-white/10 px-2.5 py-1.5 rounded-lg transition"
+                        >
+                          Mark Read
+                        </button>
+                      )}
+                      {msg.status !== 'archived' && (
+                        <button
+                          onClick={async () => {
+                            setContactMessages(prev => prev.map(m => m.id === msg.id ? { ...m, status: 'archived' } : m));
+                            if (configured) {
+                              await supabase.from('contact_messages').update({ status: 'archived' }).eq('id', msg.id);
+                            }
+                          }}
+                          className="text-[10px] font-bold text-bright-snow/60 hover:text-racing-red bg-white/5 hover:bg-racing-red/10 px-2.5 py-1.5 rounded-lg transition"
+                        >
+                          Archive
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <p className="text-sm text-bright-snow/80 mt-2 whitespace-pre-wrap">{msg.message}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
