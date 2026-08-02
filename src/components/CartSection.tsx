@@ -48,7 +48,6 @@ const STEPS = [
   { id: 2, label: 'Date & Time', icon: Calendar },
   { id: 3, label: 'Your Details', icon: User },
   { id: 4, label: 'Payment', icon: CreditCard },
-  { id: 5, label: 'Confirm', icon: Check },
 ];
 
 export default function CartSection({
@@ -204,7 +203,7 @@ export default function CartSection({
       if (step === 1 && fittingType === 'collection') {
         setStep(3);
       } else {
-        const next = Math.min(5, step + 1);
+        const next = Math.min(4, step + 1);
         setStep(next);
         if (next === 4) fetchPaymentIntent();
       }
@@ -344,7 +343,7 @@ export default function CartSection({
           Back
         </button>
       )}
-      {!isLast ? (
+      {!isLast && (
         <button
           type="button"
           onClick={nextStep}
@@ -352,15 +351,6 @@ export default function CartSection({
         >
           Continue
           <ChevronRight className="w-4 h-4" />
-        </button>
-      ) : (
-        <button
-          type="button"
-          onClick={handleConfirm}
-          className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold uppercase tracking-wider text-sm transition shadow-lg shadow-emerald-600/30"
-        >
-          <Check className="w-5 h-5" />
-          Confirm Booking
         </button>
       )}
     </div>
@@ -737,7 +727,20 @@ export default function CartSection({
                       onSuccess={(id) => {
                         setPaymentIntentId(id);
                         setPaymentError('');
-                        setTimeout(() => nextStep(), 500);
+                        onCompleteBooking({
+                          cartItems,
+                          subtotal,
+                          fittingFee,
+                          totalPrice,
+                          fittingType,
+                          date: fittingType === 'collection' ? '' : selectedDate,
+                          timeSlot: fittingType === 'collection' ? '' : selectedTimeSlot,
+                          customerName,
+                          customerEmail,
+                          customerPhone,
+                          vehicleRegistration: vehicleRegistration.toUpperCase(),
+                          vehicleMakeModel
+                        });
                       }}
                       onError={(msg) => setPaymentError(msg)}
                     />
@@ -754,82 +757,7 @@ export default function CartSection({
             </div>
           )}
 
-          {/* STEP 5: Confirm */}
-          {step === 5 && (
-            <div className="space-y-4 animate-fade-in-up">
-              <div className="bg-black rounded-2xl border border-white/5 shadow-lg p-6">
-                <h3 className="font-display font-extrabold text-bright-snow text-xl mb-5">Review Your Booking</h3>
-                <div className="space-y-2 mb-5">
-                  <p className="text-xs font-bold uppercase tracking-wider text-racing-red mb-2">Tyres</p>
-                  {cartItems.map(item => (
-                    <div key={item.tyre.id} className="flex justify-between text-xs">
-                      <span className="text-bright-snow/60">{item.tyre.model} x{item.quantity}</span>
-                      <span className="text-bright-snow font-bold">£{(getUnitPrice(item.tyre, item.quantity) * item.quantity).toFixed(2)}</span>
-                    </div>
-                  ))}
-                </div>
-                {lockingNutCount > 0 && (
-                  <div className="flex justify-between text-xs mb-3">
-                    <span className="text-bright-snow/60">Locking nut removal x{lockingNutCount}</span>
-                    <span className="text-bright-snow font-bold">£{lockingNutTotal.toFixed(2)}</span>
-                  </div>
-                )}
-                {discountAmount > 0 && (
-                  <div className="flex justify-between text-xs mb-3">
-                    <span className="text-emerald-400 font-bold">Promo ({promoCode}) — {promoDiscount}% off</span>
-                    <span className="text-emerald-400 font-bold">-£{discountAmount.toFixed(2)}</span>
-                  </div>
-                )}
-                <div className="border-t border-white/5 pt-4 mb-4">
-                  <p className="text-xs font-bold uppercase tracking-wider text-racing-red mb-2">{fittingType === 'shop' ? 'Appointment' : 'Collection'}</p>
-                  {fittingType === 'shop' ? (
-                    <div className="grid grid-cols-2 gap-3 text-xs">
-                      <div><span className="text-bright-snow/60 block">Date</span><span className="text-bright-snow font-bold">{selectedDate}</span></div>
-                      <div><span className="text-bright-snow/60 block">Time</span><span className="text-bright-snow font-bold">{selectedTimeSlot}</span></div>
-                    </div>
-                  ) : (
-                    <div className="text-xs">
-                      <span className="text-bright-snow/60 block">Pick up from</span>
-                      <span className="text-bright-snow font-bold">5 Rowan Rd, London, SW16 5JF</span>
-                      <span className="text-bright-snow/60 block mt-1.5">Opening hours</span>
-                      <span className="text-bright-snow font-bold">Mon-Sat 8:30am - 6pm</span>
-                    </div>
-                  )}
-                </div>
-                <div className="border-t border-white/5 pt-4 mb-4">
-                  <p className="text-xs font-bold uppercase tracking-wider text-racing-red mb-2">Customer</p>
-                  <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div><span className="text-bright-snow/60 block">Name</span><span className="text-bright-snow font-bold">{customerName}</span></div>
-                    <div><span className="text-bright-snow/60 block">Vehicle</span><span className="text-bright-snow font-bold">{vehicleRegistration && <span className="font-mono bg-yellow-400 text-black font-black px-1.5 py-0.5 rounded tracking-wider text-[11px]">{vehicleRegistration}</span>} {vehicleMakeModel}</span></div>
-                    <div><span className="text-bright-snow/60 block">Email</span><span className="text-bright-snow font-bold">{customerEmail}</span></div>
-                    <div><span className="text-bright-snow/60 block">Phone</span><span className="text-bright-snow font-bold">{customerPhone}</span></div>
-                  </div>
-                </div>
-                <div className="border-t border-white/5 pt-4 mb-4">
-                  <p className="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-2 flex items-center gap-1.5">
-                    <Lock className="w-3.5 h-3.5" /> Payment Confirmed
-                  </p>
-                  <div className="text-xs text-bright-snow/60">
-                    <span>Card charged: </span>
-                    <span className="text-bright-snow font-bold">£{totalPrice.toFixed(2)}</span>
-                    <span className="text-bright-snow/40 block mt-0.5">Transaction ID: {paymentIntentId.slice(0, 20)}...</span>
-                  </div>
-                </div>
-                <div className="border-t border-white/5 pt-4">
-                  <div className="flex justify-between items-baseline">
-                    <span className="font-display font-bold text-bright-snow text-base">Grand Total</span>
-                    <span className="font-display font-extrabold text-racing-red text-2xl">£{totalPrice.toFixed(2)}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 text-xs text-emerald-400 font-semibold flex items-center gap-2">
-                <Check className="w-4 h-4" />
-                Payment received. Hit confirm to {fittingType === 'shop' ? 'lock in your fitting slot.' : 'reserve your tyres for collection.'}
-              </div>
-            </div>
-          )}
-
-          <NavButtons isLast={step === 5} />
+          <NavButtons isLast={step === 4} />
         </div>
 
         <div className="lg:col-span-4">
