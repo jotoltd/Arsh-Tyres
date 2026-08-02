@@ -643,13 +643,13 @@ export default function App() {
       {/* Main Body Grid */}
       <main className="w-full px-4 sm:px-6 lg:px-8 py-8 pb-20 md:pb-8">
         {!showChrome ? (
-          <div className="min-h-[60vh] flex items-center justify-center">
+          <div className="min-h-screen flex items-center justify-center -mt-20">
             <div className="max-w-lg w-full text-center space-y-8 animate-fade-in-up">
               {/* Logo */}
               <div className="relative inline-block">
-                <div className="absolute inset-0 bg-racing-red/20 blur-2xl rounded-full scale-110" />
-                <div className="relative bg-black/80 backdrop-blur-md rounded-3xl p-3 border border-white/10 shadow-2xl">
-                  <img src="/assets/logo.jpg" alt="Arsh Autos" className="w-24 h-24 rounded-2xl object-contain" />
+                <div className="absolute inset-0 bg-racing-red/20 blur-3xl rounded-full scale-110" />
+                <div className="relative bg-black/80 backdrop-blur-md rounded-3xl p-4 border border-white/10 shadow-2xl">
+                  <img src="/assets/logo.jpg" alt="Arsh Autos" className="w-40 h-40 rounded-2xl object-contain" />
                 </div>
               </div>
 
