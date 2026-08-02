@@ -39,7 +39,7 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
       {/* Tyre Image Area */}
       <div className="relative h-40 w-full bg-gradient-to-br from-black/60 to-[#0d0e0e] overflow-hidden flex items-center justify-center border-b border-white/5">
         {!tyre.imageUrl || imageError ? (
-          <div className="flex flex-col items-center text-gray-600 transition-transform duration-300 group-hover:scale-110">
+          <div className="flex flex-col items-center text-bright-snow/30 transition-transform duration-300 group-hover:scale-110">
             <Disc className="w-16 h-16 mb-1 opacity-30" />
           </div>
         ) : (
@@ -88,9 +88,9 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
         {/* Size — inline, compact */}
         <div className="font-mono text-sm font-bold text-bright-snow bg-black/40 rounded-lg px-3 py-2 mb-3 flex items-center justify-center gap-1">
           <span>{tyre.width}</span>
-          <span className="text-gray-500">/</span>
+          <span className="text-bright-snow/40">/</span>
           <span>{tyre.profile}</span>
-          <span className="text-gray-500 text-xs">R</span>
+          <span className="text-bright-snow/40 text-xs">R</span>
           <span>{tyre.rim}{tyre.category === 'Commercial' ? 'C' : ''}</span>
           {show('speedLoad') && (tyre.loadIndex || tyre.speedRating) && (
             <span className="text-racing-red ml-1">{tyre.loadIndex}{tyre.speedRating}</span>
@@ -118,26 +118,26 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
         {show('euLabel') && (
         <div className="flex items-center gap-2 mb-3 bg-black/30 rounded-lg p-2">
           <div className="flex-1 text-center">
-            <p className="text-[8px] uppercase text-gray-500 font-bold tracking-wider mb-0.5">Fuel</p>
+            <p className="text-[8px] uppercase text-bright-snow/40 font-bold tracking-wider mb-0.5">Fuel</p>
             <div className="flex items-center justify-center gap-0.5">
               <span className={`text-sm font-black ${tyre.fuelEfficiency <= 'B' ? 'text-emerald-400' : tyre.fuelEfficiency <= 'D' ? 'text-yellow-400' : 'text-racing-red'}`}>{tyre.fuelEfficiency || '?'}</span>
-              <span className="text-[8px] text-gray-600">/G</span>
+              <span className="text-[8px] text-bright-snow/30">/G</span>
             </div>
           </div>
           <div className="w-px h-7 bg-white/5" />
           <div className="flex-1 text-center">
-            <p className="text-[8px] uppercase text-gray-500 font-bold tracking-wider mb-0.5">Wet</p>
+            <p className="text-[8px] uppercase text-bright-snow/40 font-bold tracking-wider mb-0.5">Wet</p>
             <div className="flex items-center justify-center gap-0.5">
               <span className={`text-sm font-black ${tyre.wetGrip <= 'B' ? 'text-emerald-400' : tyre.wetGrip <= 'D' ? 'text-yellow-400' : 'text-racing-red'}`}>{tyre.wetGrip || '?'}</span>
-              <span className="text-[8px] text-gray-600">/G</span>
+              <span className="text-[8px] text-bright-snow/30">/G</span>
             </div>
           </div>
           <div className="w-px h-7 bg-white/5" />
           <div className="flex-1 text-center">
-            <p className="text-[8px] uppercase text-gray-500 font-bold tracking-wider mb-0.5">Noise</p>
+            <p className="text-[8px] uppercase text-bright-snow/40 font-bold tracking-wider mb-0.5">Noise</p>
             <div className="flex items-center justify-center gap-0.5">
               <span className="text-sm font-black text-bright-snow">{tyre.noiseLevel || '?'}</span>
-              <span className="text-[8px] text-gray-600">dB</span>
+              <span className="text-[8px] text-bright-snow/30">dB</span>
             </div>
           </div>
         </div>
@@ -145,17 +145,17 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
 
         {/* Recommended For */}
         {show('recommendedFor') && tyre.recommendedFor && (
-          <p className="text-[10px] text-gray-400 mb-3 italic">Recommended for: {tyre.recommendedFor}</p>
+          <p className="text-[10px] text-bright-snow/60 mb-3 italic">Recommended for: {tyre.recommendedFor}</p>
         )}
 
         {/* Price */}
         <div className="mt-auto">
           <div className="flex items-baseline gap-1.5 mb-1">
             <span className="font-display text-2xl font-extrabold text-bright-snow">£{getUnitPrice(tyre, quantity).toFixed(2)}</span>
-            <span className="text-gray-500 text-xs">/ tyre</span>
+            <span className="text-bright-snow/40 text-xs">/ tyre</span>
           </div>
           {show('multiBuy') && tyre.price4 !== undefined && (
-            <div className={`text-[11px] font-bold mb-3 ${quantity >= 4 ? 'text-emerald-400' : 'text-gray-400'}`}>
+            <div className={`text-[11px] font-bold mb-3 ${quantity >= 4 ? 'text-emerald-400' : 'text-bright-snow/60'}`}>
               {quantity >= 4
                 ? `✓ Multi-buy price applied (was £${tyre.price.toFixed(2)})`
                 : `Buy 4+ for £${tyre.price4.toFixed(2)} each`}
@@ -168,7 +168,7 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
             <div className="flex items-center border border-white/10 rounded-lg overflow-hidden h-10 shrink-0 bg-black/40">
               <button
                 onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
-                className="px-3 py-1 hover:bg-white/5 font-bold text-gray-400 transition disabled:opacity-30"
+                className="px-3 py-1 hover:bg-white/5 font-bold text-bright-snow/60 transition disabled:opacity-30"
                 disabled={quantity <= 1}
               >
                 -
@@ -176,7 +176,7 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
               <span className="px-3 font-mono font-bold text-sm text-bright-snow">{quantity}</span>
               <button
                 onClick={() => setQuantity(prev => stockManagementEnabled ? Math.min(tyre.stock, prev + 1) : prev + 1)}
-                className="px-3 py-1 hover:bg-white/5 font-bold text-gray-400 transition disabled:opacity-30"
+                className="px-3 py-1 hover:bg-white/5 font-bold text-bright-snow/60 transition disabled:opacity-30"
                 disabled={stockManagementEnabled && quantity >= tyre.stock}
               >
                 +

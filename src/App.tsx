@@ -336,7 +336,7 @@ export default function App() {
               className={`px-5 py-2.5 text-base font-bold rounded-lg transition ${
                 activeTab === 'shop' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
-                  : 'text-gray-400 hover:bg-bright-snow/5 hover:text-bright-snow'
+                  : 'text-bright-snow/60 hover:bg-bright-snow/5 hover:text-bright-snow'
               }`}
             >
               Find & Buy Tyres
@@ -347,7 +347,7 @@ export default function App() {
               className={`px-5 py-2.5 text-base font-bold rounded-lg transition flex items-center gap-1.5 ${
                 activeTab === 'bookings' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
-                  : 'text-gray-400 hover:bg-bright-snow/5 hover:text-bright-snow'
+                  : 'text-bright-snow/60 hover:bg-bright-snow/5 hover:text-bright-snow'
               }`}
             >
               <Calendar className="w-5 h-5" />
@@ -364,7 +364,7 @@ export default function App() {
               className={`px-5 py-2.5 text-base font-bold rounded-lg transition flex items-center gap-1.5 ${
                 activeTab === 'cart' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
-                  : 'text-gray-400 hover:bg-bright-snow/5 hover:text-bright-snow'
+                  : 'text-bright-snow/60 hover:bg-bright-snow/5 hover:text-bright-snow'
               }`}
             >
               <ShoppingBag className="w-5 h-5" />
@@ -381,7 +381,7 @@ export default function App() {
               className={`px-5 py-2.5 text-base font-bold rounded-lg transition flex items-center gap-1.5 ${
                 activeTab === 'admin' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
-                  : 'text-gray-400 hover:bg-bright-snow/5 hover:text-bright-snow'
+                  : 'text-bright-snow/60 hover:bg-bright-snow/5 hover:text-bright-snow'
               }`}
             >
               <ShieldCheck className="w-5 h-5" />
@@ -393,7 +393,7 @@ export default function App() {
               className={`px-5 py-2.5 text-base font-bold rounded-lg transition flex items-center gap-1.5 ${
                 activeTab === 'account' && location.pathname === '/'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
-                  : 'text-gray-400 hover:bg-bright-snow/5 hover:text-bright-snow'
+                  : 'text-bright-snow/60 hover:bg-bright-snow/5 hover:text-bright-snow'
               }`}
             >
               <User className="w-5 h-5" />
@@ -406,7 +406,7 @@ export default function App() {
           <div className="flex items-center gap-4">
             {user ? (
               <div className="flex items-center gap-2">
-                <span className="hidden sm:inline text-xs text-gray-400">{user.email}</span>
+                <span className="hidden sm:inline text-xs text-bright-snow/60">{user.email}</span>
                 <button
                   onClick={() => signOut()}
                   className="flex items-center gap-1.5 text-xs font-bold text-bright-snow bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-2 rounded-lg transition"
@@ -469,14 +469,14 @@ export default function App() {
               {/* Message */}
               <div className="space-y-3">
                 <h1 className="font-display font-black text-3xl sm:text-4xl text-bright-snow">We'll be right back</h1>
-                <p className="text-gray-400 text-sm sm:text-base leading-relaxed max-w-md mx-auto">
+                <p className="text-bright-snow/60 text-sm sm:text-base leading-relaxed max-w-md mx-auto">
                   Arsh Autos is undergoing scheduled maintenance to serve you better. We'll be back online shortly — thank you for your patience!
                 </p>
               </div>
 
               {/* Contact info */}
               <div className="bg-black/50 border border-white/5 rounded-2xl p-6 space-y-3 text-left">
-                <p className="text-[10px] uppercase text-gray-500 font-bold tracking-wider text-center mb-3">Need to reach us?</p>
+                <p className="text-[10px] uppercase text-bright-snow/40 font-bold tracking-wider text-center mb-3">Need to reach us?</p>
                 <div className="flex items-center gap-3 text-sm">
                   <div className="w-9 h-9 bg-racing-red/10 rounded-lg flex items-center justify-center border border-racing-red/20 shrink-0">
                     <Phone className="w-4 h-4 text-racing-red" />
@@ -487,20 +487,20 @@ export default function App() {
                   <div className="w-9 h-9 bg-racing-red/10 rounded-lg flex items-center justify-center border border-racing-red/20 shrink-0">
                     <MapPin className="w-4 h-4 text-racing-red" />
                   </div>
-                  <span className="text-gray-400">5 Rowan Rd, London, SW16 5JF</span>
+                  <span className="text-bright-snow/60">5 Rowan Rd, London, SW16 5JF</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
                   <div className="w-9 h-9 bg-racing-red/10 rounded-lg flex items-center justify-center border border-racing-red/20 shrink-0">
                     <Clock className="w-4 h-4 text-racing-red" />
                   </div>
-                  <span className="text-gray-400">Mon–Sat: 8:30am – 6:00pm</span>
+                  <span className="text-bright-snow/60">Mon–Sat: 8:30am – 6:00pm</span>
                 </div>
               </div>
 
               {/* Admin link */}
               <button
                 onClick={() => setActiveTab('admin')}
-                className="text-[11px] text-gray-600 hover:text-gray-400 transition underline"
+                className="text-[11px] text-bright-snow/30 hover:text-bright-snow/60 transition underline"
               >
                 Admin Login
               </button>
@@ -526,7 +526,7 @@ export default function App() {
                       Appointment & Purchase Confirmed!
                     </span>
                     <h2 className="font-display font-black text-2xl md:text-3xl text-white">Your Booking is Scheduled</h2>
-                    <p className="text-gray-400 text-sm w-full">
+                    <p className="text-bright-snow/60 text-sm w-full">
                       Thank you for choosing Arsh Autos! We have secured your selected tyres. A receipt and calendar invitation have been registered in your system files.
                     </p>
                     <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3 text-xs text-emerald-300 font-semibold inline-flex items-center gap-2">
@@ -536,12 +536,12 @@ export default function App() {
                     {/* Receipt Quick Info Card */}
                     <div className="bg-black border border-white/10 rounded-2xl p-5 text-left divide-y divide-white/10 w-full text-xs space-y-3.5">
                       <div className="flex justify-between items-center pb-2">
-                        <span className="font-bold text-gray-500 uppercase">Booking Reference</span>
+                        <span className="font-bold text-bright-snow/40 uppercase">Booking Reference</span>
                         <span className="font-mono font-extrabold text-racing-red bg-racing-red/10 border border-racing-red/20 px-2 py-0.5 rounded text-[13px]">{lastConfirmedBooking.id.toUpperCase()}</span>
                       </div>
 
                       {lastConfirmedBooking.fittingType !== 'delivery' ? (
-                        <div className="pt-3 space-y-2 text-gray-300">
+                        <div className="pt-3 space-y-2 text-bright-snow/80">
                           <div className="flex items-center gap-2">
                             <Calendar className="w-4 h-4 text-racing-red shrink-0" />
                             <span className="font-bold">
@@ -562,7 +562,7 @@ export default function App() {
                           </div>
                         </div>
                       ) : (
-                        <div className="pt-3 text-gray-300 font-semibold flex items-center gap-2">
+                        <div className="pt-3 text-bright-snow/80 font-semibold flex items-center gap-2">
                           <Truck className="w-4 h-4 text-racing-red shrink-0" />
                           <span>Doorstep shipping dispatch initiated - Delivery in 1-2 working days.</span>
                         </div>
@@ -570,11 +570,11 @@ export default function App() {
 
                       <div className="pt-3 space-y-2">
                         <div className="flex justify-between font-medium">
-                          <span className="text-gray-500">Vehicle:</span>
+                          <span className="text-bright-snow/40">Vehicle:</span>
                           <span className="font-bold font-mono bg-yellow-400 text-black px-1.5 py-0.5 rounded tracking-wider">{lastConfirmedBooking.vehicleRegistration}</span>
                         </div>
                         <div className="flex justify-between font-medium">
-                          <span className="text-gray-500">Total Charged:</span>
+                          <span className="text-bright-snow/40">Total Charged:</span>
                           <span className="text-racing-red font-bold text-sm">£{lastConfirmedBooking.totalPrice.toFixed(2)}</span>
                         </div>
                       </div>
@@ -586,7 +586,7 @@ export default function App() {
                         </div>
                         <div>
                           <p className="text-emerald-400 text-xs font-bold">Account Created</p>
-                          <p className="text-gray-400 text-xs mt-0.5">We've created an account for {lastConfirmedBooking.customerEmail} and sent your login details by email. You can use it to track and manage your bookings.</p>
+                          <p className="text-bright-snow/60 text-xs mt-0.5">We've created an account for {lastConfirmedBooking.customerEmail} and sent your login details by email. You can use it to track and manage your bookings.</p>
                         </div>
                       </div>
                     </div>
@@ -625,11 +625,11 @@ export default function App() {
                           </div>
                         </div>
                         <h2 className="font-display font-black text-bright-snow text-2xl mb-2">Sign In to View Your Bookings</h2>
-                        <p className="text-gray-400 text-sm mb-4">
+                        <p className="text-bright-snow/60 text-sm mb-4">
                           Log in to see your fitting appointments, track orders, and manage your bookings.
                         </p>
                         <div className="bg-racing-red/5 border border-racing-red/10 rounded-xl p-4 mb-6 text-left">
-                          <p className="text-xs text-gray-300 leading-relaxed">
+                          <p className="text-xs text-bright-snow/80 leading-relaxed">
                             <span className="text-racing-red font-bold">Don't have an account yet?</span> No worries — an account is created automatically when you place your first order. We'll email you your login details so you can track and manage all your bookings online.
                           </p>
                         </div>
@@ -643,7 +643,7 @@ export default function App() {
                           </button>
                           <button
                             onClick={() => setActiveTab('shop')}
-                            className="text-gray-400 hover:text-bright-snow font-semibold text-xs transition"
+                            className="text-bright-snow/60 hover:text-bright-snow font-semibold text-xs transition"
                           >
                             Browse tyres & place an order →
                           </button>
@@ -709,17 +709,17 @@ export default function App() {
                     <div className="flex items-center gap-6 sm:gap-10">
                       <div className="text-center">
                         <div className="font-display font-black text-2xl sm:text-3xl text-bright-snow">500+</div>
-                        <div className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Tyres in stock</div>
+                        <div className="text-[10px] uppercase tracking-wider text-bright-snow/60 font-bold">Tyres in stock</div>
                       </div>
                       <div className="w-px h-10 bg-white/10" />
                       <div className="text-center">
                         <div className="font-display font-black text-2xl sm:text-3xl text-bright-snow">30min</div>
-                        <div className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Avg fitting</div>
+                        <div className="text-[10px] uppercase tracking-wider text-bright-snow/60 font-bold">Avg fitting</div>
                       </div>
                       <div className="w-px h-10 bg-white/10" />
                       <div className="text-center">
                         <div className="font-display font-black text-2xl sm:text-3xl text-bright-snow">All</div>
-                        <div className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Premium brands</div>
+                        <div className="text-[10px] uppercase tracking-wider text-bright-snow/60 font-bold">Premium brands</div>
                       </div>
                     </div>
 
@@ -751,9 +751,9 @@ export default function App() {
                   <div className="absolute bottom-0 left-0 right-0 z-10 bg-black/60 backdrop-blur-md border-t border-white/5 py-2.5">
                     <div className="flex items-center justify-center gap-4 text-[11px] text-white/70">
                       <span className="flex items-center gap-1.5"><MapPin className="w-3 h-3 text-racing-red" /> 5 Rowan Rd, SW16 5JF</span>
-                      <span className="hidden sm:inline text-gray-600">·</span>
+                      <span className="hidden sm:inline text-bright-snow/30">·</span>
                       <span className="hidden sm:flex items-center gap-1.5"><Phone className="w-3 h-3 text-racing-red" /> 020 8427 1234</span>
-                      <span className="hidden sm:inline text-gray-600">·</span>
+                      <span className="hidden sm:inline text-bright-snow/30">·</span>
                       <span className="hidden sm:flex items-center gap-1.5"><Clock className="w-3 h-3 text-racing-red" /> Mon–Sat 8:30–6</span>
                     </div>
                   </div>
@@ -763,7 +763,7 @@ export default function App() {
                 <section>
                   <div className="flex items-center justify-between mb-4 px-1">
                     <h3 className="font-display font-extrabold text-bright-snow text-lg">Browse by type</h3>
-                    <span className="text-[11px] text-gray-500 font-bold uppercase tracking-wider">Pick a category</span>
+                    <span className="text-[11px] text-bright-snow/40 font-bold uppercase tracking-wider">Pick a category</span>
                   </div>
                   <div className="grid grid-cols-3 gap-3 sm:gap-4">
                     {[
@@ -823,8 +823,8 @@ export default function App() {
                           {/* Text */}
                           <div className="relative">
                             <p className="font-display font-bold text-bright-snow text-sm sm:text-base leading-tight">{cat.label}</p>
-                            <p className="text-[11px] text-gray-400 sm:text-xs sm:mt-0.5">{cat.desc}</p>
-                            <p className="text-[10px] text-gray-500 mt-1 hidden sm:block leading-snug">{cat.longDesc}</p>
+                            <p className="text-[11px] text-bright-snow/60 sm:text-xs sm:mt-0.5">{cat.desc}</p>
+                            <p className="text-[10px] text-bright-snow/40 mt-1 hidden sm:block leading-snug">{cat.longDesc}</p>
                           </div>
 
                           {/* Arrow indicator — always visible */}
@@ -846,7 +846,7 @@ export default function App() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-bright-snow text-sm">TPMS Sensors</p>
-                      <p className="text-xs text-gray-400 truncate">Autel sensors — fitting & programming. Call for quote.</p>
+                      <p className="text-xs text-bright-snow/60 truncate">Autel sensors — fitting & programming. Call for quote.</p>
                     </div>
                     <a href="tel:02084271234" className="text-xs font-bold text-racing-red hover:text-racing-red/80 whitespace-nowrap shrink-0">
                       Call →
@@ -858,7 +858,7 @@ export default function App() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-bright-snow text-sm">Locking Nut Removal</p>
-                      <p className="text-xs text-gray-400 truncate">Lost your key? £20 per nut. Add at checkout.</p>
+                      <p className="text-xs text-bright-snow/60 truncate">Lost your key? £20 per nut. Add at checkout.</p>
                     </div>
                   </div>
                 </section>
@@ -872,7 +872,7 @@ export default function App() {
                       <h3 className="font-display font-extrabold text-bright-snow text-xl">
                         {filteredTyres.length} tyres found
                       </h3>
-                      <p className="text-xs text-gray-400 mt-0.5">
+                      <p className="text-xs text-bright-snow/60 mt-0.5">
                         {filters.width || filters.profile || filters.rim
                           ? `${filters.width || '?'}/${filters.profile || '?'} R${filters.rim || '?'}`
                           : 'Showing all tyres'}
@@ -901,7 +901,7 @@ export default function App() {
                         className={`px-3 py-1.5 rounded-full text-xs font-bold transition ${
                           filters.category === cat
                             ? 'bg-racing-red text-bright-snow'
-                            : 'bg-[#1e2121] text-gray-400 border border-white/10 hover:text-bright-snow hover:border-white/20'
+                            : 'bg-[#1e2121] text-bright-snow/60 border border-white/10 hover:text-bright-snow hover:border-white/20'
                         }`}
                       >
                         {cat}
@@ -917,7 +917,7 @@ export default function App() {
                       <span className="text-2xl">🚗</span>
                       <div>
                         <h4 className="font-bold text-bright-snow text-sm">Vehicle Matched: <span className="font-mono bg-yellow-400 text-black font-black px-2 py-0.5 rounded tracking-wider">{selectedReg}</span> - {selectedMakeModel}</h4>
-                        <p className="text-xs text-gray-400">Filters have been auto-tuned to dimensions: {filters.width}/{filters.profile} R{filters.rim}</p>
+                        <p className="text-xs text-bright-snow/60">Filters have been auto-tuned to dimensions: {filters.width}/{filters.profile} R{filters.rim}</p>
                       </div>
                     </div>
                     <button
@@ -950,7 +950,7 @@ export default function App() {
                       </div>
                     </div>
                     <h4 className="font-display font-bold text-bright-snow text-lg mb-1">No tyres found</h4>
-                    <p className="text-sm text-gray-400 mb-5 max-w-sm mx-auto">
+                    <p className="text-sm text-bright-snow/60 mb-5 max-w-sm mx-auto">
                       We couldn't find tyres matching {filters.width || '?'}/{filters.profile || '?'} R{filters.rim || '?'}. We can still source them — give us a call.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -997,7 +997,7 @@ export default function App() {
 
       {/* FOOTER — hidden in maintenance mode */}
       {(!maintenanceMode || activeTab === 'admin') && (
-      <footer className="border-t border-white/5 bg-black text-gray-400 text-xs mt-16">
+      <footer className="border-t border-white/5 bg-black text-bright-snow/60 text-xs mt-16">
         {/* Top section — info columns */}
         <div className="w-full px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand + description */}
@@ -1008,24 +1008,24 @@ export default function App() {
               </div>
               <div>
                 <span className="font-display font-black text-bright-snow tracking-tight text-sm block leading-none">Arsh Autos</span>
-                <span className="text-[10px] text-gray-500 uppercase tracking-wider">Auto Tyre Shop</span>
+                <span className="text-[10px] text-bright-snow/40 uppercase tracking-wider">Auto Tyre Shop</span>
               </div>
             </div>
-            <p className="leading-relaxed text-gray-400/80">
+            <p className="leading-relaxed text-bright-snow/60/80">
               Premier tyre fitting and wheel alignment specialist in Streatham, London. Premium brands, expert fitting, and competitive prices.
             </p>
             {/* Social links */}
             <div className="flex items-center gap-2 pt-1">
-              <a href="tel:02084271234" className="w-9 h-9 rounded-lg bg-[#1e2121] border border-white/5 flex items-center justify-center text-gray-400 hover:text-racing-red hover:border-racing-red/30 transition">
+              <a href="tel:02084271234" className="w-9 h-9 rounded-lg bg-[#1e2121] border border-white/5 flex items-center justify-center text-bright-snow/60 hover:text-racing-red hover:border-racing-red/30 transition">
                 <Phone className="w-4 h-4" />
               </a>
-              <a href="https://maps.google.com/?q=5+Rowan+Rd+London+SW16+5JF" target="_blank" rel="noopener" className="w-9 h-9 rounded-lg bg-[#1e2121] border border-white/5 flex items-center justify-center text-gray-400 hover:text-racing-red hover:border-racing-red/30 transition">
+              <a href="https://maps.google.com/?q=5+Rowan+Rd+London+SW16+5JF" target="_blank" rel="noopener" className="w-9 h-9 rounded-lg bg-[#1e2121] border border-white/5 flex items-center justify-center text-bright-snow/60 hover:text-racing-red hover:border-racing-red/30 transition">
                 <MapPin className="w-4 h-4" />
               </a>
-              <a href="https://facebook.com" target="_blank" rel="noopener" className="w-9 h-9 rounded-lg bg-[#1e2121] border border-white/5 flex items-center justify-center text-gray-400 hover:text-racing-red hover:border-racing-red/30 transition">
+              <a href="https://facebook.com" target="_blank" rel="noopener" className="w-9 h-9 rounded-lg bg-[#1e2121] border border-white/5 flex items-center justify-center text-bright-snow/60 hover:text-racing-red hover:border-racing-red/30 transition">
                 <span className="text-xs font-bold">f</span>
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener" className="w-9 h-9 rounded-lg bg-[#1e2121] border border-white/5 flex items-center justify-center text-gray-400 hover:text-racing-red hover:border-racing-red/30 transition">
+              <a href="https://instagram.com" target="_blank" rel="noopener" className="w-9 h-9 rounded-lg bg-[#1e2121] border border-white/5 flex items-center justify-center text-bright-snow/60 hover:text-racing-red hover:border-racing-red/30 transition">
                 <span className="text-xs font-bold">IG</span>
               </a>
             </div>
@@ -1043,7 +1043,7 @@ export default function App() {
                 <span>Saturday</span>
                 <span className="font-mono font-bold">8:30 – 6:00</span>
               </li>
-              <li className="flex justify-between items-center text-gray-500">
+              <li className="flex justify-between items-center text-bright-snow/40">
                 <span>Sunday</span>
                 <span className="font-mono">Closed</span>
               </li>
@@ -1102,7 +1102,7 @@ export default function App() {
         {/* Brand strip */}
         <div className="border-t border-white/5 py-4 px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <span className="text-[10px] uppercase tracking-wider text-gray-500 font-bold mr-2">Brands we fit:</span>
+            <span className="text-[10px] uppercase tracking-wider text-bright-snow/40 font-bold mr-2">Brands we fit:</span>
             {['Sunfull', 'Fronway', 'Farroad', 'Banoz', 'Kuston'].map(b => (
               <span key={b} className="bg-white/5 text-bright-snow/85 text-[10px] font-bold px-2 py-0.5 rounded border border-gray-500/25">{b}</span>
             ))}
@@ -1111,10 +1111,10 @@ export default function App() {
 
         {/* Bottom bar */}
         <div className="border-t border-white/5 py-4 px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-[10px] text-gray-500">
+          <p className="text-[10px] text-bright-snow/40">
             © 2026 Arsh Autos Auto Tyre Shop. All rights reserved.
           </p>
-          <button onClick={() => setActiveTab('admin')} className="text-[10px] text-gray-600 hover:text-gray-400 transition underline">
+          <button onClick={() => setActiveTab('admin')} className="text-[10px] text-bright-snow/30 hover:text-bright-snow/60 transition underline">
             Admin
           </button>
         </div>
@@ -1128,7 +1128,7 @@ export default function App() {
           <button
             onClick={() => { navigate('/'); setActiveTab('shop'); setLastConfirmedBooking(null); }}
             className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
-              activeTab === 'shop' && location.pathname === '/' ? 'text-racing-red' : 'text-gray-500'
+              activeTab === 'shop' && location.pathname === '/' ? 'text-racing-red' : 'text-bright-snow/40'
             }`}
           >
             <Search className="w-5 h-5" />
@@ -1138,7 +1138,7 @@ export default function App() {
           <button
             onClick={() => { navigate('/'); setActiveTab('bookings'); setLastConfirmedBooking(null); }}
             className={`relative flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
-              activeTab === 'bookings' && location.pathname === '/' ? 'text-racing-red' : 'text-gray-500'
+              activeTab === 'bookings' && location.pathname === '/' ? 'text-racing-red' : 'text-bright-snow/40'
             }`}
           >
             <Calendar className="w-5 h-5" />
@@ -1153,7 +1153,7 @@ export default function App() {
           <button
             onClick={() => { navigate('/'); setActiveTab('cart'); setLastConfirmedBooking(null); }}
             className={`relative flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
-              activeTab === 'cart' && location.pathname === '/' ? 'text-racing-red' : 'text-gray-500'
+              activeTab === 'cart' && location.pathname === '/' ? 'text-racing-red' : 'text-bright-snow/40'
             }`}
           >
             <ShoppingBag className="w-5 h-5" />
@@ -1168,7 +1168,7 @@ export default function App() {
           <button
             onClick={() => { navigate('/'); setActiveTab('admin'); setLastConfirmedBooking(null); }}
             className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
-              activeTab === 'admin' && location.pathname === '/' ? 'text-racing-red' : 'text-gray-500'
+              activeTab === 'admin' && location.pathname === '/' ? 'text-racing-red' : 'text-bright-snow/40'
             }`}
           >
             <ShieldCheck className="w-5 h-5" />
@@ -1178,7 +1178,7 @@ export default function App() {
           <button
             onClick={() => { navigate('/'); setActiveTab('account'); setLastConfirmedBooking(null); }}
             className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
-              activeTab === 'account' && location.pathname === '/' ? 'text-racing-red' : 'text-gray-500'
+              activeTab === 'account' && location.pathname === '/' ? 'text-racing-red' : 'text-bright-snow/40'
             }`}
           >
             <User className="w-5 h-5" />

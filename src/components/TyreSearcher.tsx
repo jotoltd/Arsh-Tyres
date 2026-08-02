@@ -38,7 +38,7 @@ export default function TyreSearcher({
           ))}
         </select>
 
-        <span className="hidden sm:block text-gray-600 font-bold text-lg">/</span>
+        <span className="hidden sm:block text-bright-snow/30 font-bold text-lg">/</span>
 
         <select
           value={filters.profile}
@@ -51,7 +51,7 @@ export default function TyreSearcher({
           ))}
         </select>
 
-        <span className="hidden sm:block text-gray-600 font-bold text-lg">R</span>
+        <span className="hidden sm:block text-bright-snow/30 font-bold text-lg">R</span>
 
         <select
           value={filters.rim}
@@ -91,7 +91,7 @@ export default function TyreSearcher({
           <button
             type="button"
             onClick={onClear}
-            className="text-xs font-bold text-gray-500 hover:text-bright-snow transition"
+            className="text-xs font-bold text-bright-snow/40 hover:text-bright-snow transition"
           >
             Clear
           </button>
@@ -103,7 +103,7 @@ export default function TyreSearcher({
         <button
           type="button"
           onClick={() => setShowGuide(!showGuide)}
-          className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-bright-snow transition"
+          className="flex items-center gap-2 text-xs font-bold text-bright-snow/60 hover:text-bright-snow transition"
         >
           <HelpCircle className="w-4 h-4 text-racing-red" />
           How to find your tyre size
@@ -116,7 +116,7 @@ export default function TyreSearcher({
               alt="How to find your tyre size guide"
               className="w-full h-auto"
             />
-            <div className="p-4 text-sm text-gray-400 leading-relaxed">
+            <div className="p-4 text-sm text-bright-snow/60 leading-relaxed">
               <p className="mb-2">
                 <span className="text-bright-snow font-bold">Width</span> — the first number (e.g. 205) is the tyre width in millimetres.
               </p>
@@ -126,7 +126,7 @@ export default function TyreSearcher({
               <p className="mb-2">
                 <span className="text-bright-snow font-bold">Rim</span> — the number after 'R' (e.g. 16) is the wheel diameter in inches.
               </p>
-              <p className="text-xs text-gray-500 mt-3 pt-3 border-t border-white/5">
+              <p className="text-xs text-bright-snow/40 mt-3 pt-3 border-t border-white/5">
                 You can find these numbers on the sidewall of your tyre, or in your vehicle's handbook.
               </p>
             </div>

@@ -132,11 +132,11 @@ export default function CartSection({
   if (cartItems.length === 0) {
     return (
       <div className="carbon-fiber rounded-2xl p-8 border border-white/5 shadow-lg text-center max-w-xl mx-auto my-8 animate-fade-in-up">
-        <div className="bg-[#1e2121] w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
+        <div className="bg-[#1e2121] w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-bright-snow/60">
           <ShoppingBag className="w-10 h-10" />
         </div>
         <h3 className="font-display font-extrabold text-bright-snow text-2xl mb-2">Your Order is Empty</h3>
-        <p className="text-sm text-gray-400 mb-6">
+        <p className="text-sm text-bright-snow/60 mb-6">
           Search for your tyre size and add them to your order to get started.
         </p>
         <button
@@ -257,11 +257,11 @@ export default function CartSection({
                 <div className={`w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300 ${
                   done ? 'bg-emerald-500 text-white' :
                   active ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/40 scale-110 ring-4 ring-racing-red/20' :
-                  'bg-[#1e2121] text-gray-500 border border-white/5'
+                  'bg-[#1e2121] text-bright-snow/40 border border-white/5'
                 }`}>
                   {done ? <Check className="w-5 h-5" /> : <Icon className="w-5 h-5" />}
                 </div>
-                <span className={`text-[10px] font-bold uppercase tracking-wider transition ${active ? 'text-bright-snow' : done ? 'text-emerald-400' : 'text-gray-500'}`}>
+                <span className={`text-[10px] font-bold uppercase tracking-wider transition ${active ? 'text-bright-snow' : done ? 'text-emerald-400' : 'text-bright-snow/40'}`}>
                   {s.label}
                 </span>
               </div>
@@ -294,11 +294,11 @@ export default function CartSection({
   const MiniSummary = () => (
     <div className="bg-black rounded-2xl border border-white/5 p-5 shadow-lg shadow-[0_0_30px_rgba(239,18,25,0.15)]">
       <div className="flex items-center justify-between mb-4">
-        <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Order Summary</span>
+        <span className="text-xs font-bold uppercase tracking-wider text-bright-snow/60">Order Summary</span>
         <span className="text-[10px] font-bold text-racing-red bg-racing-red/10 px-2 py-0.5 rounded-full">{STEPS[step].label}</span>
       </div>
       <div className="space-y-1.5 text-xs">
-        <div className="flex justify-between text-gray-400">
+        <div className="flex justify-between text-bright-snow/60">
           <span>Tyres ({tyreCount})</span>
           <span className="text-bright-snow">£{tyresTotal.toFixed(2)}</span>
         </div>
@@ -309,14 +309,14 @@ export default function CartSection({
           </div>
         )}
         {lockingNutCount > 0 && (
-          <div className="flex justify-between text-gray-400">
+          <div className="flex justify-between text-bright-snow/60">
             <span>Locking nut removal x{lockingNutCount}</span>
             <span className="text-bright-snow">£{lockingNutTotal.toFixed(2)}</span>
           </div>
         )}
-        <div className="flex justify-between text-gray-400">
+        <div className="flex justify-between text-bright-snow/60">
           <span>{fittingType === 'shop' ? 'Fitting & balancing' : 'Collection only'}</span>
-          <span className={fittingType === 'shop' ? 'text-emerald-400 font-bold' : 'text-gray-500'}>{fittingType === 'shop' ? 'Included' : 'No fitting'}</span>
+          <span className={fittingType === 'shop' ? 'text-emerald-400 font-bold' : 'text-bright-snow/40'}>{fittingType === 'shop' ? 'Included' : 'No fitting'}</span>
         </div>
         {discountAmount > 0 && (
           <div className="flex justify-between text-emerald-400 font-bold">
@@ -338,7 +338,7 @@ export default function CartSection({
         <button
           type="button"
           onClick={prevStep}
-          className="flex items-center gap-1.5 px-5 py-3 rounded-xl bg-[#1e2121] border border-white/5 text-gray-400 hover:text-bright-snow hover:border-white/20 transition font-bold text-sm"
+          className="flex items-center gap-1.5 px-5 py-3 rounded-xl bg-[#1e2121] border border-white/5 text-bright-snow/60 hover:text-bright-snow hover:border-white/20 transition font-bold text-sm"
         >
           <ChevronLeft className="w-4 h-4" />
           Back
@@ -382,13 +382,13 @@ export default function CartSection({
           {step === 0 && (
             <div className="bg-black rounded-2xl border border-white/5 shadow-lg p-6 animate-fade-in-up">
               <h3 className="font-display font-extrabold text-bright-snow text-xl mb-1">Your Tyres</h3>
-              <p className="text-xs text-gray-400 mb-5">Review your selection and adjust quantities. Buying 4+ of the same tyre unlocks a multi-buy discount.</p>
+              <p className="text-xs text-bright-snow/60 mb-5">Review your selection and adjust quantities. Buying 4+ of the same tyre unlocks a multi-buy discount.</p>
               <div className="divide-y divide-white/5">
                 {cartItems.map((item) => (
                   <div key={item.tyre.id} className="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="flex-1">
                       <h4 className="font-display font-bold text-bright-snow text-sm">{item.tyre.model}</h4>
-                      <p className="font-mono text-xs text-gray-400 mt-0.5">
+                      <p className="font-mono text-xs text-bright-snow/60 mt-0.5">
                         {item.tyre.width}/{item.tyre.profile} R{item.tyre.rim}{item.tyre.category === 'Commercial' ? 'C' : ''}
                         <span className={`ml-2 text-[10px] px-1.5 py-0.5 rounded uppercase font-bold ${
                           item.tyre.category === 'Runflat' ? 'bg-blue-500/10 text-blue-400' :
@@ -396,7 +396,7 @@ export default function CartSection({
                           'bg-racing-red/10 text-racing-red'
                         }`}>{item.tyre.category}</span>
                       </p>
-                      <p className="text-xs text-gray-400/80 mt-0.5">
+                      <p className="text-xs text-bright-snow/60/80 mt-0.5">
                         £{getUnitPrice(item.tyre, item.quantity).toFixed(2)} each
                         {item.quantity < 4 && item.tyre.price4 !== undefined && (
                           <span className="text-emerald-400 ml-1">- buy 4 for £{item.tyre.price4.toFixed(2)} each</span>
@@ -405,9 +405,9 @@ export default function CartSection({
                     </div>
                     <div className="flex items-center justify-between sm:justify-end gap-4">
                       <div className="flex items-center border border-white/5 rounded-lg overflow-hidden h-9 bg-[#1e2121]">
-                        <button type="button" onClick={() => onUpdateQuantity(item.tyre.id, Math.max(1, item.quantity - 1))} className="px-3 py-0.5 hover:bg-racing-red/20 hover:text-racing-red font-semibold text-gray-400 text-sm transition">-</button>
+                        <button type="button" onClick={() => onUpdateQuantity(item.tyre.id, Math.max(1, item.quantity - 1))} className="px-3 py-0.5 hover:bg-racing-red/20 hover:text-racing-red font-semibold text-bright-snow/60 text-sm transition">-</button>
                         <span className="px-3 font-mono font-bold text-xs text-bright-snow">{item.quantity}</span>
-                        <button type="button" onClick={() => onUpdateQuantity(item.tyre.id, stockManagementEnabled ? Math.min(item.tyre.stock, item.quantity + 1) : item.quantity + 1)} className="px-3 py-0.5 hover:bg-racing-red/20 hover:text-racing-red font-semibold text-gray-400 text-sm transition">+</button>
+                        <button type="button" onClick={() => onUpdateQuantity(item.tyre.id, stockManagementEnabled ? Math.min(item.tyre.stock, item.quantity + 1) : item.quantity + 1)} className="px-3 py-0.5 hover:bg-racing-red/20 hover:text-racing-red font-semibold text-bright-snow/60 text-sm transition">+</button>
                       </div>
                       <div className="text-right">
                         <p className="font-display font-extrabold text-bright-snow text-sm">£{(getUnitPrice(item.tyre, item.quantity) * item.quantity).toFixed(2)}</p>
@@ -434,14 +434,14 @@ export default function CartSection({
                       <Tag className="w-4 h-4" />
                       {promoCode} — {promoDiscount}% off
                     </div>
-                    <button type="button" onClick={handleRemovePromo} className="text-gray-400 hover:text-racing-red transition">
+                    <button type="button" onClick={handleRemovePromo} className="text-bright-snow/60 hover:text-racing-red transition">
                       <X className="w-4 h-4" />
                     </button>
                   </div>
                 ) : (
                   <div className="flex gap-2">
                     <div className="flex-1 relative">
-                      <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-bright-snow/40" />
                       <input
                         type="text"
                         value={promoInput}
@@ -474,7 +474,7 @@ export default function CartSection({
               {/* Fitting type toggle */}
               <div className="bg-black rounded-2xl border border-white/5 shadow-lg p-6">
                 <h3 className="font-display font-extrabold text-bright-snow text-xl mb-1">How do you want your tyres?</h3>
-                <p className="text-xs text-gray-400 mb-5">Choose whether you want us to fit them or just collect them from our shop.</p>
+                <p className="text-xs text-bright-snow/60 mb-5">Choose whether you want us to fit them or just collect them from our shop.</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <button
                     type="button"
@@ -485,9 +485,9 @@ export default function CartSection({
                         : 'border-white/5 bg-[#1e2121] hover:border-white/20'
                     }`}
                   >
-                    <Wrench className={`w-6 h-6 mb-2 ${fittingType === 'shop' ? 'text-racing-red' : 'text-gray-500'}`} />
+                    <Wrench className={`w-6 h-6 mb-2 ${fittingType === 'shop' ? 'text-racing-red' : 'text-bright-snow/40'}`} />
                     <p className="font-display font-bold text-bright-snow text-sm">Fitting at our shop</p>
-                    <p className="text-[11px] text-gray-400 mt-0.5">Fitting, balancing & new valves included. Pick a date & time slot.</p>
+                    <p className="text-[11px] text-bright-snow/60 mt-0.5">Fitting, balancing & new valves included. Pick a date & time slot.</p>
                   </button>
                   <button
                     type="button"
@@ -498,9 +498,9 @@ export default function CartSection({
                         : 'border-white/5 bg-[#1e2121] hover:border-white/20'
                     }`}
                   >
-                    <Package className={`w-6 h-6 mb-2 ${fittingType === 'collection' ? 'text-racing-red' : 'text-gray-500'}`} />
+                    <Package className={`w-6 h-6 mb-2 ${fittingType === 'collection' ? 'text-racing-red' : 'text-bright-snow/40'}`} />
                     <p className="font-display font-bold text-bright-snow text-sm">Collection only</p>
-                    <p className="text-[11px] text-gray-400 mt-0.5">Pick up from our shop during opening hours. No fitting — just the tyres.</p>
+                    <p className="text-[11px] text-bright-snow/60 mt-0.5">Pick up from our shop during opening hours. No fitting — just the tyres.</p>
                   </button>
                 </div>
               </div>
@@ -511,12 +511,12 @@ export default function CartSection({
                     <KeyRound className="w-5 h-5 text-racing-red" />
                     Locking Wheel Nut Removal
                   </h3>
-                <p className="text-xs text-gray-400 mb-5">Lost your locking wheel nut key? We can safely remove them - £{LOCKING_NUT_REMOVAL_PRICE.toFixed(2)} per nut. Add how many you need below.</p>
+                <p className="text-xs text-bright-snow/60 mb-5">Lost your locking wheel nut key? We can safely remove them - £{LOCKING_NUT_REMOVAL_PRICE.toFixed(2)} per nut. Add how many you need below.</p>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center border border-white/5 rounded-lg overflow-hidden h-10 bg-[#1e2121]">
-                    <button type="button" onClick={() => setLockingNutCount(c => Math.max(0, c - 1))} className="px-4 py-1 hover:bg-racing-red/20 hover:text-racing-red font-semibold text-gray-400 transition">-</button>
+                    <button type="button" onClick={() => setLockingNutCount(c => Math.max(0, c - 1))} className="px-4 py-1 hover:bg-racing-red/20 hover:text-racing-red font-semibold text-bright-snow/60 transition">-</button>
                     <span className="px-4 font-mono font-bold text-sm text-bright-snow">{lockingNutCount}</span>
-                    <button type="button" onClick={() => setLockingNutCount(c => Math.min(8, c + 1))} className="px-4 py-1 hover:bg-racing-red/20 hover:text-racing-red font-semibold text-gray-400 transition">+</button>
+                    <button type="button" onClick={() => setLockingNutCount(c => Math.min(8, c + 1))} className="px-4 py-1 hover:bg-racing-red/20 hover:text-racing-red font-semibold text-bright-snow/60 transition">+</button>
                   </div>
                   <span className="font-display font-extrabold text-bright-snow text-sm">
                     {lockingNutCount > 0 ? `£${lockingNutTotal.toFixed(2)}` : 'Not required'}
@@ -531,13 +531,13 @@ export default function CartSection({
                     <ShieldCheck className="w-5 h-5 text-racing-red" />
                     TPMS Sensors
                   </h3>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-bright-snow/60">
                     We supply Autel TPMS sensors including fitting and programming. Give us a call on <span className="text-racing-red font-bold">020 8427 1234</span> for a quote - we'll sort it out on the day.
                   </p>
                 </div>
               )}
 
-              <div className="bg-[#1e2121] rounded-xl p-4 text-[11px] text-gray-400 border border-white/5">
+              <div className="bg-[#1e2121] rounded-xl p-4 text-[11px] text-bright-snow/60 border border-white/5">
                 <p className="flex items-center gap-1.5 text-bright-snow font-bold uppercase tracking-wider text-[9px] mb-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-racing-red" />
                   {fittingType === 'shop' ? "What's included with fitting" : 'Good to know'}
@@ -580,15 +580,15 @@ export default function CartSection({
                   <Car className="w-5 h-5 text-racing-red" />
                   Vehicle Details
                 </h3>
-                <p className="text-xs text-gray-400 mb-4">So we know what car we're working on.</p>
+                <p className="text-xs text-bright-snow/60 mb-4">So we know what car we're working on.</p>
                 <div className="grid grid-cols-3 gap-3">
                   <div className="col-span-1">
-                    <label className="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">Reg Plate</label>
+                    <label className="block text-[11px] text-bright-snow/60 mb-1 font-semibold uppercase">Reg Plate</label>
                     <input type="text" placeholder="AB12 CDE" value={vehicleRegistration} onChange={(e) => setVehicleRegistration(e.target.value.toUpperCase())}
                       className="w-full bg-yellow-400 border-2 border-yellow-500 text-black rounded-lg p-2.5 font-mono font-black text-base text-center uppercase tracking-[0.15em] focus:ring-2 focus:ring-yellow-400/40 focus:border-yellow-500 transition" />
                   </div>
                   <div className="col-span-2">
-                    <label className="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">Make & Model</label>
+                    <label className="block text-[11px] text-bright-snow/60 mb-1 font-semibold uppercase">Make & Model</label>
                     <input type="text" placeholder="e.g. BMW 3 Series" value={vehicleMakeModel} onChange={(e) => setVehicleMakeModel(e.target.value)}
                       className="w-full bg-[#1e2121] border border-white/5 text-bright-snow rounded-lg p-2.5 text-sm font-medium focus:ring-2 focus:ring-racing-red/20 focus:border-racing-red transition" />
                   </div>
@@ -599,21 +599,21 @@ export default function CartSection({
                   <User className="w-5 h-5 text-racing-red" />
                   Contact Details
                 </h3>
-                <p className="text-xs text-gray-400 mb-4">We'll send your booking confirmation here.</p>
+                <p className="text-xs text-bright-snow/60 mb-4">We'll send your booking confirmation here.</p>
                 <div className="space-y-3">
                   <div>
-                    <label className="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">Full Name</label>
+                    <label className="block text-[11px] text-bright-snow/60 mb-1 font-semibold uppercase">Full Name</label>
                     <input type="text" placeholder="John Doe" value={customerName} onChange={(e) => setCustomerName(e.target.value)}
                       className="w-full bg-[#1e2121] border border-white/5 text-bright-snow rounded-lg p-2.5 text-sm font-medium focus:ring-2 focus:ring-racing-red/20 focus:border-racing-red transition" />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">Email</label>
+                      <label className="block text-[11px] text-bright-snow/60 mb-1 font-semibold uppercase">Email</label>
                       <input type="email" placeholder="john@example.com" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)}
                         className="w-full bg-[#1e2121] border border-white/5 text-bright-snow rounded-lg p-2.5 text-sm font-medium focus:ring-2 focus:ring-racing-red/20 focus:border-racing-red transition" />
                     </div>
                     <div>
-                      <label className="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">Phone</label>
+                      <label className="block text-[11px] text-bright-snow/60 mb-1 font-semibold uppercase">Phone</label>
                       <input type="tel" placeholder="07123 456789" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)}
                         className="w-full bg-[#1e2121] border border-white/5 text-bright-snow rounded-lg p-2.5 text-sm font-medium focus:ring-2 focus:ring-racing-red/20 focus:border-racing-red transition" />
                     </div>
@@ -628,7 +628,7 @@ export default function CartSection({
             <div className="space-y-4 animate-fade-in-up">
               <div className="bg-black rounded-2xl border border-white/5 shadow-lg p-6">
                 <h3 className="font-display font-extrabold text-bright-snow text-xl mb-1">Payment</h3>
-                <p className="text-xs text-gray-400 mb-5">Enter your card details to pay for your booking securely.</p>
+                <p className="text-xs text-bright-snow/60 mb-5">Enter your card details to pay for your booking securely.</p>
 
                 {paymentError && (
                   <div className="bg-racing-red/10 border border-racing-red/20 rounded-lg p-3 text-xs text-racing-red font-semibold mb-4">
@@ -637,7 +637,7 @@ export default function CartSection({
                 )}
 
                 {isFetchingIntent && (
-                  <div className="flex items-center justify-center py-8 text-gray-400 text-sm gap-2">
+                  <div className="flex items-center justify-center py-8 text-bright-snow/60 text-sm gap-2">
                     <Loader2 className="w-5 h-5 animate-spin" />
                     Initialising secure payment...
                   </div>
@@ -745,7 +745,7 @@ export default function CartSection({
                 )}
 
                 {!isFetchingIntent && !clientSecret && !paymentError && (
-                  <div className="flex items-center justify-center py-8 text-gray-400 text-sm gap-2">
+                  <div className="flex items-center justify-center py-8 text-bright-snow/60 text-sm gap-2">
                     <Loader2 className="w-5 h-5 animate-spin" />
                     Preparing payment...
                   </div>
@@ -763,14 +763,14 @@ export default function CartSection({
                   <p className="text-xs font-bold uppercase tracking-wider text-racing-red mb-2">Tyres</p>
                   {cartItems.map(item => (
                     <div key={item.tyre.id} className="flex justify-between text-xs">
-                      <span className="text-gray-400">{item.tyre.model} x{item.quantity}</span>
+                      <span className="text-bright-snow/60">{item.tyre.model} x{item.quantity}</span>
                       <span className="text-bright-snow font-bold">£{(getUnitPrice(item.tyre, item.quantity) * item.quantity).toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
                 {lockingNutCount > 0 && (
                   <div className="flex justify-between text-xs mb-3">
-                    <span className="text-gray-400">Locking nut removal x{lockingNutCount}</span>
+                    <span className="text-bright-snow/60">Locking nut removal x{lockingNutCount}</span>
                     <span className="text-bright-snow font-bold">£{lockingNutTotal.toFixed(2)}</span>
                   </div>
                 )}
@@ -784,14 +784,14 @@ export default function CartSection({
                   <p className="text-xs font-bold uppercase tracking-wider text-racing-red mb-2">{fittingType === 'shop' ? 'Appointment' : 'Collection'}</p>
                   {fittingType === 'shop' ? (
                     <div className="grid grid-cols-2 gap-3 text-xs">
-                      <div><span className="text-gray-400 block">Date</span><span className="text-bright-snow font-bold">{selectedDate}</span></div>
-                      <div><span className="text-gray-400 block">Time</span><span className="text-bright-snow font-bold">{selectedTimeSlot}</span></div>
+                      <div><span className="text-bright-snow/60 block">Date</span><span className="text-bright-snow font-bold">{selectedDate}</span></div>
+                      <div><span className="text-bright-snow/60 block">Time</span><span className="text-bright-snow font-bold">{selectedTimeSlot}</span></div>
                     </div>
                   ) : (
                     <div className="text-xs">
-                      <span className="text-gray-400 block">Pick up from</span>
+                      <span className="text-bright-snow/60 block">Pick up from</span>
                       <span className="text-bright-snow font-bold">5 Rowan Rd, London, SW16 5JF</span>
-                      <span className="text-gray-400 block mt-1.5">Opening hours</span>
+                      <span className="text-bright-snow/60 block mt-1.5">Opening hours</span>
                       <span className="text-bright-snow font-bold">Mon-Sat 8:30am - 6pm</span>
                     </div>
                   )}
@@ -799,20 +799,20 @@ export default function CartSection({
                 <div className="border-t border-white/5 pt-4 mb-4">
                   <p className="text-xs font-bold uppercase tracking-wider text-racing-red mb-2">Customer</p>
                   <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div><span className="text-gray-400 block">Name</span><span className="text-bright-snow font-bold">{customerName}</span></div>
-                    <div><span className="text-gray-400 block">Vehicle</span><span className="text-bright-snow font-bold">{vehicleRegistration && <span className="font-mono bg-yellow-400 text-black font-black px-1.5 py-0.5 rounded tracking-wider text-[11px]">{vehicleRegistration}</span>} {vehicleMakeModel}</span></div>
-                    <div><span className="text-gray-400 block">Email</span><span className="text-bright-snow font-bold">{customerEmail}</span></div>
-                    <div><span className="text-gray-400 block">Phone</span><span className="text-bright-snow font-bold">{customerPhone}</span></div>
+                    <div><span className="text-bright-snow/60 block">Name</span><span className="text-bright-snow font-bold">{customerName}</span></div>
+                    <div><span className="text-bright-snow/60 block">Vehicle</span><span className="text-bright-snow font-bold">{vehicleRegistration && <span className="font-mono bg-yellow-400 text-black font-black px-1.5 py-0.5 rounded tracking-wider text-[11px]">{vehicleRegistration}</span>} {vehicleMakeModel}</span></div>
+                    <div><span className="text-bright-snow/60 block">Email</span><span className="text-bright-snow font-bold">{customerEmail}</span></div>
+                    <div><span className="text-bright-snow/60 block">Phone</span><span className="text-bright-snow font-bold">{customerPhone}</span></div>
                   </div>
                 </div>
                 <div className="border-t border-white/5 pt-4 mb-4">
                   <p className="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-2 flex items-center gap-1.5">
                     <Lock className="w-3.5 h-3.5" /> Payment Confirmed
                   </p>
-                  <div className="text-xs text-gray-400">
+                  <div className="text-xs text-bright-snow/60">
                     <span>Card charged: </span>
                     <span className="text-bright-snow font-bold">£{totalPrice.toFixed(2)}</span>
-                    <span className="text-gray-500 block mt-0.5">Transaction ID: {paymentIntentId.slice(0, 20)}...</span>
+                    <span className="text-bright-snow/40 block mt-0.5">Transaction ID: {paymentIntentId.slice(0, 20)}...</span>
                   </div>
                 </div>
                 <div className="border-t border-white/5 pt-4">

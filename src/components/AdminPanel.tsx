@@ -491,11 +491,11 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
               <Lock className="w-8 h-8 text-racing-red" />
             </div>
             <h2 className="font-display font-extrabold text-2xl text-bright-snow">Admin Login</h2>
-            <p className="text-xs text-gray-400 mt-1">Enter your credentials to access the dashboard</p>
+            <p className="text-xs text-bright-snow/60 mt-1">Enter your credentials to access the dashboard</p>
           </div>
           <div className="space-y-3">
             <div>
-              <label className="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">Username</label>
+              <label className="block text-[11px] text-bright-snow/60 mb-1 font-semibold uppercase">Username</label>
               <input
                 type="text"
                 value={loginUser}
@@ -507,7 +507,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
               />
             </div>
             <div>
-              <label className="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">Password</label>
+              <label className="block text-[11px] text-bright-snow/60 mb-1 font-semibold uppercase">Password</label>
               <input
                 type="password"
                 value={loginPass}
@@ -558,7 +558,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-1.5 px-4 py-2 text-sm font-bold rounded-lg bg-[#1e2121] border border-white/5 text-gray-400 hover:text-racing-red hover:border-racing-red/30 transition"
+            className="flex items-center gap-1.5 px-4 py-2 text-sm font-bold rounded-lg bg-[#1e2121] border border-white/5 text-bright-snow/60 hover:text-racing-red hover:border-racing-red/30 transition"
           >
             <LogOut className="w-4 h-4" />
             Logout
@@ -573,7 +573,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             className={`px-4 py-3 text-sm font-bold rounded-xl transition flex items-center gap-2 ${
               activeSection === 'dashboard'
                 ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/30 border border-racing-red'
-                : 'bg-[#1e2121] text-gray-400 hover:bg-racing-red/10 hover:text-bright-snow border border-white/5'
+                : 'bg-[#1e2121] text-bright-snow/60 hover:bg-racing-red/10 hover:text-bright-snow border border-white/5'
             }`}
           >
             <TrendingUp className="w-4 h-4" />
@@ -586,7 +586,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             className={`px-4 py-3 text-sm font-bold rounded-xl transition flex items-center gap-2 ${
               activeSection === 'inventory'
                 ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/30 border border-racing-red'
-                : 'bg-[#1e2121] text-gray-400 hover:bg-racing-red/10 hover:text-bright-snow border border-white/5'
+                : 'bg-[#1e2121] text-bright-snow/60 hover:bg-racing-red/10 hover:text-bright-snow border border-white/5'
             }`}
           >
             <Package className="w-4 h-4" />
@@ -599,7 +599,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             className={`px-4 py-3 text-sm font-bold rounded-xl transition flex items-center gap-2 ${
               activeSection === 'bookings'
                 ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/30 border border-racing-red'
-                : 'bg-[#1e2121] text-gray-400 hover:bg-racing-red/10 hover:text-bright-snow border border-white/5'
+                : 'bg-[#1e2121] text-bright-snow/60 hover:bg-racing-red/10 hover:text-bright-snow border border-white/5'
             }`}
           >
             <Calendar className="w-4 h-4" />
@@ -612,7 +612,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             className={`px-4 py-3 text-sm font-bold rounded-xl transition flex items-center gap-2 ${
               activeSection === 'customers'
                 ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/30 border border-racing-red'
-                : 'bg-[#1e2121] text-gray-400 hover:bg-racing-red/10 hover:text-bright-snow border border-white/5'
+                : 'bg-[#1e2121] text-bright-snow/60 hover:bg-racing-red/10 hover:text-bright-snow border border-white/5'
             }`}
           >
             <Users className="w-4 h-4" />
@@ -625,7 +625,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             className={`px-4 py-3 text-sm font-bold rounded-xl transition flex items-center gap-2 ${
               activeSection === 'promos'
                 ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/30 border border-racing-red'
-                : 'bg-[#1e2121] text-gray-400 hover:bg-racing-red/10 hover:text-bright-snow border border-white/5'
+                : 'bg-[#1e2121] text-bright-snow/60 hover:bg-racing-red/10 hover:text-bright-snow border border-white/5'
             }`}
           >
             <Tag className="w-4 h-4" />
@@ -638,7 +638,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             className={`px-4 py-3 text-sm font-bold rounded-xl transition flex items-center gap-2 ${
               activeSection === 'schedule'
                 ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/30 border border-racing-red'
-                : 'bg-[#1e2121] text-gray-400 hover:bg-racing-red/10 hover:text-bright-snow border border-white/5'
+                : 'bg-[#1e2121] text-bright-snow/60 hover:bg-racing-red/10 hover:text-bright-snow border border-white/5'
             }`}
           >
             <Calendar className="w-4 h-4" />
@@ -651,7 +651,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             className={`px-4 py-3 text-sm font-bold rounded-xl transition flex items-center gap-2 ${
               activeSection === 'staff'
                 ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/30 border border-racing-red'
-                : 'bg-[#1e2121] text-gray-400 hover:bg-racing-red/10 hover:text-bright-snow border border-white/5'
+                : 'bg-[#1e2121] text-bright-snow/60 hover:bg-racing-red/10 hover:text-bright-snow border border-white/5'
             }`}
           >
             <Users className="w-4 h-4" />
@@ -664,7 +664,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             className={`px-4 py-3 text-sm font-bold rounded-xl transition flex items-center gap-2 ${
               activeSection === 'reports'
                 ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/30 border border-racing-red'
-                : 'bg-[#1e2121] text-gray-400 hover:bg-racing-red/10 hover:text-bright-snow border border-white/5'
+                : 'bg-[#1e2121] text-bright-snow/60 hover:bg-racing-red/10 hover:text-bright-snow border border-white/5'
             }`}
           >
             <BarChart3 className="w-4 h-4" />
@@ -677,7 +677,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             className={`px-4 py-3 text-sm font-bold rounded-xl transition flex items-center gap-2 ${
               activeSection === 'settings'
                 ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/30 border border-racing-red'
-                : 'bg-[#1e2121] text-gray-400 hover:bg-racing-red/10 hover:text-bright-snow border border-white/5'
+                : 'bg-[#1e2121] text-bright-snow/60 hover:bg-racing-red/10 hover:text-bright-snow border border-white/5'
             }`}
           >
             <Settings className="w-4 h-4" />
@@ -702,7 +702,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                 <div className="w-10 h-10 bg-racing-red/20 rounded-lg flex items-center justify-center border border-racing-red/30">
                   <TrendingUp className="w-5 h-5 text-racing-red" />
                 </div>
-                <p className="text-gray-400 text-[10px] uppercase tracking-wider font-bold">Revenue</p>
+                <p className="text-bright-snow/60 text-[10px] uppercase tracking-wider font-bold">Revenue</p>
               </div>
               <p className="text-2xl font-extrabold text-racing-red">£{stats.totalRevenue.toLocaleString()}</p>
             </div>
@@ -711,7 +711,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                 <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center border border-blue-500/30">
                   <Calendar className="w-5 h-5 text-blue-400" />
                 </div>
-                <p className="text-gray-400 text-[10px] uppercase tracking-wider font-bold">Bookings</p>
+                <p className="text-bright-snow/60 text-[10px] uppercase tracking-wider font-bold">Bookings</p>
               </div>
               <p className="text-2xl font-extrabold text-bright-snow">{stats.totalBookings}</p>
             </div>
@@ -720,7 +720,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                 <div className="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center border border-emerald-500/30">
                   <CheckCircle className="w-5 h-5 text-emerald-400" />
                 </div>
-                <p className="text-gray-400 text-[10px] uppercase tracking-wider font-bold">Completed</p>
+                <p className="text-bright-snow/60 text-[10px] uppercase tracking-wider font-bold">Completed</p>
               </div>
               <p className="text-2xl font-extrabold text-bright-snow">{stats.completedBookings}</p>
             </div>
@@ -729,7 +729,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                 <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center border border-yellow-500/30">
                   <Clock className="w-5 h-5 text-yellow-400" />
                 </div>
-                <p className="text-gray-400 text-[10px] uppercase tracking-wider font-bold">Scheduled</p>
+                <p className="text-bright-snow/60 text-[10px] uppercase tracking-wider font-bold">Scheduled</p>
               </div>
               <p className="text-2xl font-extrabold text-bright-snow">{stats.scheduledBookings}</p>
             </div>
@@ -742,28 +742,28 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             <div className="bg-black rounded-2xl p-5 border border-white/5 shadow-lg">
               <div className="flex items-center gap-2 mb-2">
                 <CreditCard className="w-4 h-4 text-emerald-400" />
-                <p className="text-gray-400 text-[10px] uppercase tracking-wider font-bold">Avg Order</p>
+                <p className="text-bright-snow/60 text-[10px] uppercase tracking-wider font-bold">Avg Order</p>
               </div>
               <p className="text-xl font-extrabold text-emerald-400">£{stats.avgOrderValue.toFixed(2)}</p>
             </div>
             <div className="bg-black rounded-2xl p-5 border border-white/5 shadow-lg">
               <div className="flex items-center gap-2 mb-2">
                 <BarChart3 className="w-4 h-4 text-blue-400" />
-                <p className="text-gray-400 text-[10px] uppercase tracking-wider font-bold">Conversion</p>
+                <p className="text-bright-snow/60 text-[10px] uppercase tracking-wider font-bold">Conversion</p>
               </div>
               <p className="text-xl font-extrabold text-blue-400">{stats.conversionRate.toFixed(1)}%</p>
             </div>
             <div className="bg-black rounded-2xl p-5 border border-white/5 shadow-lg">
               <div className="flex items-center gap-2 mb-2">
                 <XCircle className="w-4 h-4 text-racing-red" />
-                <p className="text-gray-400 text-[10px] uppercase tracking-wider font-bold">Cancelled</p>
+                <p className="text-bright-snow/60 text-[10px] uppercase tracking-wider font-bold">Cancelled</p>
               </div>
               <p className="text-xl font-extrabold text-racing-red">{stats.cancelledBookings}</p>
             </div>
             <div className="bg-black rounded-2xl p-5 border border-white/5 shadow-lg">
               <div className="flex items-center gap-2 mb-2">
                 <Users className="w-4 h-4 text-yellow-400" />
-                <p className="text-gray-400 text-[10px] uppercase tracking-wider font-bold">Customers</p>
+                <p className="text-bright-snow/60 text-[10px] uppercase tracking-wider font-bold">Customers</p>
               </div>
               <p className="text-xl font-extrabold text-yellow-400">{customers.length}</p>
             </div>
@@ -794,13 +794,13 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                             style={{ height: `${barHeight}%` }}
                           />
                         </div>
-                        <span className="text-xs text-gray-400 font-semibold">{m.label}</span>
+                        <span className="text-xs text-bright-snow/60 font-semibold">{m.label}</span>
                       </div>
                     );
                   })}
                 </div>
               ) : (
-                <p className="text-gray-400 text-sm text-center py-8">No revenue data yet</p>
+                <p className="text-bright-snow/60 text-sm text-center py-8">No revenue data yet</p>
               )}
             </div>
           </div>
@@ -828,7 +828,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                               <span className="text-racing-red font-bold text-xs">#{index + 1}</span>
                               <span className="text-bright-snow font-semibold text-sm">{brand}</span>
                             </div>
-                            <span className="text-gray-400 text-xs font-bold">{count} tyres</span>
+                            <span className="text-bright-snow/60 text-xs font-bold">{count} tyres</span>
                           </div>
                           <div className="h-2.5 bg-[#1e2121] rounded-full overflow-hidden">
                             <div
@@ -841,7 +841,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                     })}
                   </div>
                 ) : (
-                  <p className="text-gray-400 text-sm">No sales data yet</p>
+                  <p className="text-bright-snow/60 text-sm">No sales data yet</p>
                 )}
               </div>
             </div>
@@ -869,7 +869,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                             </div>
                             <div className="flex items-center gap-3 shrink-0">
                               <span className="text-emerald-400 text-xs font-bold">£{tyre.revenue.toFixed(0)}</span>
-                              <span className="text-gray-400 text-xs font-bold">{tyre.count} sold</span>
+                              <span className="text-bright-snow/60 text-xs font-bold">{tyre.count} sold</span>
                             </div>
                           </div>
                           <div className="h-2.5 bg-[#1e2121] rounded-full overflow-hidden">
@@ -883,7 +883,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                     })}
                   </div>
                 ) : (
-                  <p className="text-gray-400 text-sm">No sales data yet</p>
+                  <p className="text-bright-snow/60 text-sm">No sales data yet</p>
                 )}
               </div>
             </div>
@@ -904,7 +904,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                     <div key={booking.id} className="flex items-center justify-between bg-[#1e2121] rounded-lg p-3 border border-white/5">
                       <div className="min-w-0 flex-1">
                         <p className="text-bright-snow text-sm font-semibold truncate">{booking.customerName}</p>
-                        <p className="text-gray-400 text-xs truncate"><span className="font-mono bg-yellow-400 text-black font-black px-1 py-0.5 rounded tracking-wider text-[10px]">{booking.vehicleRegistration}</span> · {booking.date || 'Collection'}</p>
+                        <p className="text-bright-snow/60 text-xs truncate"><span className="font-mono bg-yellow-400 text-black font-black px-1 py-0.5 rounded tracking-wider text-[10px]">{booking.vehicleRegistration}</span> · {booking.date || 'Collection'}</p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0 ml-3">
                         <span className="text-bright-snow font-bold text-sm">£{booking.totalPrice.toFixed(0)}</span>
@@ -918,7 +918,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-400 text-sm">No bookings yet</p>
+                <p className="text-bright-snow/60 text-sm">No bookings yet</p>
               )}
             </div>
           </div>
@@ -938,7 +938,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   {stats.lowStockItems.map(tyre => (
                     <div key={tyre.id} className="bg-black/50 rounded-lg p-3 border border-white/5 hover:border-racing-red/20 transition">
                       <p className="font-semibold text-bright-snow text-sm">{tyre.brand} {tyre.model}</p>
-                      <p className="text-gray-400 text-xs">{tyre.width}/{tyre.profile} R{tyre.rim}</p>
+                      <p className="text-bright-snow/60 text-xs">{tyre.width}/{tyre.profile} R{tyre.rim}</p>
                       <div className="flex items-center gap-2 mt-2">
                         <div className="flex-1 h-1.5 bg-[#1e2121] rounded-full overflow-hidden">
                           <div className={`h-full rounded-full ${tyre.stock > 4 ? 'bg-yellow-500' : 'bg-racing-red'}`} style={{ width: `${Math.min(tyre.stock * 10, 100)}%` }} />
@@ -966,7 +966,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                 </div>
                 <div>
                   <h3 className="font-display font-extrabold text-bright-snow text-xl">Inventory Management</h3>
-                  <p className="text-xs text-gray-400 mt-0.5">
+                  <p className="text-xs text-bright-snow/60 mt-0.5">
                     {inventory.length} tyres across {new Set(inventory.map(t => t.brand)).size} brands
                     {!stockManagementEnabled && <span className="text-emerald-400 font-bold"> — Unlimited stock</span>}
                   </p>
@@ -1007,23 +1007,23 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             {/* Quick stats */}
             <div className="grid grid-cols-3 gap-3 mb-4">
               <div className="bg-[#1e2121] rounded-lg px-4 py-2.5 border border-white/5">
-                <p className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Total Units</p>
+                <p className="text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider">Total Units</p>
                 <p className="text-lg font-extrabold text-bright-snow">{stockManagementEnabled ? inventory.reduce((s, t) => s + t.stock, 0) : '∞'}</p>
               </div>
               <div className={`rounded-lg px-4 py-2.5 border ${stockManagementEnabled ? 'bg-yellow-500/10 border-yellow-500/20' : 'bg-[#1e2121] border-white/5'}`}>
-                <p className={`text-[10px] uppercase font-bold tracking-wider ${stockManagementEnabled ? 'text-yellow-400' : 'text-gray-400'}`}>Low Stock</p>
-                <p className={`text-lg font-extrabold ${stockManagementEnabled ? 'text-yellow-400' : 'text-gray-500'}`}>{stockManagementEnabled ? inventory.filter(t => t.stock > 0 && t.stock <= 4).length : '—'}</p>
+                <p className={`text-[10px] uppercase font-bold tracking-wider ${stockManagementEnabled ? 'text-yellow-400' : 'text-bright-snow/60'}`}>Low Stock</p>
+                <p className={`text-lg font-extrabold ${stockManagementEnabled ? 'text-yellow-400' : 'text-bright-snow/40'}`}>{stockManagementEnabled ? inventory.filter(t => t.stock > 0 && t.stock <= 4).length : '—'}</p>
               </div>
               <div className={`rounded-lg px-4 py-2.5 border ${stockManagementEnabled ? 'bg-racing-red/10 border-racing-red/20' : 'bg-[#1e2121] border-white/5'}`}>
-                <p className={`text-[10px] uppercase font-bold tracking-wider ${stockManagementEnabled ? 'text-racing-red' : 'text-gray-400'}`}>Out of Stock</p>
-                <p className={`text-lg font-extrabold ${stockManagementEnabled ? 'text-racing-red' : 'text-gray-500'}`}>{stockManagementEnabled ? inventory.filter(t => t.stock === 0).length : '—'}</p>
+                <p className={`text-[10px] uppercase font-bold tracking-wider ${stockManagementEnabled ? 'text-racing-red' : 'text-bright-snow/60'}`}>Out of Stock</p>
+                <p className={`text-lg font-extrabold ${stockManagementEnabled ? 'text-racing-red' : 'text-bright-snow/40'}`}>{stockManagementEnabled ? inventory.filter(t => t.stock === 0).length : '—'}</p>
               </div>
             </div>
 
             {/* Search + filter + sort */}
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-bright-snow/40" />
                 <input
                   type="text"
                   value={invSearch}
@@ -1048,7 +1048,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             <div className="flex flex-wrap gap-1.5 mt-3">
               <button
                 onClick={() => setInvBrandFilter('All')}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition ${invBrandFilter === 'All' ? 'bg-racing-red text-bright-snow' : 'bg-white/5 text-gray-400 hover:text-bright-snow'}`}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition ${invBrandFilter === 'All' ? 'bg-racing-red text-bright-snow' : 'bg-white/5 text-bright-snow/60 hover:text-bright-snow'}`}
               >
                 All ({inventory.length})
               </button>
@@ -1058,7 +1058,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   <button
                     key={brand}
                     onClick={() => setInvBrandFilter(brand)}
-                    className={`px-3 py-1 rounded-full text-xs font-bold transition ${invBrandFilter === brand ? 'bg-racing-red text-bright-snow' : 'bg-white/5 text-gray-400 hover:text-bright-snow'}`}
+                    className={`px-3 py-1 rounded-full text-xs font-bold transition ${invBrandFilter === brand ? 'bg-racing-red text-bright-snow' : 'bg-white/5 text-bright-snow/60 hover:text-bright-snow'}`}
                   >
                     {brand} ({count})
                   </button>
@@ -1073,7 +1073,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
               <h4 className="font-display font-bold text-bright-snow text-sm mb-4">Add New Tyre</h4>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
-                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Brand</label>
+                  <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Brand</label>
                   <input
                     type="text"
                     value={newTyre.brand}
@@ -1083,7 +1083,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Model</label>
+                  <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Model</label>
                   <input
                     type="text"
                     value={newTyre.model}
@@ -1093,7 +1093,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Width</label>
+                  <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Width</label>
                   <input
                     type="number"
                     value={newTyre.width}
@@ -1102,7 +1102,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Profile</label>
+                  <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Profile</label>
                   <input
                     type="number"
                     value={newTyre.profile}
@@ -1111,7 +1111,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Rim</label>
+                  <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Rim</label>
                   <input
                     type="number"
                     value={newTyre.rim}
@@ -1120,7 +1120,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Speed Rating</label>
+                  <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Speed Rating</label>
                   <select
                     value={newTyre.speedRating}
                     onChange={(e) => setNewTyre({ ...newTyre, speedRating: e.target.value })}
@@ -1133,7 +1133,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Load Index</label>
+                  <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Load Index</label>
                   <input
                     type="number"
                     value={newTyre.loadIndex}
@@ -1142,7 +1142,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Price (£)</label>
+                  <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Price (£)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -1153,7 +1153,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Price x4 (£)</label>
+                  <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Price x4 (£)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -1164,7 +1164,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Category</label>
+                  <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Category</label>
                   <select
                     value={newTyre.category}
                     onChange={(e) => setNewTyre({ ...newTyre, category: e.target.value as Tyre['category'] })}
@@ -1176,7 +1176,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Fuel Efficiency</label>
+                  <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Fuel Efficiency</label>
                   <select
                     value={newTyre.fuelEfficiency}
                     onChange={(e) => setNewTyre({ ...newTyre, fuelEfficiency: e.target.value as Tyre['fuelEfficiency'] })}
@@ -1190,7 +1190,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Wet Grip</label>
+                  <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Wet Grip</label>
                   <select
                     value={newTyre.wetGrip}
                     onChange={(e) => setNewTyre({ ...newTyre, wetGrip: e.target.value as Tyre['wetGrip'] })}
@@ -1204,7 +1204,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Noise (dB)</label>
+                  <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Noise (dB)</label>
                   <input
                     type="number"
                     value={newTyre.noiseLevel}
@@ -1214,7 +1214,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                 </div>
                 {stockManagementEnabled && (
                   <div>
-                    <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Stock</label>
+                    <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Stock</label>
                     <input
                       type="number"
                       value={newTyre.stock}
@@ -1224,11 +1224,11 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   </div>
                 )}
                 <div className="flex items-end gap-4">
-                  <label className="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
+                  <label className="flex items-center gap-2 text-xs text-bright-snow/60 cursor-pointer">
                     <input type="checkbox" checked={newTyre.isRunflat || false} onChange={(e) => setNewTyre({ ...newTyre, isRunflat: e.target.checked })} className="accent-racing-red" />
                     Runflat
                   </label>
-                  <label className="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
+                  <label className="flex items-center gap-2 text-xs text-bright-snow/60 cursor-pointer">
                     <input type="checkbox" checked={newTyre.isReinforced || false} onChange={(e) => setNewTyre({ ...newTyre, isReinforced: e.target.checked })} className="accent-racing-red" />
                     Reinforced
                   </label>
@@ -1237,12 +1237,12 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
 
               {/* Image upload */}
               <div className="mt-4">
-                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Tyre Image</label>
+                <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Tyre Image</label>
                 <div className="flex items-center gap-3">
                   {newTyre.imageUrl && (
                     <img src={newTyre.imageUrl} alt="Preview" className="w-16 h-16 rounded-lg object-cover border border-white/10" />
                   )}
-                  <label className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-bright-snow font-semibold text-xs px-4 py-2.5 rounded-lg transition cursor-pointer border border-white/10">
+                  <label className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 text-bright-snow/60 hover:text-bright-snow font-semibold text-xs px-4 py-2.5 rounded-lg transition cursor-pointer border border-white/10">
                     {imageUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                     {imageUploading ? 'Uploading...' : 'Upload Image'}
                     <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImageUpload(f, (url) => setNewTyre({ ...newTyre, imageUrl: url })); }} />
@@ -1263,7 +1263,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                 </button>
                 <button
                   onClick={() => setShowAddForm(false)}
-                  className="px-4 py-2 text-sm font-semibold text-gray-400 hover:text-bright-snow hover:bg-white/5 rounded-lg transition"
+                  className="px-4 py-2 text-sm font-semibold text-bright-snow/60 hover:text-bright-snow hover:bg-white/5 rounded-lg transition"
                 >
                   Cancel
                 </button>
@@ -1281,13 +1281,13 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             <table className="w-full">
               <thead className="bg-black/50">
                 <tr>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Brand</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Model</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Size</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Category</th>
-                  {stockManagementEnabled && <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Stock</th>}
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Price</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Actions</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Brand</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Model</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Size</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Category</th>
+                  {stockManagementEnabled && <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Stock</th>}
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Price</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
@@ -1311,7 +1311,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   if (filtered.length === 0) {
                     return (
                       <tr>
-                        <td colSpan={stockManagementEnabled ? 7 : 6} className="px-6 py-12 text-center text-gray-500 text-sm">
+                        <td colSpan={stockManagementEnabled ? 7 : 6} className="px-6 py-12 text-center text-bright-snow/40 text-sm">
                           No tyres match your search.
                         </td>
                       </tr>
@@ -1323,13 +1323,13 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                     return (
                       <tr key={tyre.id} className="hover:bg-white/5 transition">
                         <td className="px-6 py-4 text-sm font-bold text-bright-snow">{tyre.brand}</td>
-                        <td className="px-6 py-4 text-sm text-gray-400">{tyre.model}</td>
-                        <td className="px-6 py-4 text-sm text-gray-400 font-mono">{tyre.width}/{tyre.profile} R{tyre.rim}</td>
+                        <td className="px-6 py-4 text-sm text-bright-snow/60">{tyre.model}</td>
+                        <td className="px-6 py-4 text-sm text-bright-snow/60 font-mono">{tyre.width}/{tyre.profile} R{tyre.rim}</td>
                         <td className="px-6 py-4">
                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                             tyre.category === 'Runflat' ? 'bg-blue-500/15 text-blue-400' :
                             tyre.category === 'Commercial' ? 'bg-orange-500/15 text-orange-400' :
-                            'bg-white/5 text-gray-400'
+                            'bg-white/5 text-bright-snow/60'
                           }`}>{tyre.category}</span>
                         </td>
                         {stockManagementEnabled && (
@@ -1352,7 +1352,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                         )}
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-1">
-                            <span className="text-gray-500 text-sm">£</span>
+                            <span className="text-bright-snow/40 text-sm">£</span>
                             <input
                               type="number"
                               value={tyre.price}
@@ -1365,13 +1365,13 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                           <div className="flex gap-2">
                             <button
                               onClick={() => setEditingTyre(tyre)}
-                              className="p-2 text-gray-400 hover:text-racing-red hover:bg-racing-red/10 rounded-lg transition"
+                              className="p-2 text-bright-snow/60 hover:text-racing-red hover:bg-racing-red/10 rounded-lg transition"
                             >
                               <Edit className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => handleDeleteTyre(tyre.id)}
-                              className="p-2 text-gray-400 hover:text-racing-red hover:bg-racing-red/10 rounded-lg transition"
+                              className="p-2 text-bright-snow/60 hover:text-racing-red hover:bg-racing-red/10 rounded-lg transition"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -1393,21 +1393,21 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
           <div className="bg-[#1e2121] rounded-2xl border border-white/10 shadow-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-5">
               <h4 className="font-display font-bold text-bright-snow text-lg">Edit Tyre</h4>
-              <button onClick={() => setEditingTyre(null)} className="text-gray-400 hover:text-racing-red transition">
+              <button onClick={() => setEditingTyre(null)} className="text-bright-snow/60 hover:text-racing-red transition">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Brand</label>
+                <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Brand</label>
                 <input type="text" value={editingTyre.brand} onChange={e => setEditingTyre({ ...editingTyre, brand: e.target.value })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
               </div>
               <div>
-                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Model</label>
+                <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Model</label>
                 <input type="text" value={editingTyre.model} onChange={e => setEditingTyre({ ...editingTyre, model: e.target.value })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
               </div>
               <div>
-                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Category</label>
+                <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Category</label>
                 <select value={editingTyre.category} onChange={e => setEditingTyre({ ...editingTyre, category: e.target.value as any })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none">
                   <option value="Standard">Standard</option>
                   <option value="Runflat">Runflat</option>
@@ -1415,41 +1415,41 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                 </select>
               </div>
               <div>
-                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Width</label>
+                <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Width</label>
                 <input type="number" value={editingTyre.width} onChange={e => setEditingTyre({ ...editingTyre, width: parseInt(e.target.value) || 0 })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
               </div>
               <div>
-                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Profile</label>
+                <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Profile</label>
                 <input type="number" value={editingTyre.profile} onChange={e => setEditingTyre({ ...editingTyre, profile: parseInt(e.target.value) || 0 })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
               </div>
               <div>
-                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Rim</label>
+                <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Rim</label>
                 <input type="number" value={editingTyre.rim} onChange={e => setEditingTyre({ ...editingTyre, rim: parseInt(e.target.value) || 0 })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
               </div>
               <div>
-                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Speed Rating</label>
+                <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Speed Rating</label>
                 <input type="text" value={editingTyre.speedRating || ''} onChange={e => setEditingTyre({ ...editingTyre, speedRating: e.target.value })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
               </div>
               <div>
-                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Load Index</label>
+                <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Load Index</label>
                 <input type="number" value={editingTyre.loadIndex || 0} onChange={e => setEditingTyre({ ...editingTyre, loadIndex: parseInt(e.target.value) || 0 })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
               </div>
               <div>
-                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Price (£)</label>
+                <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Price (£)</label>
                 <input type="number" step="0.01" value={editingTyre.price} onChange={e => setEditingTyre({ ...editingTyre, price: parseFloat(e.target.value) || 0 })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
               </div>
               <div>
-                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Price x4 (£)</label>
+                <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Price x4 (£)</label>
                 <input type="number" step="0.01" value={editingTyre.price4 ?? ''} onChange={e => setEditingTyre({ ...editingTyre, price4: e.target.value ? parseFloat(e.target.value) : undefined })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
               </div>
               {stockManagementEnabled && (
                 <div>
-                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Stock</label>
+                  <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Stock</label>
                   <input type="number" value={editingTyre.stock} onChange={e => setEditingTyre({ ...editingTyre, stock: parseInt(e.target.value) || 0 })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
                 </div>
               )}
               <div>
-                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Fuel Efficiency</label>
+                <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Fuel Efficiency</label>
                 <select value={editingTyre.fuelEfficiency || 'C'} onChange={e => setEditingTyre({ ...editingTyre, fuelEfficiency: e.target.value as any })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none">
                   <option value="A">A</option>
                   <option value="B">B</option>
@@ -1459,7 +1459,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                 </select>
               </div>
               <div>
-                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Wet Grip</label>
+                <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Wet Grip</label>
                 <select value={editingTyre.wetGrip || 'C'} onChange={e => setEditingTyre({ ...editingTyre, wetGrip: e.target.value as any })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none">
                   <option value="A">A</option>
                   <option value="B">B</option>
@@ -1469,15 +1469,15 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                 </select>
               </div>
               <div>
-                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Noise (dB)</label>
+                <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Noise (dB)</label>
                 <input type="number" value={editingTyre.noiseLevel || 72} onChange={e => setEditingTyre({ ...editingTyre, noiseLevel: parseInt(e.target.value) || 72 })} className="w-full bg-[#0d0e0e] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:border-racing-red focus:outline-none" />
               </div>
               <div className="flex items-end gap-4">
-                <label className="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
+                <label className="flex items-center gap-2 text-xs text-bright-snow/60 cursor-pointer">
                   <input type="checkbox" checked={editingTyre.isRunflat} onChange={e => setEditingTyre({ ...editingTyre, isRunflat: e.target.checked })} className="accent-racing-red" />
                   Runflat
                 </label>
-                <label className="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
+                <label className="flex items-center gap-2 text-xs text-bright-snow/60 cursor-pointer">
                   <input type="checkbox" checked={editingTyre.isReinforced || false} onChange={e => setEditingTyre({ ...editingTyre, isReinforced: e.target.checked })} className="accent-racing-red" />
                   Reinforced
                 </label>
@@ -1486,12 +1486,12 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
 
             {/* Image upload in edit modal */}
             <div className="mt-4">
-              <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Tyre Image</label>
+              <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Tyre Image</label>
               <div className="flex items-center gap-3">
                 {editingTyre.imageUrl && (
                   <img src={editingTyre.imageUrl} alt="Preview" className="w-16 h-16 rounded-lg object-cover border border-white/10" />
                 )}
-                <label className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-bright-snow font-semibold text-xs px-4 py-2.5 rounded-lg transition cursor-pointer border border-white/10">
+                <label className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 text-bright-snow/60 hover:text-bright-snow font-semibold text-xs px-4 py-2.5 rounded-lg transition cursor-pointer border border-white/10">
                   {imageUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                   {imageUploading ? 'Uploading...' : 'Upload Image'}
                   <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImageUpload(f, (url) => setEditingTyre({ ...editingTyre, imageUrl: url })); }} />
@@ -1537,7 +1537,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
               </button>
               <button
                 onClick={() => setEditingTyre(null)}
-                className="px-4 py-2.5 text-sm font-semibold text-gray-400 hover:text-bright-snow hover:bg-white/5 rounded-lg transition"
+                className="px-4 py-2.5 text-sm font-semibold text-bright-snow/60 hover:text-bright-snow hover:bg-white/5 rounded-lg transition"
               >
                 Cancel
               </button>
@@ -1563,19 +1563,19 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             <table className="w-full">
               <thead className="bg-black/50">
                 <tr>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Customer</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Vehicle</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Date</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Type</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Status</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Notes</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Actions</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Customer</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Vehicle</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Date</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Type</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Status</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Notes</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
                 {bookings.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-12 text-center text-gray-400">
+                    <td colSpan={7} className="px-6 py-12 text-center text-bright-snow/60">
                       No bookings yet
                     </td>
                   </tr>
@@ -1584,8 +1584,8 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                     <tr key={booking.id} className="hover:bg-white/5 transition">
                       <td className="px-6 py-4 text-sm font-medium text-bright-snow">{booking.customerName}</td>
                       <td className="px-6 py-4 text-sm"><span className="font-mono bg-yellow-400 text-black font-black px-1.5 py-0.5 rounded tracking-wider text-[11px]">{booking.vehicleRegistration}</span></td>
-                      <td className="px-6 py-4 text-sm text-gray-400">{booking.date}</td>
-                      <td className="px-6 py-4 text-sm text-gray-400">{booking.fittingType}</td>
+                      <td className="px-6 py-4 text-sm text-bright-snow/60">{booking.date}</td>
+                      <td className="px-6 py-4 text-sm text-bright-snow/60">{booking.fittingType}</td>
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
                           booking.status === 'Completed' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
@@ -1613,14 +1613,14 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                             <>
                               <button
                                 onClick={() => onUpdateBooking(booking.id, 'Completed')}
-                                className="p-2 text-gray-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition"
+                                className="p-2 text-bright-snow/60 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition"
                                 title="Mark as Complete"
                               >
                                 <CheckCircle className="w-4 h-4" />
                               </button>
                               <button
                                 onClick={() => onUpdateBooking(booking.id, 'Cancelled')}
-                                className="p-2 text-gray-400 hover:text-racing-red hover:bg-racing-red/10 rounded-lg transition"
+                                className="p-2 text-bright-snow/60 hover:text-racing-red hover:bg-racing-red/10 rounded-lg transition"
                                 title="Cancel Booking"
                               >
                                 <XCircle className="w-4 h-4" />
@@ -1643,24 +1643,24 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
         <div className="carbon-fiber rounded-2xl border border-white/5 shadow-xl overflow-hidden">
           <div className="p-6 border-b border-white/5">
             <h3 className="font-display font-bold text-bright-snow text-lg">Customer Management</h3>
-            <p className="text-xs text-gray-400 mt-1">{customers.length} registered customers</p>
+            <p className="text-xs text-bright-snow/60 mt-1">{customers.length} registered customers</p>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-black/50">
                 <tr>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Name</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Email</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Phone</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Total Spent</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Bookings</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3"></th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Name</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Email</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Phone</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Total Spent</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Bookings</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
                 {customers.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-gray-400">
+                    <td colSpan={6} className="px-6 py-12 text-center text-bright-snow/60">
                       No customers yet
                     </td>
                   </tr>
@@ -1672,11 +1672,11 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                       <React.Fragment key={index}>
                         <tr className="hover:bg-white/5 transition cursor-pointer" onClick={() => setExpandedCustomerId(isExpanded ? null : customer.email)}>
                           <td className="px-6 py-4 text-sm font-medium text-bright-snow">{customer.name}</td>
-                          <td className="px-6 py-4 text-sm text-gray-400">{customer.email}</td>
-                          <td className="px-6 py-4 text-sm text-gray-400">{customer.phone}</td>
+                          <td className="px-6 py-4 text-sm text-bright-snow/60">{customer.email}</td>
+                          <td className="px-6 py-4 text-sm text-bright-snow/60">{customer.phone}</td>
                           <td className="px-6 py-4 text-sm font-bold text-emerald-400">£{customer.totalSpent.toLocaleString()}</td>
-                          <td className="px-6 py-4 text-sm text-gray-400">{customer.bookingCount}</td>
-                          <td className="px-6 py-4 text-sm text-gray-500">
+                          <td className="px-6 py-4 text-sm text-bright-snow/60">{customer.bookingCount}</td>
+                          <td className="px-6 py-4 text-sm text-bright-snow/40">
                             {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                           </td>
                         </tr>
@@ -1684,13 +1684,13 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                           <tr className="bg-black/30">
                             <td colSpan={6} className="px-6 py-4">
                               <div className="space-y-2">
-                                <p className="text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-2">Booking History</p>
+                                <p className="text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-2">Booking History</p>
                                 {customerBookings.map(b => (
                                   <div key={b.id} className="flex items-center justify-between bg-[#1e2121] rounded-lg p-3 text-xs">
                                     <div className="flex items-center gap-3">
                                       <span className="font-mono font-bold text-racing-red">{b.id.toUpperCase()}</span>
-                                      <span className="text-gray-300">{b.date} · {b.timeSlot}</span>
-                                      <span className="text-gray-400">{b.cartItems.reduce((s, i) => s + i.quantity, 0)} tyres</span>
+                                      <span className="text-bright-snow/80">{b.date} · {b.timeSlot}</span>
+                                      <span className="text-bright-snow/60">{b.cartItems.reduce((s, i) => s + i.quantity, 0)} tyres</span>
                                     </div>
                                     <div className="flex items-center gap-3">
                                       <span className="font-bold text-bright-snow">£{b.totalPrice.toFixed(2)}</span>
@@ -1734,7 +1734,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             <div className="p-6 border-b border-white/5 bg-black/30">
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Code</label>
+                  <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Code</label>
                   <input
                     type="text"
                     value={newPromo.code}
@@ -1744,7 +1744,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Discount (%)</label>
+                  <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Discount (%)</label>
                   <input
                     type="number"
                     value={newPromo.discount}
@@ -1753,7 +1753,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Expiry Date</label>
+                  <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1">Expiry Date</label>
                   <input
                     type="date"
                     value={newPromo.expiry}
@@ -1771,7 +1771,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                 </button>
                 <button
                   onClick={() => setShowPromoForm(false)}
-                  className="px-4 py-2 text-sm font-semibold text-gray-400 hover:text-bright-snow hover:bg-white/5 rounded-lg transition"
+                  className="px-4 py-2 text-sm font-semibold text-bright-snow/60 hover:text-bright-snow hover:bg-white/5 rounded-lg transition"
                 >
                   Cancel
                 </button>
@@ -1783,11 +1783,11 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             <table className="w-full">
               <thead className="bg-black/50">
                 <tr>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Code</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Discount</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Expiry</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Status</th>
-                  <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Actions</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Code</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Discount</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Expiry</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Status</th>
+                  <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
@@ -1795,7 +1795,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   <tr key={promo.code} className="hover:bg-white/5 transition">
                     <td className="px-6 py-4 text-sm font-bold text-bright-snow">{promo.code}</td>
                     <td className="px-6 py-4 text-sm text-emerald-400 font-bold">{promo.discount}%</td>
-                    <td className="px-6 py-4 text-sm text-gray-400">{promo.expiry}</td>
+                    <td className="px-6 py-4 text-sm text-bright-snow/60">{promo.expiry}</td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
                         promo.active ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-racing-red/10 text-racing-red border border-racing-red/20'
@@ -1807,14 +1807,14 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleTogglePromo(promo.code)}
-                          className="p-2 text-gray-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition"
+                          className="p-2 text-bright-snow/60 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition"
                           title="Toggle Status"
                         >
                           {promo.active ? <XCircle className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
                         </button>
                         <button
                           onClick={() => handleDeletePromo(promo.code)}
-                          className="p-2 text-gray-400 hover:text-racing-red hover:bg-racing-red/10 rounded-lg transition"
+                          className="p-2 text-bright-snow/60 hover:text-racing-red hover:bg-racing-red/10 rounded-lg transition"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -1837,7 +1837,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
           <div className="p-6">
             <div className="space-y-4">
               {bookings.filter(b => b.status === 'Scheduled').length === 0 ? (
-                <p className="text-gray-400 text-center py-8">No scheduled bookings</p>
+                <p className="text-bright-snow/60 text-center py-8">No scheduled bookings</p>
               ) : (
                 bookings
                   .filter(b => b.status === 'Scheduled')
@@ -1847,12 +1847,12 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="font-semibold text-bright-snow">{booking.date} - {booking.timeSlot}</p>
-                          <p className="text-sm text-gray-400">{booking.customerName} - <span className="font-mono bg-yellow-400 text-black font-black px-1 py-0.5 rounded tracking-wider text-[10px]">{booking.vehicleRegistration}</span></p>
-                          <p className="text-xs text-gray-500 mt-1">{booking.fittingType} fitting</p>
+                          <p className="text-sm text-bright-snow/60">{booking.customerName} - <span className="font-mono bg-yellow-400 text-black font-black px-1 py-0.5 rounded tracking-wider text-[10px]">{booking.vehicleRegistration}</span></p>
+                          <p className="text-xs text-bright-snow/40 mt-1">{booking.fittingType} fitting</p>
                         </div>
                         <div className="text-right">
                           <p className="text-racing-red font-bold">£{booking.totalPrice}</p>
-                          <p className="text-xs text-gray-400">{booking.cartItems.length} tyres</p>
+                          <p className="text-xs text-bright-snow/60">{booking.cartItems.length} tyres</p>
                         </div>
                       </div>
                     </div>
@@ -1870,17 +1870,17 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
           <div className="carbon-fiber rounded-2xl border border-white/5 shadow-xl overflow-hidden">
             <div className="p-6 border-b border-white/5">
               <h3 className="font-display font-bold text-bright-snow text-lg">Admin Users</h3>
-              <p className="text-xs text-gray-400 mt-1">Users with access to the admin panel. Credentials and permissions are managed in code.</p>
+              <p className="text-xs text-bright-snow/60 mt-1">Users with access to the admin panel. Credentials and permissions are managed in code.</p>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-black/50">
                   <tr>
-                    <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Name</th>
-                    <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Username</th>
-                    <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Email</th>
-                    <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Role</th>
-                    <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Permissions</th>
+                    <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Name</th>
+                    <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Username</th>
+                    <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Email</th>
+                    <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Role</th>
+                    <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Permissions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
@@ -1895,10 +1895,10 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-sm text-gray-300 font-mono">{user.username}</span>
+                        <span className="text-sm text-bright-snow/80 font-mono">{user.username}</span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-sm text-gray-400">{user.email || '—'}</span>
+                        <span className="text-sm text-bright-snow/60">{user.email || '—'}</span>
                       </td>
                       <td className="px-6 py-4">
                         <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full ${user.role === 'admin' ? 'bg-racing-red/20 text-racing-red border border-racing-red/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'}`}>
@@ -1911,7 +1911,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                             <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">All Access</span>
                           ) : (
                             user.permissions.map(p => (
-                              <span key={p} className="text-[10px] font-bold text-gray-400 bg-white/5 border border-white/10 px-2 py-0.5 rounded-full">{p}</span>
+                              <span key={p} className="text-[10px] font-bold text-bright-snow/60 bg-white/5 border border-white/10 px-2 py-0.5 rounded-full">{p}</span>
                             ))
                           )}
                         </div>
@@ -1928,7 +1928,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
             <div className="p-6 border-b border-white/5 flex items-center justify-between">
               <div>
                 <h3 className="font-display font-bold text-bright-snow text-lg">Staff Directory</h3>
-                <p className="text-xs text-gray-400 mt-1">General staff contact info (no admin access)</p>
+                <p className="text-xs text-bright-snow/60 mt-1">General staff contact info (no admin access)</p>
               </div>
               <button
                 onClick={handleAddStaff}
@@ -1942,11 +1942,11 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
               <table className="w-full">
                 <thead className="bg-black/50">
                   <tr>
-                    <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Name</th>
-                    <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Role</th>
-                    <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Email</th>
-                    <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Phone</th>
-                    <th className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider px-6 py-3">Actions</th>
+                    <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Name</th>
+                    <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Role</th>
+                    <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Email</th>
+                    <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Phone</th>
+                    <th className="text-left text-xs font-bold text-bright-snow/60 uppercase tracking-wider px-6 py-3">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
@@ -1987,7 +1987,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                       <td className="px-6 py-4">
                         <button
                           onClick={() => handleDeleteStaff(member.id)}
-                          className="p-2 text-gray-400 hover:text-racing-red hover:bg-racing-red/10 rounded-lg transition"
+                          className="p-2 text-bright-snow/60 hover:text-racing-red hover:bg-racing-red/10 rounded-lg transition"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -2017,7 +2017,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                 <div className="space-y-2">
                   {stats.topBrands.map(([brand, count]) => (
                     <div key={brand} className="flex justify-between text-sm">
-                      <span className="text-gray-400">{brand}</span>
+                      <span className="text-bright-snow/60">{brand}</span>
                       <span className="text-bright-snow font-bold">{count} tyres</span>
                     </div>
                   ))}
@@ -2030,11 +2030,11 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                 </h4>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">Total Revenue</span>
+                    <span className="text-bright-snow/60">Total Revenue</span>
                     <span className="text-emerald-400 font-bold">£{stats.totalRevenue.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">Avg per Booking</span>
+                    <span className="text-bright-snow/60">Avg per Booking</span>
                     <span className="text-bright-snow font-bold">
                       £{stats.completedBookings > 0 ? Math.round(stats.totalRevenue / stats.completedBookings).toLocaleString() : 0}
                     </span>
@@ -2050,15 +2050,15 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
                   <p className="text-2xl font-bold text-emerald-400">{stats.completedBookings}</p>
-                  <p className="text-xs text-gray-400">Completed</p>
+                  <p className="text-xs text-bright-snow/60">Completed</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-yellow-400">{stats.scheduledBookings}</p>
-                  <p className="text-xs text-gray-400">Scheduled</p>
+                  <p className="text-xs text-bright-snow/60">Scheduled</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-racing-red">{stats.totalBookings - stats.completedBookings - stats.scheduledBookings}</p>
-                  <p className="text-xs text-gray-400">Cancelled</p>
+                  <p className="text-xs text-bright-snow/60">Cancelled</p>
                 </div>
               </div>
             </div>
@@ -2082,7 +2082,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   </div>
                   <div>
                     <h4 className="font-semibold text-bright-snow">Stock Management</h4>
-                    <p className="text-xs text-gray-400 mt-0.5">
+                    <p className="text-xs text-bright-snow/60 mt-0.5">
                       {stockManagementEnabled
                         ? 'Stock levels are tracked. Low/out of stock alerts are active.'
                         : 'All stock is unlimited. No stock tracking or limits applied.'}
@@ -2111,11 +2111,11 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 rounded-lg flex items-center justify-center border ${maintenanceMode ? 'bg-racing-red/20 border-racing-red/30' : 'bg-white/5 border-white/10'}`}>
-                    {maintenanceMode ? <AlertTriangle className="w-5 h-5 text-racing-red" /> : <Settings className="w-5 h-5 text-gray-400" />}
+                    {maintenanceMode ? <AlertTriangle className="w-5 h-5 text-racing-red" /> : <Settings className="w-5 h-5 text-bright-snow/60" />}
                   </div>
                   <div>
                     <h4 className="font-semibold text-bright-snow">Maintenance Mode</h4>
-                    <p className="text-xs text-gray-400 mt-0.5">
+                    <p className="text-xs text-bright-snow/60 mt-0.5">
                       {maintenanceMode
                         ? 'Site is offline. Visitors see a maintenance page. Admin panel still accessible.'
                         : 'Site is live and fully operational for all visitors.'}
@@ -2147,7 +2147,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                 </div>
                 <div>
                   <h4 className="font-semibold text-bright-snow">Tyre Card Display Fields</h4>
-                  <p className="text-xs text-gray-400 mt-0.5">Choose what information is shown on tyre cards in the shop. Width, profile, and rim are always shown.</p>
+                  <p className="text-xs text-bright-snow/60 mt-0.5">Choose what information is shown on tyre cards in the shop. Width, profile, and rim are always shown.</p>
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
@@ -2174,8 +2174,8 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                         {enabled && <Check className="w-3.5 h-3.5" />}
                       </div>
                       <div>
-                        <p className={`text-sm font-bold ${enabled ? 'text-bright-snow' : 'text-gray-400'}`}>{field.label}</p>
-                        <p className="text-[11px] text-gray-500 mt-0.5">{field.description}</p>
+                        <p className={`text-sm font-bold ${enabled ? 'text-bright-snow' : 'text-bright-snow/60'}`}>{field.label}</p>
+                        <p className="text-[11px] text-bright-snow/40 mt-0.5">{field.description}</p>
                       </div>
                     </button>
                   );
@@ -2183,7 +2183,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
               </div>
               <button
                 onClick={() => setTyreDisplayFields(DEFAULT_TYRE_DISPLAY_FIELDS)}
-                className="mt-4 text-xs font-bold text-gray-400 hover:text-bright-snow transition"
+                className="mt-4 text-xs font-bold text-bright-snow/60 hover:text-bright-snow transition"
               >
                 Reset to defaults
               </button>
@@ -2198,7 +2198,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                   </div>
                   <div>
                     <h4 className="font-semibold text-bright-snow">Stripe Payment Mode</h4>
-                    <p className="text-xs text-gray-400 mt-0.5">Toggle between sandbox (test) and live payments</p>
+                    <p className="text-xs text-bright-snow/60 mt-0.5">Toggle between sandbox (test) and live payments</p>
                   </div>
                 </div>
               </div>
@@ -2213,7 +2213,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                     <FlaskConical className="w-4 h-4 text-yellow-400" />
                     <span className="font-bold text-bright-snow text-sm">Sandbox (Test)</span>
                   </div>
-                  <p className="text-xs text-gray-400">No real charges. Use test card 4242 4242 4242 4242.</p>
+                  <p className="text-xs text-bright-snow/60">No real charges. Use test card 4242 4242 4242 4242.</p>
                 </div>
 
                 <div className={`flex-1 rounded-xl p-4 border transition-all ${
@@ -2225,7 +2225,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                     <Zap className="w-4 h-4 text-emerald-400" />
                     <span className="font-bold text-bright-snow text-sm">Live</span>
                   </div>
-                  <p className="text-xs text-gray-400">Real charges to customer cards.</p>
+                  <p className="text-xs text-bright-snow/60">Real charges to customer cards.</p>
                 </div>
               </div>
 

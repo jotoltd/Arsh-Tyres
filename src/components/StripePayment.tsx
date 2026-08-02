@@ -47,7 +47,7 @@ export default function StripePaymentForm({ amount, onSuccess, onError }: Stripe
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-2">
         <Lock className="w-4 h-4 text-emerald-400" />
-        <span className="text-xs text-gray-400">Secure payment powered by Stripe</span>
+        <span className="text-xs text-bright-snow/60">Secure payment powered by Stripe</span>
       </div>
 
       <div className="rounded-xl p-4 bg-[#1e2121] border border-white/5">
@@ -84,7 +84,7 @@ export default function StripePaymentForm({ amount, onSuccess, onError }: Stripe
         )}
       </button>
 
-      <p className="text-[11px] text-gray-500 text-center">
+      <p className="text-[11px] text-bright-snow/40 text-center">
         By confirming, you authorise Arsh Autos to charge your card for this amount.
       </p>
     </div>

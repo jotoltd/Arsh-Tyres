@@ -125,16 +125,16 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
                 </div>
               </div>
               <h2 className="font-display font-black text-bright-snow text-2xl">Welcome Back</h2>
-              <p className="text-gray-400 text-sm mt-1">
+              <p className="text-bright-snow/60 text-sm mt-1">
                 Sign in to view your orders and bookings
               </p>
             </div>
 
             <form onSubmit={handleAuth} className="p-8 space-y-5">
               <div>
-                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1.5">Email</label>
+                <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1.5">Email</label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-bright-snow/40" />
                   <input
                     type="email"
                     required
@@ -146,7 +146,7 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
                 </div>
               </div>
               <div>
-                <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1.5">Password</label>
+                <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1.5">Password</label>
                 <div className="relative">
                   <input
                     type="password"
@@ -175,7 +175,7 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
                 Sign In
               </button>
 
-              <div className="text-center text-xs text-gray-400 pt-2 border-t border-white/5">
+              <div className="text-center text-xs text-bright-snow/60 pt-2 border-t border-white/5">
                 No account yet? An account is created automatically when you place your first order. We'll email you your login details.
               </div>
 
@@ -201,9 +201,9 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
                   </div>
                 ) : (
                   <form onSubmit={handleForgotPassword} className="space-y-4">
-                    <p className="text-xs text-gray-400">Enter your email and we'll send you a link to reset your password.</p>
+                    <p className="text-xs text-bright-snow/60">Enter your email and we'll send you a link to reset your password.</p>
                     <div>
-                      <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1.5">Email</label>
+                      <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1.5">Email</label>
                       <input
                         type="email"
                         required
@@ -245,7 +245,7 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
           </div>
           <div>
             <h2 className="font-display font-black text-bright-snow text-2xl">My Account</h2>
-            <p className="text-xs text-gray-400">{user.email}</p>
+            <p className="text-xs text-bright-snow/60">{user.email}</p>
           </div>
         </div>
         <button
@@ -289,9 +289,9 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
             ) : (
               <form onSubmit={handleChangePassword} className="space-y-4">
                 <div>
-                  <label className="block text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1.5">New Password</label>
+                  <label className="block text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider mb-1.5">New Password</label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-bright-snow/40" />
                     <input
                       type="password"
                       required
@@ -328,28 +328,28 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
         <div className="bg-gradient-to-br from-blue-500/5 to-black rounded-xl p-4 border border-blue-500/10">
           <div className="flex items-center gap-2 mb-1">
             <Calendar className="w-4 h-4 text-blue-400" />
-            <span className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Scheduled</span>
+            <span className="text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider">Scheduled</span>
           </div>
           <p className="text-2xl font-extrabold text-bright-snow">{stats.scheduled}</p>
         </div>
         <div className="bg-gradient-to-br from-emerald-500/5 to-black rounded-xl p-4 border border-emerald-500/10">
           <div className="flex items-center gap-2 mb-1">
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-            <span className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Completed</span>
+            <span className="text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider">Completed</span>
           </div>
           <p className="text-2xl font-extrabold text-bright-snow">{stats.completed}</p>
         </div>
         <div className="bg-gradient-to-br from-racing-red/5 to-black rounded-xl p-4 border border-racing-red/10">
           <div className="flex items-center gap-2 mb-1">
             <Package className="w-4 h-4 text-racing-red" />
-            <span className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Tyres Bought</span>
+            <span className="text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider">Tyres Bought</span>
           </div>
           <p className="text-2xl font-extrabold text-bright-snow">{stats.tyresBought}</p>
         </div>
         <div className="bg-gradient-to-br from-emerald-500/5 to-black rounded-xl p-4 border border-emerald-500/10">
           <div className="flex items-center gap-2 mb-1">
             <TrendingUp className="w-4 h-4 text-emerald-400" />
-            <span className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Total Spent</span>
+            <span className="text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider">Total Spent</span>
           </div>
           <p className="text-2xl font-extrabold text-bright-snow">£{stats.totalSpent.toFixed(2)}</p>
         </div>
@@ -367,9 +367,9 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
         {myBookings.length === 0 ? (
           <div className="p-8 text-center">
             <div className="bg-[#1e2121] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
-              <ShoppingBag className="w-8 h-8 text-gray-500" />
+              <ShoppingBag className="w-8 h-8 text-bright-snow/40" />
             </div>
-            <p className="text-gray-400 text-sm">No orders yet. When you place an order with this email, it'll appear here.</p>
+            <p className="text-bright-snow/60 text-sm">No orders yet. When you place an order with this email, it'll appear here.</p>
           </div>
         ) : (
           <div className="divide-y divide-white/5">
@@ -392,14 +392,14 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
                         <p className="font-bold text-bright-snow text-sm truncate">
                           {totalTyres} {totalTyres === 1 ? 'tyre' : 'tyres'} · £{booking.totalPrice.toFixed(2)}
                         </p>
-                        <p className="text-xs text-gray-400 truncate">
+                        <p className="text-xs text-bright-snow/60 truncate">
                           {formatDate(booking.date)} · {booking.timeSlot}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       {getStatusBadge(booking.status)}
-                      {isExpanded ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
+                      {isExpanded ? <ChevronUp className="w-4 h-4 text-bright-snow/60" /> : <ChevronDown className="w-4 h-4 text-bright-snow/60" />}
                     </div>
                   </button>
 
@@ -407,12 +407,12 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
                     <div className="mt-4 space-y-4 animate-fade-in-up">
                       {/* Items */}
                       <div className="bg-[#1e2121] rounded-lg p-4 space-y-3">
-                        <p className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Items</p>
+                        <p className="text-[10px] uppercase text-bright-snow/60 font-bold tracking-wider">Items</p>
                         {booking.cartItems.map((item, idx) => (
                           <div key={idx} className="flex items-center justify-between text-sm">
                             <div className="min-w-0">
                               <p className="font-semibold text-bright-snow truncate">{item.tyre.model}</p>
-                              <p className="text-xs text-gray-400">{item.tyre.width}/{item.tyre.profile} R{item.tyre.rim} · Qty: {item.quantity}</p>
+                              <p className="text-xs text-bright-snow/60">{item.tyre.width}/{item.tyre.profile} R{item.tyre.rim} · Qty: {item.quantity}</p>
                             </div>
                             <p className="font-bold text-bright-snow shrink-0 ml-2">£{(getUnitPrice(item.tyre, item.quantity) * item.quantity).toFixed(2)}</p>
                           </div>
@@ -421,19 +421,19 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
 
                       {/* Details */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                        <div className="flex items-center gap-2 text-gray-400">
+                        <div className="flex items-center gap-2 text-bright-snow/60">
                           <Car className="w-4 h-4 text-racing-red shrink-0" />
                           <span><span className="font-mono bg-yellow-400 text-black font-black px-1.5 py-0.5 rounded tracking-wider text-[11px]">{booking.vehicleRegistration}</span> — {booking.vehicleMakeModel}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-gray-400">
+                        <div className="flex items-center gap-2 text-bright-snow/60">
                           <Clock className="w-4 h-4 text-racing-red shrink-0" />
                           <span>{booking.timeSlot}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-gray-400">
+                        <div className="flex items-center gap-2 text-bright-snow/60">
                           <Phone className="w-4 h-4 text-racing-red shrink-0" />
                           <span>{booking.customerPhone}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-gray-400">
+                        <div className="flex items-center gap-2 text-bright-snow/60">
                           <MapPin className="w-4 h-4 text-racing-red shrink-0" />
                           <span className="capitalize">{booking.fittingType}</span>
                         </div>
@@ -441,11 +441,11 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
 
                       {/* Price breakdown */}
                       <div className="bg-[#1e2121] rounded-lg p-4 space-y-2 text-xs">
-                        <div className="flex justify-between text-gray-400">
+                        <div className="flex justify-between text-bright-snow/60">
                           <span>Subtotal</span>
                           <span>£{booking.subtotal.toFixed(2)}</span>
                         </div>
-                        <div className="flex justify-between text-gray-400">
+                        <div className="flex justify-between text-bright-snow/60">
                           <span>Fitting Fee</span>
                           <span>£{booking.fittingFee.toFixed(2)}</span>
                         </div>

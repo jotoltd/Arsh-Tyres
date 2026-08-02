@@ -51,7 +51,7 @@ export default function SearchResults() {
           <div className="w-full px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
             <button
               onClick={() => navigate('/')}
-              className="flex items-center gap-2 text-gray-400 hover:text-bright-snow transition"
+              className="flex items-center gap-2 text-bright-snow/60 hover:text-bright-snow transition"
             >
               <ArrowLeft className="w-5 h-5" />
               <span className="font-bold">Back to Search</span>
@@ -68,7 +68,7 @@ export default function SearchResults() {
                   <Disc className="w-5 h-5 text-racing-red" />
                   Searching...
                 </h2>
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-xs text-bright-snow/60 mt-1">
                   Finding premium tyres matching your specification.
                 </p>
               </div>
@@ -87,7 +87,7 @@ export default function SearchResults() {
         <div className="w-full px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <button
             onClick={() => navigate('/')}
-            className="flex items-center gap-2 text-gray-400 hover:text-bright-snow transition"
+            className="flex items-center gap-2 text-bright-snow/60 hover:text-bright-snow transition"
           >
             <ArrowLeft className="w-5 h-5" />
             <span className="font-bold">Back to Search</span>
@@ -107,7 +107,7 @@ export default function SearchResults() {
                 <Disc className="w-5 h-5 text-racing-red" />
                 Search Results
               </h2>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-bright-snow/60 mt-1">
                 Found {filteredTyres.length} premium tyres matching your specification.
               </p>
             </div>
@@ -125,7 +125,7 @@ export default function SearchResults() {
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold transition uppercase ${
                     filters.category === cat
                       ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
-                      : 'text-gray-400 hover:text-bright-snow'
+                      : 'text-bright-snow/60 hover:text-bright-snow'
                   }`}
                 >
                   {cat}
@@ -149,7 +149,7 @@ export default function SearchResults() {
             <div className="bg-black border border-white/5 rounded-2xl p-8 text-center shadow-md w-full">
               <span className="text-3xl block mb-2 text-racing-red">ℹ</span>
               <h4 className="font-display font-bold text-bright-snow mb-1">No Matches Found</h4>
-              <p className="text-xs text-gray-400 mb-4">
+              <p className="text-xs text-bright-snow/60 mb-4">
                 The requested combination doesn't have local warehouse stock right now.
               </p>
               <button
