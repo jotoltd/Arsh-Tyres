@@ -1306,6 +1306,17 @@ export default function App() {
           <p className="text-[10px] text-bright-snow/40">
             © 2026 Arsh Autos Auto Tyre Shop. All rights reserved.
           </p>
+          <p className="text-[10px] text-bright-snow/40">
+            Website Created by{' '}
+            <a
+              href="https://sitesthatslap.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-bright-snow/60 hover:text-racing-red transition font-bold"
+            >
+              Sites That Slap
+            </a>
+          </p>
         </div>
       </footer>
       )}
