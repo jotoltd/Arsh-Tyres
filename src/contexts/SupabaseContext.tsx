@@ -186,8 +186,26 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
         setTyresLoading(false);
       });
 
+    // Real-time subscription — refetch when any tyre changes
+    const channel = supabase
+      .channel('tyres-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tyres' }, () => {
+        if (!mounted) return;
+        supabase
+          .from('tyres')
+          .select('*')
+          .then(({ data, error }) => {
+            if (!mounted) return;
+            if (!error && data && data.length > 0) {
+              setTyres(data.map(parseTyre));
+            }
+          });
+      })
+      .subscribe();
+
     return () => {
       mounted = false;
+      supabase.removeChannel(channel);
     };
   }, [configured]);
 
@@ -333,9 +351,13 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
       .from('cart_items')
       .select('items')
       .eq('user_id', user.id)
-      .single()
+      .maybeSingle()
       .then(({ data, error }) => {
         if (!mounted) return;
+        if (error) {
+          console.error('Cart load error:', error.message);
+          return;
+        }
         if (data && Array.isArray(data.items)) {
           const parsed = data.items.map((entry: any) => ({
             tyre: parseTyre(entry.tyre),
@@ -363,11 +385,15 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
       quantity: item.quantity,
     }));
 
-    const { data: existing } = await supabase
+    const { data: existing, error: selectError } = await supabase
       .from('cart_items')
       .select('id')
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
+
+    if (selectError) {
+      console.error('Cart select error:', selectError.message);
+    }
 
     if (existing) {
       await supabase
@@ -399,8 +425,25 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
         if (data) setBookingsState(data.map(dbBookingToBooking));
       });
 
+    // Real-time subscription — refetch when any booking changes
+    const channel = supabase
+      .channel('bookings-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => {
+        if (!mounted) return;
+        supabase
+          .from('bookings')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .then(({ data, error }) => {
+            if (!mounted) return;
+            if (!error && data) setBookingsState(data.map(dbBookingToBooking));
+          });
+      })
+      .subscribe();
+
     return () => {
       mounted = false;
+      supabase.removeChannel(channel);
     };
   }, [configured]);
 

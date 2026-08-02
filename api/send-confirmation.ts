@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { standardLimit } from './_lib/rateLimit';
 
 interface BookingEmailData {
   customerName: string;
@@ -111,6 +112,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.status(405).json({ error: 'Method not allowed' });
     return;
   }
+
+  if (!standardLimit(req, res)) return;
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {

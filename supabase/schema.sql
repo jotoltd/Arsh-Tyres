@@ -12,15 +12,16 @@ CREATE TABLE IF NOT EXISTS public.tyres (
   width INT NOT NULL,
   profile INT NOT NULL,
   rim INT NOT NULL,
-  speed_rating TEXT NOT NULL,
-  load_index INT NOT NULL,
+  speed_rating TEXT,
+  load_index INT,
   price NUMERIC(10,2) NOT NULL,
-  category TEXT NOT NULL CHECK (category IN ('Summer', 'Winter', 'All-Season')),
+  price_x4 NUMERIC(10,2),
+  category TEXT NOT NULL CHECK (category IN ('Standard', 'Runflat', 'Commercial')),
   is_runflat BOOLEAN NOT NULL DEFAULT FALSE,
   is_reinforced BOOLEAN NOT NULL DEFAULT FALSE,
-  fuel_efficiency TEXT NOT NULL CHECK (fuel_efficiency IN ('A', 'B', 'C', 'D', 'E')),
-  wet_grip TEXT NOT NULL CHECK (wet_grip IN ('A', 'B', 'C', 'D', 'E')),
-  noise_level INT NOT NULL,
+  fuel_efficiency TEXT CHECK (fuel_efficiency IN ('A', 'B', 'C', 'D', 'E')),
+  wet_grip TEXT CHECK (wet_grip IN ('A', 'B', 'C', 'D', 'E')),
+  noise_level INT,
   stock INT NOT NULL DEFAULT 0,
   rating NUMERIC(2,1) NOT NULL DEFAULT 0,
   reviews_count INT NOT NULL DEFAULT 0,
@@ -119,12 +120,21 @@ CREATE POLICY "Anyone can update bookings" ON public.bookings FOR UPDATE USING (
 DROP POLICY IF EXISTS "Anyone can delete bookings" ON public.bookings;
 CREATE POLICY "Anyone can delete bookings" ON public.bookings FOR DELETE USING (true);
 
--- Cart: private to owning user
+-- Cart: private to owning user (explicit per-operation policies)
 ALTER TABLE public.cart_items ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can manage own cart" ON public.cart_items;
-CREATE POLICY "Users can manage own cart" ON public.cart_items
-  USING (auth.uid() = user_id)
-  WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can read own cart" ON public.cart_items;
+CREATE POLICY "Users can read own cart" ON public.cart_items
+  FOR SELECT USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can insert own cart" ON public.cart_items;
+CREATE POLICY "Users can insert own cart" ON public.cart_items
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can update own cart" ON public.cart_items;
+CREATE POLICY "Users can update own cart" ON public.cart_items
+  FOR UPDATE USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can delete own cart" ON public.cart_items;
+CREATE POLICY "Users can delete own cart" ON public.cart_items
+  FOR DELETE USING (auth.uid() = user_id);
 
 -- Settings: public read and write (admin config is client-side gated)
 ALTER TABLE public.settings ENABLE ROW LEVEL SECURITY;

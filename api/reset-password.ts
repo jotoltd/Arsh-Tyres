@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { strictLimit } from './_lib/rateLimit';
 
 function buildResetHtml(resetLink: string): string {
   return `<!DOCTYPE html>
@@ -45,6 +46,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.status(405).json({ error: 'Method not allowed' });
     return;
   }
+
+  if (!strictLimit(req, res)) return;
 
   const supabaseUrl = process.env.VITE_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
