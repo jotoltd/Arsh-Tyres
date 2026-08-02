@@ -3,13 +3,13 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Tyre, SearchFilters } from '../types';
 import { useSupabase } from '../contexts/SupabaseContext';
 import TyreCard from '../components/TyreCard';
-import { Disc, ArrowLeft } from 'lucide-react';
+import { Disc, ArrowLeft, Search, Calendar, ShoppingBag, ShieldCheck, User } from 'lucide-react';
 import { SkeletonGrid } from '../components/Skeleton';
 
 export default function SearchResults() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { tyres, tyresLoading, tyresError } = useSupabase();
+  const { tyres, tyresLoading, tyresError, cartItems, bookings } = useSupabase();
   const filters = location.state?.filters as SearchFilters || {
     width: '',
     profile: '',
@@ -44,6 +44,61 @@ export default function SearchResults() {
     navigate('/', { state: { addToCart: { tyre, quantity } } });
   };
 
+  const totalCartTyres = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  const scheduledCount = bookings.filter(b => b.status === 'Scheduled').length;
+
+  const MobileNav = () => (
+    <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-black/95 backdrop-blur-lg border-t border-white/10 pb-safe">
+      <div className="flex items-center justify-around h-16">
+        <button
+          onClick={() => navigate('/')}
+          className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition text-racing-red"
+        >
+          <Search className="w-5 h-5" />
+          <span className="text-[10px] font-bold">Tyres</span>
+        </button>
+        <button
+          onClick={() => navigate('/')}
+          className={`relative flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition text-bright-snow/40`}
+        >
+          <Calendar className="w-5 h-5" />
+          <span className="text-[10px] font-bold">Bookings</span>
+          {scheduledCount > 0 && (
+            <span className="absolute top-1.5 right-[calc(50%-24px)] bg-racing-red text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+              {scheduledCount}
+            </span>
+          )}
+        </button>
+        <button
+          onClick={() => navigate('/')}
+          className={`relative flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition text-bright-snow/40`}
+        >
+          <ShoppingBag className="w-5 h-5" />
+          <span className="text-[10px] font-bold">Order</span>
+          {cartItems.length > 0 && (
+            <span className="absolute top-1.5 right-[calc(50%-24px)] bg-racing-red text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+              {totalCartTyres}
+            </span>
+          )}
+        </button>
+        <button
+          onClick={() => navigate('/')}
+          className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition text-bright-snow/40"
+        >
+          <ShieldCheck className="w-5 h-5" />
+          <span className="text-[10px] font-bold">Admin</span>
+        </button>
+        <button
+          onClick={() => navigate('/')}
+          className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition text-bright-snow/40"
+        >
+          <User className="w-5 h-5" />
+          <span className="text-[10px] font-bold">Account</span>
+        </button>
+      </div>
+    </nav>
+  );
+
   if (isLoading || tyresLoading) {
     return (
       <div className="min-h-screen bg-black text-bright-snow font-sans antialiased pb-16">
@@ -76,6 +131,7 @@ export default function SearchResults() {
             <SkeletonGrid count={6} />
           </div>
         </main>
+        <MobileNav />
       </div>
     );
   }
@@ -162,6 +218,7 @@ export default function SearchResults() {
           )}
         </div>
       </main>
+      <MobileNav />
     </div>
   );
 }

@@ -10,6 +10,7 @@ import BookingsList from './components/BookingsList';
 import AdminPanel from './components/AdminPanel';
 import CustomerAccount from './components/CustomerAccount';
 import SearchResults from './pages/SearchResults';
+import NotFound from './pages/NotFound';
 import {
   Wrench,
   Truck,
@@ -31,7 +32,8 @@ import {
   Award,
   Search,
   User,
-  LogOut
+  LogOut,
+  Menu
 } from 'lucide-react';
 
 export default function App() {
@@ -53,6 +55,7 @@ export default function App() {
   const [searchTriggered, setSearchTriggered] = useState(false);
   const [sortBy, setSortBy] = useState<'price-low' | 'price-high' | 'size'>('price-low');
   const [lastConfirmedBooking, setLastConfirmedBooking] = useState<Booking | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -402,6 +405,16 @@ export default function App() {
           </nav>
           )}
 
+          {/* Mobile hamburger button */}
+          {(!maintenanceMode || activeTab === 'admin') && (
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="sm:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-white/5 border border-white/10 text-bright-snow transition"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+          )}
+
           {/* Auth + Order */}
           <div className="flex items-center gap-4">
             {user ? (
@@ -439,6 +452,88 @@ export default function App() {
           </div>
         </div>
       </header>
+
+      {/* Mobile slide-down menu */}
+      {mobileMenuOpen && (!maintenanceMode || activeTab === 'admin') && (
+        <div className="sm:hidden fixed top-[120px] left-0 right-0 z-30 bg-black/98 backdrop-blur-lg border-b border-white/10 shadow-2xl">
+          <nav className="flex flex-col p-4 gap-2">
+            <button
+              onClick={() => { navigate('/'); setActiveTab('shop'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition ${
+                activeTab === 'shop' && location.pathname === '/'
+                  ? 'bg-racing-red text-bright-snow'
+                  : 'text-bright-snow/60 hover:bg-white/5 hover:text-bright-snow'
+              }`}
+            >
+              <Search className="w-5 h-5" />
+              Find & Buy Tyres
+            </button>
+            <button
+              onClick={() => { navigate('/'); setActiveTab('bookings'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition ${
+                activeTab === 'bookings' && location.pathname === '/'
+                  ? 'bg-racing-red text-bright-snow'
+                  : 'text-bright-snow/60 hover:bg-white/5 hover:text-bright-snow'
+              }`}
+            >
+              <Calendar className="w-5 h-5" />
+              My Bookings
+              {bookings.filter(b => b.status === 'Scheduled').length > 0 && (
+                <span className="bg-racing-red text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-auto">
+                  {bookings.filter(b => b.status === 'Scheduled').length}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => { navigate('/'); setActiveTab('cart'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition ${
+                activeTab === 'cart' && location.pathname === '/'
+                  ? 'bg-racing-red text-bright-snow'
+                  : 'text-bright-snow/60 hover:bg-white/5 hover:text-bright-snow'
+              }`}
+            >
+              <ShoppingBag className="w-5 h-5" />
+              My Order
+              {cartItems.length > 0 && (
+                <span className="bg-racing-red text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-auto">
+                  {totalCartTyres}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => { navigate('/'); setActiveTab('account'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition ${
+                activeTab === 'account' && location.pathname === '/'
+                  ? 'bg-racing-red text-bright-snow'
+                  : 'text-bright-snow/60 hover:bg-white/5 hover:text-bright-snow'
+              }`}
+            >
+              <User className="w-5 h-5" />
+              {user ? 'My Account' : 'Sign In'}
+            </button>
+            <button
+              onClick={() => { navigate('/'); setActiveTab('admin'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition ${
+                activeTab === 'admin' && location.pathname === '/'
+                  ? 'bg-racing-red text-bright-snow'
+                  : 'text-bright-snow/60 hover:bg-white/5 hover:text-bright-snow'
+              }`}
+            >
+              <ShieldCheck className="w-5 h-5" />
+              Admin
+            </button>
+            {user && (
+              <button
+                onClick={() => { signOut(); setMobileMenuOpen(false); }}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-bright-snow/60 hover:bg-white/5 hover:text-bright-snow transition"
+              >
+                <LogOut className="w-5 h-5" />
+                Sign Out
+              </button>
+            )}
+          </nav>
+        </div>
+      )}
 
       {/* Supabase fallback notice */}
       {tyresError && (
@@ -509,6 +604,7 @@ export default function App() {
         ) : (
         <Routes>
           <Route path="/search-results" element={<SearchResults />} />
+          <Route path="*" element={<NotFound />} />
           <Route path="/" element={
             <>
               {/* SUCCESS CONFIRMATION RECEIPT SCREEN */}
