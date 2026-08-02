@@ -117,6 +117,8 @@ function dbBookingToBooking(row: any): Booking {
 }
 
 const CART_KEY = 'arsh_autos_cart';
+const CART_VERSION_KEY = 'arsh_autos_cart_version';
+const CART_VERSION = '2'; // bump to force-clear stale carts
 
 export function SupabaseProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
@@ -304,11 +306,17 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
       });
   }, [configured]);
 
-  // Load cart from localStorage on mount
+  // Load cart from localStorage on mount (clear if version mismatch)
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(CART_KEY);
-      if (saved) setCartItemsState(JSON.parse(saved));
+      const version = localStorage.getItem(CART_VERSION_KEY);
+      if (version !== CART_VERSION) {
+        localStorage.removeItem(CART_KEY);
+        localStorage.setItem(CART_VERSION_KEY, CART_VERSION);
+      } else {
+        const saved = localStorage.getItem(CART_KEY);
+        if (saved) setCartItemsState(JSON.parse(saved));
+      }
     } catch (e) {
       console.error(e);
     }
