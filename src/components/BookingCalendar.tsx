@@ -152,7 +152,7 @@ export default function BookingCalendar({
       {/* Time Slot Selector */}
       <div className="mt-5">
         <label className="block text-xs font-bold uppercase tracking-wider text-bright-snow/60 mb-3">2. Select Time Slot</label>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {TIME_SLOTS.map((slot) => {
             const isSelected = selectedTimeSlot === slot;
             const isBooked = selectedDate && bookedSlots[selectedDate]?.includes(slot);
@@ -177,7 +177,6 @@ export default function BookingCalendar({
             );
           })}
         </div>
-        <p className="text-[11px] text-bright-snow/40 mt-2">Morning: 8:30am–1pm · Afternoon: 1pm–6pm</p>
       </div>
 
       {/* Included Services Badge */}
