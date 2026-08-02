@@ -218,6 +218,25 @@ export default function App() {
 
   const handleUpdateBookingStatus = async (bookingId: string, status: Booking['status']) => {
     await updateBookingStatus(bookingId, status);
+
+    if (status === 'Completed' || status === 'Cancelled') {
+      const booking = bookings.find(b => b.id === bookingId);
+      if (booking?.customerEmail) {
+        fetch('/api/send-booking-update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customerName: booking.customerName,
+            customerEmail: booking.customerEmail,
+            vehicleRegistration: booking.vehicleRegistration,
+            vehicleMakeModel: booking.vehicleMakeModel,
+            date: booking.date,
+            timeSlot: booking.timeSlot,
+            status,
+          }),
+        }).catch(err => console.error('Failed to send booking update email:', err));
+      }
+    }
   };
 
   // Search logic and filtering
