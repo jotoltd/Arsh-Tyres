@@ -330,9 +330,7 @@ export default function App() {
 
           {/* Logo */}
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => { navigate('/'); setActiveTab('shop'); setLastConfirmedBooking(null); }}>
-            <div className="bg-racing-red text-bright-snow p-2 rounded-xl flex items-center justify-center shadow-md overflow-hidden racing-glow-sm">
-              <img src="/assets/logo.jpg" alt="Arsh Autos Logo" className="w-28 h-28 object-contain" />
-            </div>
+            <img src="/assets/logo.jpg" alt="Arsh Autos Logo" className="w-36 h-36 object-contain" />
           </div>
 
           {/* Nav Tabs — desktop only (hidden in maintenance mode) */}
