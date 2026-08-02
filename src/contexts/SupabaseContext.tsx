@@ -46,6 +46,8 @@ interface SupabaseContextType {
   addBooking: (draft: Omit<Booking, 'id' | 'createdAt' | 'status'>) => Promise<Booking | null>;
   cancelBooking: (id: string) => Promise<void>;
   updateBookingStatus: (id: string, status: Booking['status']) => Promise<void>;
+  deleteBooking: (id: string) => Promise<void>;
+  updateBookingDetails: (id: string, updates: Partial<Pick<Booking, 'date' | 'timeSlot' | 'customerName' | 'customerEmail' | 'customerPhone' | 'vehicleRegistration' | 'vehicleMakeModel' | 'fittingType'>>) => Promise<void>;
   signIn: (email: string, password: string) => Promise<{ error?: Error }>;
   signUp: (email: string, password: string) => Promise<{ error?: Error }>;
   signOut: () => Promise<void>;
@@ -477,6 +479,40 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
     [bookings, configured]
   );
 
+  const deleteBooking = useCallback(
+    async (id: string) => {
+      const updated = bookings.filter((b) => b.id !== id);
+      setBookingsState(updated);
+
+      if (configured) {
+        await supabase.from('bookings').delete().eq('id', id);
+      }
+    },
+    [bookings, configured]
+  );
+
+  const updateBookingDetails = useCallback(
+    async (id: string, updates: Partial<Pick<Booking, 'date' | 'timeSlot' | 'customerName' | 'customerEmail' | 'customerPhone' | 'vehicleRegistration' | 'vehicleMakeModel' | 'fittingType'>>) => {
+      const updated = bookings.map((b) => (b.id === id ? { ...b, ...updates } : b));
+      setBookingsState(updated);
+
+      if (configured) {
+        const dbUpdates: Record<string, any> = {};
+        if (updates.date !== undefined) dbUpdates.booking_date = updates.date;
+        if (updates.timeSlot !== undefined) dbUpdates.booking_time = updates.timeSlot;
+        if (updates.customerName !== undefined) dbUpdates.customer_name = updates.customerName;
+        if (updates.customerEmail !== undefined) dbUpdates.customer_email = updates.customerEmail;
+        if (updates.customerPhone !== undefined) dbUpdates.customer_phone = updates.customerPhone;
+        if (updates.vehicleRegistration !== undefined) dbUpdates.vehicle_registration = updates.vehicleRegistration;
+        if (updates.vehicleMakeModel !== undefined) dbUpdates.vehicle_make_model = updates.vehicleMakeModel;
+        if (updates.fittingType !== undefined) dbUpdates.fitting_type = updates.fittingType;
+
+        await supabase.from('bookings').update(dbUpdates).eq('id', id);
+      }
+    },
+    [bookings, configured]
+  );
+
   const signIn = useCallback(async (email: string, password: string) => {
     if (!configured) return { error: new Error('Supabase is not configured') };
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -524,6 +560,8 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
         addBooking,
         cancelBooking,
         updateBookingStatus,
+        deleteBooking,
+        updateBookingDetails,
         signIn,
         signUp,
         signOut,

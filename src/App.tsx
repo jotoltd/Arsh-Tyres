@@ -88,6 +88,8 @@ export default function App() {
     addBooking,
     cancelBooking,
     updateBookingStatus,
+    deleteBooking,
+    updateBookingDetails,
     user,
     signIn,
     signOut,
@@ -777,7 +779,12 @@ export default function App() {
 
               {/* ADMIN TAB */}
               {activeTab === 'admin' && (
-                <AdminPanel bookings={bookings} onUpdateBooking={handleUpdateBookingStatus} />
+                <AdminPanel
+                  bookings={bookings}
+                  onUpdateBooking={handleUpdateBookingStatus}
+                  onDeleteBooking={async (id) => { await deleteBooking(id); }}
+                  onUpdateBookingDetails={async (id, updates) => { await updateBookingDetails(id, updates); }}
+                />
               )}
 
               {/* ACCOUNT TAB */}

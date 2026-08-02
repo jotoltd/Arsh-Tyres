@@ -11,6 +11,8 @@ import { useSupabase, ALL_TYRE_DISPLAY_FIELDS, DEFAULT_TYRE_DISPLAY_FIELDS, type
 interface AdminPanelProps {
   bookings: Booking[];
   onUpdateBooking: (id: string, status: Booking['status']) => void;
+  onDeleteBooking: (id: string) => Promise<void>;
+  onUpdateBookingDetails: (id: string, updates: Partial<Pick<Booking, 'date' | 'timeSlot' | 'customerName' | 'customerEmail' | 'customerPhone' | 'vehicleRegistration' | 'vehicleMakeModel' | 'fittingType'>>) => Promise<void>;
 }
 
 interface PromoCode {
@@ -28,7 +30,7 @@ interface Staff {
   phone: string;
 }
 
-export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProps) {
+export default function AdminPanel({ bookings, onUpdateBooking, onDeleteBooking, onUpdateBookingDetails }: AdminPanelProps) {
   const { stockManagementEnabled, setStockManagementEnabled: setStockManagementSupabase, maintenanceMode, setMaintenanceMode, tyreDisplayFields, setTyreDisplayFields } = useSupabase();
   const [authed, setAuthed] = useState(isAdminAuthed());
   const [currentAdminUser, setCurrentAdminUser] = useState(getCurrentAdminUser());
@@ -72,6 +74,11 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
   const [imageUploading, setImageUploading] = useState(false);
   const [expandedCustomerId, setExpandedCustomerId] = useState<string | null>(null);
   const [contactMessages, setContactMessages] = useState<any[]>([]);
+  const [editingBookingId, setEditingBookingId] = useState<string | null>(null);
+  const [editBookingData, setEditBookingData] = useState<Partial<Booking>>({});
+  const [deleteBookingId, setDeleteBookingId] = useState<string | null>(null);
+  const [bookingSearch, setBookingSearch] = useState('');
+  const [bookingStatusFilter, setBookingStatusFilter] = useState<string>('All');
   const configured = isSupabaseConfigured();
 
   const handleImageUpload = async (file: File, onDone: (url: string) => void) => {
@@ -1584,15 +1591,37 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
       {/* Bookings Section */}
       {activeSection === 'bookings' && (
         <div className="carbon-fiber rounded-2xl border border-white/5 shadow-xl overflow-hidden">
-          <div className="p-6 border-b border-white/5 flex items-center justify-between">
+          <div className="p-6 border-b border-white/5 flex items-center justify-between flex-wrap gap-3">
             <h3 className="font-display font-bold text-bright-snow text-lg">Bookings Management</h3>
-            <button 
-              onClick={() => handleExportCSV('bookings')}
-              className="inline-flex items-center gap-2 bg-[#1e2121] hover:bg-[#252828] text-bright-snow font-semibold text-sm px-4 py-2 rounded-lg transition shadow-md border border-white/10"
-            >
-              <Download className="w-4 h-4" />
-              Export CSV
-            </button>
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-bright-snow/40" />
+                <input
+                  type="text"
+                  value={bookingSearch}
+                  onChange={(e) => setBookingSearch(e.target.value)}
+                  placeholder="Search name, reg, email..."
+                  className="bg-[#1e2121] border border-white/10 text-bright-snow rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:border-racing-red w-48"
+                />
+              </div>
+              <select
+                value={bookingStatusFilter}
+                onChange={(e) => setBookingStatusFilter(e.target.value)}
+                className="bg-[#1e2121] border border-white/10 text-bright-snow rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-racing-red"
+              >
+                <option value="All">All Status</option>
+                <option value="Scheduled">Scheduled</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+              <button
+                onClick={() => handleExportCSV('bookings')}
+                className="inline-flex items-center gap-2 bg-[#1e2121] hover:bg-[#252828] text-bright-snow font-semibold text-sm px-4 py-2 rounded-lg transition shadow-md border border-white/10"
+              >
+                <Download className="w-4 h-4" />
+                Export
+              </button>
+            </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -1615,23 +1644,54 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                     </td>
                   </tr>
                 ) : (
-                  bookings.map((booking) => (
+                  (() => {
+                    const filtered = bookings.filter(b => {
+                      const matchesSearch = !bookingSearch ||
+                        b.customerName.toLowerCase().includes(bookingSearch.toLowerCase()) ||
+                        b.vehicleRegistration.toLowerCase().includes(bookingSearch.toLowerCase()) ||
+                        b.customerEmail.toLowerCase().includes(bookingSearch.toLowerCase());
+                      const matchesStatus = bookingStatusFilter === 'All' || b.status === bookingStatusFilter;
+                      return matchesSearch && matchesStatus;
+                    });
+                    if (filtered.length === 0) {
+                      return (
+                        <tr>
+                          <td colSpan={7} className="px-6 py-12 text-center text-bright-snow/60">
+                            No bookings match your search
+                          </td>
+                        </tr>
+                      );
+                    }
+                    return filtered.map((booking) => (
                     <tr key={booking.id} className="hover:bg-white/5 transition">
-                      <td className="px-6 py-4 text-sm font-medium text-bright-snow">{booking.customerName}</td>
-                      <td className="px-6 py-4 text-sm"><span className="font-mono bg-yellow-400 text-black font-black px-1.5 py-0.5 rounded tracking-wider text-[11px]">{booking.vehicleRegistration}</span></td>
-                      <td className="px-6 py-4 text-sm text-bright-snow/60">{booking.date}</td>
-                      <td className="px-6 py-4 text-sm text-bright-snow/60">{booking.fittingType}</td>
+                      <td className="px-6 py-4 text-sm font-medium text-bright-snow">
+                        {booking.customerName}
+                        <div className="text-[10px] text-bright-snow/40 font-normal">{booking.customerEmail}</div>
+                        <div className="text-[10px] text-bright-snow/40 font-normal">{booking.customerPhone}</div>
+                      </td>
+                      <td className="px-6 py-4 text-sm">
+                        <span className="font-mono bg-yellow-400 text-black font-black px-1.5 py-0.5 rounded tracking-wider text-[11px]">{booking.vehicleRegistration}</span>
+                        <div className="text-[10px] text-bright-snow/40 mt-1">{booking.vehicleMakeModel}</div>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-bright-snow/60">
+                        {booking.date || '—'}
+                        {booking.timeSlot && <div className="text-[10px] text-bright-snow/40">{booking.timeSlot}</div>}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-bright-snow/60 capitalize">{booking.fittingType}</td>
                       <td className="px-6 py-4">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
-                          booking.status === 'Completed' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                          booking.status === 'Cancelled' ? 'bg-racing-red/10 text-racing-red border border-racing-red/20' :
-                          'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
-                        }`}>
-                          {booking.status === 'Completed' && <CheckCircle className="w-3 h-3" />}
-                          {booking.status === 'Cancelled' && <XCircle className="w-3 h-3" />}
-                          {booking.status === 'Scheduled' && <Clock className="w-3 h-3" />}
-                          {booking.status}
-                        </span>
+                        <select
+                          value={booking.status}
+                          onChange={(e) => onUpdateBooking(booking.id, e.target.value as Booking['status'])}
+                          className={`text-xs font-semibold rounded-full px-2.5 py-1 border-0 cursor-pointer focus:outline-none ${
+                            booking.status === 'Completed' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                            booking.status === 'Cancelled' ? 'bg-racing-red/10 text-racing-red border border-racing-red/20' :
+                            'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
+                          }`}
+                        >
+                          <option value="Scheduled" className="bg-[#1e2121] text-yellow-400">Scheduled</option>
+                          <option value="Completed" className="bg-[#1e2121] text-emerald-400">Completed</option>
+                          <option value="Cancelled" className="bg-[#1e2121] text-racing-red">Cancelled</option>
+                        </select>
                       </td>
                       <td className="px-6 py-4">
                         <input
@@ -1644,31 +1704,160 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex gap-2">
-                          {booking.status === 'Scheduled' && (
-                            <>
-                              <button
-                                onClick={() => onUpdateBooking(booking.id, 'Completed')}
-                                className="p-2 text-bright-snow/60 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition"
-                                title="Mark as Complete"
-                              >
-                                <CheckCircle className="w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={() => onUpdateBooking(booking.id, 'Cancelled')}
-                                className="p-2 text-bright-snow/60 hover:text-racing-red hover:bg-racing-red/10 rounded-lg transition"
-                                title="Cancel Booking"
-                              >
-                                <XCircle className="w-4 h-4" />
-                              </button>
-                            </>
-                          )}
+                          <button
+                            onClick={() => {
+                              setEditingBookingId(booking.id);
+                              setEditBookingData({
+                                customerName: booking.customerName,
+                                customerEmail: booking.customerEmail,
+                                customerPhone: booking.customerPhone,
+                                vehicleRegistration: booking.vehicleRegistration,
+                                vehicleMakeModel: booking.vehicleMakeModel,
+                                date: booking.date,
+                                timeSlot: booking.timeSlot,
+                                fittingType: booking.fittingType,
+                              });
+                            }}
+                            className="p-2 text-bright-snow/60 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition"
+                            title="Edit Booking"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => setDeleteBookingId(booking.id)}
+                            className="p-2 text-bright-snow/60 hover:text-racing-red hover:bg-racing-red/10 rounded-lg transition"
+                            title="Delete Booking"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       </td>
                     </tr>
-                  ))
+                    ));
+                  })()
                 )}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Booking Modal */}
+      {editingBookingId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={() => setEditingBookingId(null)}>
+          <div className="bg-[#1e2121] rounded-2xl border border-white/10 shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6 border-b border-white/10 flex items-center justify-between">
+              <h3 className="font-display font-bold text-bright-snow text-lg">Edit Booking</h3>
+              <button onClick={() => setEditingBookingId(null)} className="text-bright-snow/40 hover:text-bright-snow transition">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] text-bright-snow/60 mb-1 font-semibold uppercase">Customer Name</label>
+                  <input type="text" value={editBookingData.customerName || ''} onChange={(e) => setEditBookingData({ ...editBookingData, customerName: e.target.value })}
+                    className="w-full bg-black/40 border border-white/10 text-bright-snow rounded-lg p-2.5 text-sm focus:outline-none focus:border-racing-red" />
+                </div>
+                <div>
+                  <label className="block text-[11px] text-bright-snow/60 mb-1 font-semibold uppercase">Phone</label>
+                  <input type="tel" value={editBookingData.customerPhone || ''} onChange={(e) => setEditBookingData({ ...editBookingData, customerPhone: e.target.value })}
+                    className="w-full bg-black/40 border border-white/10 text-bright-snow rounded-lg p-2.5 text-sm focus:outline-none focus:border-racing-red" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-[11px] text-bright-snow/60 mb-1 font-semibold uppercase">Email</label>
+                <input type="email" value={editBookingData.customerEmail || ''} onChange={(e) => setEditBookingData({ ...editBookingData, customerEmail: e.target.value })}
+                  className="w-full bg-black/40 border border-white/10 text-bright-snow rounded-lg p-2.5 text-sm focus:outline-none focus:border-racing-red" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] text-bright-snow/60 mb-1 font-semibold uppercase">Reg Plate</label>
+                  <input type="text" value={editBookingData.vehicleRegistration || ''} onChange={(e) => setEditBookingData({ ...editBookingData, vehicleRegistration: e.target.value.toUpperCase() })}
+                    className="w-full bg-black/40 border border-white/10 text-bright-snow rounded-lg p-2.5 text-sm font-mono font-bold focus:outline-none focus:border-racing-red" />
+                </div>
+                <div>
+                  <label className="block text-[11px] text-bright-snow/60 mb-1 font-semibold uppercase">Make & Model</label>
+                  <input type="text" value={editBookingData.vehicleMakeModel || ''} onChange={(e) => setEditBookingData({ ...editBookingData, vehicleMakeModel: e.target.value })}
+                    className="w-full bg-black/40 border border-white/10 text-bright-snow rounded-lg p-2.5 text-sm focus:outline-none focus:border-racing-red" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] text-bright-snow/60 mb-1 font-semibold uppercase">Date</label>
+                  <input type="date" value={editBookingData.date || ''} onChange={(e) => setEditBookingData({ ...editBookingData, date: e.target.value })}
+                    className="w-full bg-black/40 border border-white/10 text-bright-snow rounded-lg p-2.5 text-sm focus:outline-none focus:border-racing-red" />
+                </div>
+                <div>
+                  <label className="block text-[11px] text-bright-snow/60 mb-1 font-semibold uppercase">Time Slot</label>
+                  <input type="text" value={editBookingData.timeSlot || ''} onChange={(e) => setEditBookingData({ ...editBookingData, timeSlot: e.target.value })}
+                    placeholder="e.g. 09:00 - 10:30"
+                    className="w-full bg-black/40 border border-white/10 text-bright-snow rounded-lg p-2.5 text-sm focus:outline-none focus:border-racing-red" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-[11px] text-bright-snow/60 mb-1 font-semibold uppercase">Fitting Type</label>
+                <select value={editBookingData.fittingType || 'fitting'} onChange={(e) => setEditBookingData({ ...editBookingData, fittingType: e.target.value as Booking['fittingType'] })}
+                  className="w-full bg-black/40 border border-white/10 text-bright-snow rounded-lg p-2.5 text-sm focus:outline-none focus:border-racing-red">
+                  <option value="fitting">Fitting</option>
+                  <option value="collection">Collection</option>
+                  <option value="mobile">Mobile</option>
+                  <option value="delivery">Delivery</option>
+                </select>
+              </div>
+            </div>
+            <div className="p-6 border-t border-white/10 flex gap-3">
+              <button
+                onClick={async () => {
+                  await onUpdateBookingDetails(editingBookingId, editBookingData);
+                  setEditingBookingId(null);
+                }}
+                className="flex-1 flex items-center justify-center gap-2 bg-racing-red hover:bg-racing-red/90 text-bright-snow font-bold text-sm px-4 py-2.5 rounded-lg transition"
+              >
+                <Check className="w-4 h-4" />
+                Save Changes
+              </button>
+              <button
+                onClick={() => setEditingBookingId(null)}
+                className="px-4 py-2.5 text-sm font-semibold text-bright-snow/60 hover:text-bright-snow hover:bg-white/5 rounded-lg transition"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Booking Confirmation */}
+      {deleteBookingId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={() => setDeleteBookingId(null)}>
+          <div className="bg-[#1e2121] rounded-2xl border border-racing-red/20 shadow-2xl w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6 text-center">
+              <div className="w-12 h-12 bg-racing-red/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <AlertTriangle className="w-6 h-6 text-racing-red" />
+              </div>
+              <h3 className="font-display font-bold text-bright-snow text-lg mb-2">Delete Booking?</h3>
+              <p className="text-xs text-bright-snow/60 mb-5">
+                This will permanently remove booking <span className="font-mono text-bright-snow">{deleteBookingId.toUpperCase()}</span>. This cannot be undone.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={async () => {
+                    await onDeleteBooking(deleteBookingId);
+                    setDeleteBookingId(null);
+                  }}
+                  className="flex-1 bg-racing-red hover:bg-racing-red/90 text-bright-snow font-bold text-sm px-4 py-2.5 rounded-lg transition"
+                >
+                  Delete
+                </button>
+                <button
+                  onClick={() => setDeleteBookingId(null)}
+                  className="flex-1 bg-white/5 hover:bg-white/10 text-bright-snow/80 font-semibold text-sm px-4 py-2.5 rounded-lg transition"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
