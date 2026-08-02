@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Tyre, SearchFilters } from '../types';
 import { useSupabase } from '../contexts/SupabaseContext';
 import TyreCard from '../components/TyreCard';
-import { Disc, ArrowLeft, Search, Calendar, ShoppingBag, ShieldCheck, User, Phone } from 'lucide-react';
+import { Disc, ArrowLeft, Search, Calendar, ShoppingBag, User, Phone } from 'lucide-react';
 import { SkeletonGrid } from '../components/Skeleton';
 
 export default function SearchResults() {
@@ -87,13 +87,6 @@ export default function SearchResults() {
         >
           <Phone className="w-4 h-4" />
           <span className="text-[9px] font-bold">Contact</span>
-        </button>
-        <button
-          onClick={() => navigate('/')}
-          className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition text-bright-snow/40"
-        >
-          <ShieldCheck className="w-4 h-4" />
-          <span className="text-[9px] font-bold">Admin</span>
         </button>
         <button
           onClick={() => navigate('/')}

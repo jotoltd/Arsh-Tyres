@@ -384,18 +384,6 @@ export default function App() {
             </button>
 
             <button
-              onClick={() => { navigate('/'); setActiveTab('admin'); setLastConfirmedBooking(null); }}
-              className={`px-3 lg:px-5 py-2 text-sm lg:text-base font-bold rounded-lg transition flex items-center gap-1.5 whitespace-nowrap ${
-                activeTab === 'admin' && location.pathname === '/'
-                  ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
-                  : 'text-bright-snow/60 hover:bg-bright-snow/5 hover:text-bright-snow'
-              }`}
-            >
-              <ShieldCheck className="w-4 h-4 lg:w-5 lg:h-5" />
-              Admin
-            </button>
-
-            <button
               onClick={() => { navigate('/'); setActiveTab('account'); setLastConfirmedBooking(null); }}
               className={`px-3 lg:px-5 py-2 text-sm lg:text-base font-bold rounded-lg transition flex items-center gap-1.5 whitespace-nowrap ${
                 activeTab === 'account' && location.pathname === '/'
@@ -527,17 +515,6 @@ export default function App() {
               {user ? 'My Account' : 'Sign In'}
             </button>
             <button
-              onClick={() => { navigate('/'); setActiveTab('admin'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition ${
-                activeTab === 'admin' && location.pathname === '/'
-                  ? 'bg-racing-red text-bright-snow'
-                  : 'text-bright-snow/60 hover:bg-white/5 hover:text-bright-snow'
-              }`}
-            >
-              <ShieldCheck className="w-5 h-5" />
-              Admin
-            </button>
-            <button
               onClick={() => { navigate('/contact'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition ${
                 location.pathname === '/contact'
@@ -618,13 +595,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Admin link */}
-              <button
-                onClick={() => setActiveTab('admin')}
-                className="text-[11px] text-bright-snow/30 hover:text-bright-snow/60 transition underline"
-              >
-                Admin Login
-              </button>
             </div>
           </div>
         ) : (
@@ -1253,9 +1223,6 @@ export default function App() {
           <p className="text-[10px] text-bright-snow/40">
             © 2026 Arsh Autos Auto Tyre Shop. All rights reserved.
           </p>
-          <button onClick={() => setActiveTab('admin')} className="text-[10px] text-bright-snow/30 hover:text-bright-snow/60 transition underline">
-            Admin
-          </button>
         </div>
       </footer>
       )}
@@ -1312,16 +1279,6 @@ export default function App() {
           >
             <Phone className="w-4 h-4" />
             <span className="text-[9px] font-bold">Contact</span>
-          </button>
-
-          <button
-            onClick={() => { navigate('/'); setActiveTab('admin'); setLastConfirmedBooking(null); }}
-            className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
-              activeTab === 'admin' && location.pathname === '/' ? 'text-racing-red' : 'text-bright-snow/40'
-            }`}
-          >
-            <ShieldCheck className="w-4 h-4" />
-            <span className="text-[9px] font-bold">Admin</span>
           </button>
 
           <button
