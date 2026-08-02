@@ -465,77 +465,125 @@ export default function App() {
 
       {/* Mobile slide-down menu */}
       {mobileMenuOpen && (!maintenanceMode || activeTab === 'admin') && (
-        <div className="md:hidden fixed top-0 left-0 right-0 z-[45] bg-black/98 backdrop-blur-lg border-b border-white/10 shadow-2xl min-h-screen pt-2">
+        <div className="md:hidden fixed top-0 left-0 right-0 z-[45] bg-black/98 backdrop-blur-lg border-b border-white/10 shadow-2xl min-h-screen pt-2 overflow-y-auto">
           <nav className="flex flex-col p-4 gap-2">
+            {/* Quick CTA buttons */}
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <a
+                href="tel:02084271234"
+                className="flex flex-col items-center justify-center gap-1.5 bg-racing-red/10 border border-racing-red/30 rounded-2xl py-4 transition hover:bg-racing-red/20"
+              >
+                <div className="w-10 h-10 bg-racing-red/20 rounded-xl flex items-center justify-center">
+                  <Phone className="w-5 h-5 text-racing-red" />
+                </div>
+                <span className="text-xs font-bold text-bright-snow">Call Us</span>
+                <span className="text-[10px] text-bright-snow/50">020 8427 1234</span>
+              </a>
+              <button
+                onClick={() => { navigate('/contact'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
+                className="flex flex-col items-center justify-center gap-1.5 bg-white/5 border border-white/10 rounded-2xl py-4 transition hover:bg-white/10"
+              >
+                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
+                  <MessageSquare className="w-5 h-5 text-bright-snow" />
+                </div>
+                <span className="text-xs font-bold text-bright-snow">Enquire</span>
+                <span className="text-[10px] text-bright-snow/50">Send a message</span>
+              </button>
+            </div>
+
+            {/* Divider */}
+            <div className="h-px bg-white/5 mb-1" />
+
+            {/* Nav links */}
             <button
               onClick={() => { setActiveTab('shop'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition ${
+              className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition ${
                 activeTab === 'shop' && location.pathname === '/'
-                  ? 'bg-racing-red text-bright-snow'
-                  : 'text-bright-snow/60 hover:bg-white/5 hover:text-bright-snow'
+                  ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/20'
+                  : 'text-bright-snow/70 hover:bg-white/5 hover:text-bright-snow'
               }`}
             >
               <Search className="w-5 h-5" />
               Find & Buy Tyres
+              <ChevronRight className="w-4 h-4 ml-auto opacity-30" />
             </button>
             <button
               onClick={() => { setActiveTab('bookings'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition ${
+              className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition ${
                 activeTab === 'bookings' && location.pathname === '/'
-                  ? 'bg-racing-red text-bright-snow'
-                  : 'text-bright-snow/60 hover:bg-white/5 hover:text-bright-snow'
+                  ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/20'
+                  : 'text-bright-snow/70 hover:bg-white/5 hover:text-bright-snow'
               }`}
             >
               <Calendar className="w-5 h-5" />
               My Bookings
-              {bookings.filter(b => b.status === 'Scheduled').length > 0 && (
-                <span className="bg-racing-red text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-auto">
+              {bookings.filter(b => b.status === 'Scheduled').length > 0 ? (
+                <span className="bg-racing-red text-white text-[10px] font-bold px-2 py-0.5 rounded-full ml-auto">
                   {bookings.filter(b => b.status === 'Scheduled').length}
                 </span>
+              ) : (
+                <ChevronRight className="w-4 h-4 ml-auto opacity-30" />
               )}
             </button>
             <button
               onClick={() => { setActiveTab('cart'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition ${
+              className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition ${
                 activeTab === 'cart' && location.pathname === '/'
-                  ? 'bg-racing-red text-bright-snow'
-                  : 'text-bright-snow/60 hover:bg-white/5 hover:text-bright-snow'
+                  ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/20'
+                  : 'text-bright-snow/70 hover:bg-white/5 hover:text-bright-snow'
               }`}
             >
               <ShoppingBag className="w-5 h-5" />
               My Order
-              {cartItems.length > 0 && (
-                <span className="bg-racing-red text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-auto">
+              {cartItems.length > 0 ? (
+                <span className="bg-racing-red text-white text-[10px] font-bold px-2 py-0.5 rounded-full ml-auto">
                   {totalCartTyres}
                 </span>
+              ) : (
+                <ChevronRight className="w-4 h-4 ml-auto opacity-30" />
               )}
             </button>
             <button
               onClick={() => { setActiveTab('account'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition ${
+              className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition ${
                 activeTab === 'account' && location.pathname === '/'
-                  ? 'bg-racing-red text-bright-snow'
-                  : 'text-bright-snow/60 hover:bg-white/5 hover:text-bright-snow'
+                  ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/20'
+                  : 'text-bright-snow/70 hover:bg-white/5 hover:text-bright-snow'
               }`}
             >
               <User className="w-5 h-5" />
               {user ? 'My Account' : 'Sign In'}
+              <ChevronRight className="w-4 h-4 ml-auto opacity-30" />
             </button>
-            <button
-              onClick={() => { navigate('/contact'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition ${
-                location.pathname === '/contact'
-                  ? 'bg-racing-red text-bright-snow'
-                  : 'text-bright-snow/60 hover:bg-white/5 hover:text-bright-snow'
-              }`}
-            >
-              <Phone className="w-5 h-5" />
-              Contact
-            </button>
+
+            {/* Divider */}
+            <div className="h-px bg-white/5 my-1" />
+
+            {/* Contact info */}
+            <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.02] border border-white/5">
+              <div className="w-9 h-9 bg-racing-red/10 rounded-lg flex items-center justify-center shrink-0">
+                <MapPin className="w-4 h-4 text-racing-red" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-bold text-bright-snow">5 Rowan Rd, London</p>
+                <p className="text-[10px] text-bright-snow/50">SW16 5JF</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.02] border border-white/5">
+              <div className="w-9 h-9 bg-racing-red/10 rounded-lg flex items-center justify-center shrink-0">
+                <Clock className="w-4 h-4 text-racing-red" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-bold text-bright-snow">Mon–Sat: 8:30am – 6:00pm</p>
+                <p className="text-[10px] text-bright-snow/50">Sun: Closed</p>
+              </div>
+            </div>
+
+            {/* Sign out */}
             {user && (
               <button
                 onClick={() => { signOut(); setMobileMenuOpen(false); }}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-bright-snow/60 hover:bg-white/5 hover:text-bright-snow transition"
+                className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold text-bright-snow/50 hover:bg-white/5 hover:text-bright-snow transition mt-2"
               >
                 <LogOut className="w-5 h-5" />
                 Sign Out
