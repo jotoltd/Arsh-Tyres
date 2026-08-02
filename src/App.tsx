@@ -134,7 +134,7 @@ export default function App() {
     subtotal: number;
     fittingFee: number;
     totalPrice: number;
-    fittingType: 'shop' | 'collection';
+    fittingType: 'fitting' | 'collection';
     date: string;
     timeSlot: string;
     customerName: string;
@@ -676,7 +676,7 @@ export default function App() {
                           <div className="flex items-center gap-2">
                             <MapPin className="w-4 h-4 text-racing-red shrink-0" />
                             <span>
-                              {lastConfirmedBooking.fittingType === 'shop'
+                              {lastConfirmedBooking.fittingType === 'fitting'
                                 ? 'Fitting Location: Arsh Autos, 5 Rowan Rd, London, SW16 5JF'
                                 : <>Mobile Fitting: Sent to customer contact address for reg plate <span className="font-mono bg-yellow-400 text-black font-black px-1.5 py-0.5 rounded tracking-wider text-xs">{lastConfirmedBooking.vehicleRegistration}</span></>}
                             </span>

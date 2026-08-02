@@ -82,7 +82,7 @@ export default function BookingsList({ bookings, onCancelBooking }: BookingsList
                       <span className="bg-white/5 text-bright-snow/60 text-xs font-bold px-2 py-0.5 rounded-full">Standard Delivery</span>
                     ) : (
                       <span className="bg-racing-red/10 text-racing-red border border-racing-red/20 text-xs font-bold px-2 py-0.5 rounded-full">
-                        {booking.fittingType === 'shop' ? 'In-Shop Appointment' : 'Mobile Van Visit'}
+                        {booking.fittingType === 'fitting' ? 'In-Shop Appointment' : 'Mobile Van Visit'}
                       </span>
                     )}
                   </div>
@@ -197,7 +197,7 @@ export default function BookingsList({ bookings, onCancelBooking }: BookingsList
                         <>
                           <h4 className="text-xs font-bold uppercase tracking-wider text-bright-snow/60 flex items-center gap-1.5">
                             <MapPin className="w-3.5 h-3.5 text-racing-red" />
-                            {booking.fittingType === 'shop' ? 'Shop Location Address' : 'Mobile Dispatch Center'}
+                            {booking.fittingType === 'fitting' ? 'Shop Location Address' : 'Mobile Dispatch Center'}
                           </h4>
                           <div className="text-xs text-bright-snow/60 space-y-1">
                             <p className="font-bold text-bright-snow">Arsh Autos Auto Tyre Shop</p>
@@ -243,7 +243,7 @@ export default function BookingsList({ bookings, onCancelBooking }: BookingsList
                       {/* Fitting line */}
                       <div className="pt-3 flex justify-between items-center text-bright-snow/60">
                         <span>
-                          {booking.fittingType === 'shop' && 'In-Shop Valve, Balancing & Disposal Fitting'}
+                          {booking.fittingType === 'fitting' && 'In-Shop Valve, Balancing & Disposal Fitting'}
                           {booking.fittingType === 'mobile' && 'Mobile Fleet Van Dispatch (Callout Fee)'}
                           {booking.fittingType === 'delivery' && 'Home Delivery Shipping'}
                         </span>

@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS public.bookings (
   user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   booking_date TEXT NOT NULL,
   booking_time TEXT NOT NULL,
-  fitting_type TEXT NOT NULL CHECK (fitting_type IN ('shop', 'mobile', 'delivery')),
+  fitting_type TEXT NOT NULL CHECK (fitting_type IN ('fitting', 'mobile', 'delivery')),
   vehicle_registration TEXT NOT NULL,
   vehicle_make_model TEXT NOT NULL,
   customer_name TEXT NOT NULL,

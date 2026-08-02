@@ -8,7 +8,7 @@ interface BookingCalendarProps {
   onDateChange: (date: string) => void;
   selectedTimeSlot: string;
   onTimeSlotChange: (slot: string) => void;
-  fittingType: 'shop' | 'mobile' | 'delivery';
+  fittingType: 'fitting' | 'mobile' | 'delivery';
 }
 
 export default function BookingCalendar({
@@ -114,7 +114,7 @@ export default function BookingCalendar({
         <div>
           <h3 className="font-display font-bold text-bright-snow text-base">Select Fitting Date & Time</h3>
           <p className="text-xs text-bright-snow/60">
-            {fittingType === 'shop'
+            {fittingType === 'fitting'
               ? 'Bookings available from tomorrow onwards. Choose a date and time slot.'
               : 'Choose when our mobile fitting van will arrive at your home/work'}
           </p>

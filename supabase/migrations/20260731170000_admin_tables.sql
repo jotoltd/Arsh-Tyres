@@ -23,7 +23,7 @@ ALTER TABLE public.bookings ADD COLUMN IF NOT EXISTS admin_note TEXT DEFAULT '';
 -- Drop the restrictive fitting_type constraint and allow 'collection'
 ALTER TABLE public.bookings DROP CONSTRAINT IF EXISTS bookings_fitting_type_check;
 ALTER TABLE public.bookings ADD CONSTRAINT bookings_fitting_type_check
-  CHECK (fitting_type IN ('shop', 'mobile', 'delivery', 'collection'));
+  CHECK (fitting_type IN ('fitting', 'mobile', 'delivery', 'collection'));
 
 -- Allow public read on promo codes (so checkout can validate them)
 ALTER TABLE public.promo_codes ENABLE ROW LEVEL SECURITY;

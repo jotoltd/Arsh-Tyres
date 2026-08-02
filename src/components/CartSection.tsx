@@ -29,7 +29,7 @@ interface CartSectionProps {
     subtotal: number;
     fittingFee: number;
     totalPrice: number;
-    fittingType: 'shop' | 'collection';
+    fittingType: 'fitting' | 'collection';
     date: string;
     timeSlot: string;
     customerName: string;
@@ -60,7 +60,7 @@ export default function CartSection({
 }: CartSectionProps) {
   const { stockManagementEnabled } = useSupabase();
   const [step, setStep] = useState(0);
-  const [fittingType, setFittingType] = useState<'shop' | 'collection'>('shop');
+  const [fittingType, setFittingType] = useState<'fitting' | 'collection'>('fitting');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
   const [lockingNutCount, setLockingNutCount] = useState(0);
@@ -314,8 +314,8 @@ export default function CartSection({
           </div>
         )}
         <div className="flex justify-between text-bright-snow/60">
-          <span>{fittingType === 'shop' ? 'Fitting & balancing' : 'Collection only'}</span>
-          <span className={fittingType === 'shop' ? 'text-emerald-400 font-bold' : 'text-bright-snow/40'}>{fittingType === 'shop' ? 'Included' : 'No fitting'}</span>
+          <span>{fittingType === 'fitting' ? 'Fitting & balancing' : 'Collection only'}</span>
+          <span className={fittingType === 'fitting' ? 'text-emerald-400 font-bold' : 'text-bright-snow/40'}>{fittingType === 'fitting' ? 'Included' : 'No fitting'}</span>
         </div>
         {discountAmount > 0 && (
           <div className="flex justify-between text-emerald-400 font-bold">
@@ -468,14 +468,14 @@ export default function CartSection({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <button
                     type="button"
-                    onClick={() => setFittingType('shop')}
+                    onClick={() => setFittingType('fitting')}
                     className={`p-4 rounded-xl border-2 transition text-left ${
-                      fittingType === 'shop'
+                      fittingType === 'fitting'
                         ? 'border-racing-red bg-racing-red/10'
                         : 'border-white/5 bg-[#1e2121] hover:border-white/20'
                     }`}
                   >
-                    <Wrench className={`w-6 h-6 mb-2 ${fittingType === 'shop' ? 'text-racing-red' : 'text-bright-snow/40'}`} />
+                    <Wrench className={`w-6 h-6 mb-2 ${fittingType === 'fitting' ? 'text-racing-red' : 'text-bright-snow/40'}`} />
                     <p className="font-display font-bold text-bright-snow text-sm">Fitting at our shop</p>
                     <p className="text-[11px] text-bright-snow/60 mt-0.5">Fitting, balancing & new valves included. Pick a date & time slot.</p>
                   </button>
@@ -495,7 +495,7 @@ export default function CartSection({
                 </div>
               </div>
 
-              {fittingType === 'shop' && (
+              {fittingType === 'fitting' && (
                 <div className="bg-black rounded-2xl border border-white/5 shadow-lg p-6">
                   <h3 className="font-display font-extrabold text-bright-snow text-xl mb-1 flex items-center gap-2">
                     <KeyRound className="w-5 h-5 text-racing-red" />
@@ -515,7 +515,7 @@ export default function CartSection({
                 </div>
               )}
 
-              {fittingType === 'shop' && (
+              {fittingType === 'fitting' && (
                 <div className="bg-black rounded-2xl border border-white/5 shadow-lg p-6">
                   <h3 className="font-display font-extrabold text-bright-snow text-xl mb-1 flex items-center gap-2">
                     <ShieldCheck className="w-5 h-5 text-racing-red" />
@@ -530,9 +530,9 @@ export default function CartSection({
               <div className="bg-[#1e2121] rounded-xl p-4 text-[11px] text-bright-snow/60 border border-white/5">
                 <p className="flex items-center gap-1.5 text-bright-snow font-bold uppercase tracking-wider text-[9px] mb-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-racing-red" />
-                  {fittingType === 'shop' ? "What's included with fitting" : 'Good to know'}
+                  {fittingType === 'fitting' ? "What's included with fitting" : 'Good to know'}
                 </p>
-                {fittingType === 'shop' ? (
+                {fittingType === 'fitting' ? (
                   <>
                     <p>Professional fitting & wheel balancing</p>
                     <p>New valves & eco-friendly old tyre disposal</p>
