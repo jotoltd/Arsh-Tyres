@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 import { Booking } from '../types';
-import { Calendar, Clock, Car, User, Mail, Phone, MapPin, CheckCircle2, ChevronDown, ChevronUp, Printer, AlertTriangle, ShieldAlert } from 'lucide-react';
+import { Calendar, Clock, Car, User, Mail, Phone, MapPin, CheckCircle2, ChevronDown, ChevronUp, Printer, AlertTriangle, ShieldAlert, Edit, X, Check, Loader2 } from 'lucide-react';
+import BookingCalendar from './BookingCalendar';
 
 interface BookingsListProps {
   bookings: Booking[];
   onCancelBooking: (id: string) => void;
+  onUpdateBooking?: (id: string, updates: Partial<Pick<Booking, 'date' | 'timeSlot'>>) => Promise<void>;
 }
 
-export default function BookingsList({ bookings, onCancelBooking }: BookingsListProps) {
+export default function BookingsList({ bookings, onCancelBooking, onUpdateBooking }: BookingsListProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [editingBookingId, setEditingBookingId] = useState<string | null>(null);
+  const [editDate, setEditDate] = useState('');
+  const [editTimeSlot, setEditTimeSlot] = useState('');
+  const [savingEdit, setSavingEdit] = useState(false);
 
   const toggleExpand = (id: string) => {
     setExpandedId(expandedId === id ? null : id);
@@ -270,22 +276,89 @@ export default function BookingsList({ bookings, onCancelBooking }: BookingsList
                     </div>
                   </div>
 
-                  {/* Actions (like canceling) */}
+                  {/* Actions: Reschedule and Cancel */}
                   {booking.status === 'Scheduled' && (
-                    <div className="flex justify-end pt-2">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (confirm('Are you sure you want to cancel this booking appointment?')) {
-                            onCancelBooking(booking.id);
-                          }
-                        }}
-                        type="button"
-                        className="text-racing-red hover:bg-[#1e2121] hover:text-racing-red/90 text-xs font-bold px-4 py-2.5 rounded-lg border border-racing-red/20 transition flex items-center gap-1.5"
-                      >
-                        <ShieldAlert className="w-4 h-4 shrink-0" />
-                        Cancel Fitting Appointment
-                      </button>
+                    <div className="space-y-4 pt-2">
+                      {/* Inline reschedule editor */}
+                      {editingBookingId === booking.id ? (
+                        <div className="bg-black border border-racing-red/20 rounded-xl p-4 space-y-4">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-xs font-bold uppercase tracking-wider text-bright-snow flex items-center gap-1.5">
+                              <Edit className="w-3.5 h-3.5 text-racing-red" />
+                              Reschedule Appointment
+                            </h4>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); setEditingBookingId(null); }}
+                              className="text-bright-snow/40 hover:text-bright-snow transition"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                          <BookingCalendar
+                            selectedDate={editDate}
+                            onDateChange={setEditDate}
+                            selectedTimeSlot={editTimeSlot}
+                            onTimeSlotChange={setEditTimeSlot}
+                            fittingType={booking.fittingType}
+                          />
+                          <div className="flex gap-3">
+                            <button
+                              onClick={async (e) => {
+                                e.stopPropagation();
+                                if (!editDate || !editTimeSlot) return;
+                                setSavingEdit(true);
+                                if (onUpdateBooking) {
+                                  await onUpdateBooking(booking.id, { date: editDate, timeSlot: editTimeSlot });
+                                }
+                                setSavingEdit(false);
+                                setEditingBookingId(null);
+                              }}
+                              disabled={!editDate || !editTimeSlot || savingEdit}
+                              className="flex-1 flex items-center justify-center gap-2 bg-racing-red hover:bg-racing-red/90 disabled:opacity-50 text-bright-snow font-bold text-xs px-4 py-2.5 rounded-lg transition"
+                            >
+                              {savingEdit ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                              {savingEdit ? 'Saving...' : 'Confirm New Date'}
+                            </button>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); setEditingBookingId(null); }}
+                              className="px-4 py-2.5 text-xs font-semibold text-bright-snow/60 hover:text-bright-snow hover:bg-white/5 rounded-lg transition"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex flex-wrap justify-end gap-3">
+                          {onUpdateBooking && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingBookingId(booking.id);
+                                setEditDate(booking.date);
+                                setEditTimeSlot(booking.timeSlot);
+                              }}
+                              type="button"
+                              className="text-bright-snow/80 hover:bg-[#1e2121] hover:text-bright-snow text-xs font-bold px-4 py-2.5 rounded-lg border border-white/10 transition flex items-center gap-1.5"
+                            >
+                              <Edit className="w-4 h-4 shrink-0" />
+                              Reschedule
+                            </button>
+                          )}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (confirm('Are you sure you want to cancel this booking appointment?')) {
+                                onCancelBooking(booking.id);
+                              }
+                            }}
+                            type="button"
+                            className="text-racing-red hover:bg-[#1e2121] hover:text-racing-red/90 text-xs font-bold px-4 py-2.5 rounded-lg border border-racing-red/20 transition flex items-center gap-1.5"
+                          >
+                            <ShieldAlert className="w-4 h-4 shrink-0" />
+                            Cancel Appointment
+                          </button>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

@@ -8,7 +8,7 @@ interface BookingCalendarProps {
   onDateChange: (date: string) => void;
   selectedTimeSlot: string;
   onTimeSlotChange: (slot: string) => void;
-  fittingType: 'fitting' | 'mobile' | 'delivery';
+  fittingType: 'fitting' | 'mobile' | 'delivery' | 'collection';
 }
 
 export default function BookingCalendar({

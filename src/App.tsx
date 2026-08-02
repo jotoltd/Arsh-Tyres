@@ -735,7 +735,11 @@ export default function App() {
               {/* BOOKINGS TAB */}
               {activeTab === 'bookings' && (
                 user ? (
-                  <BookingsList bookings={bookings.filter(b => b.customerEmail?.toLowerCase() === user.email?.toLowerCase())} onCancelBooking={handleCancelBooking} />
+                  <BookingsList
+                    bookings={bookings.filter(b => b.customerEmail?.toLowerCase() === user.email?.toLowerCase())}
+                    onCancelBooking={handleCancelBooking}
+                    onUpdateBooking={async (id, updates) => { await updateBookingDetails(id, updates); }}
+                  />
                 ) : (
                   <div className="max-w-md mx-auto my-12 px-4">
                     <div className="bg-gradient-to-b from-[#1a1c1c] to-black rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
