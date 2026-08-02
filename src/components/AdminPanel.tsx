@@ -1793,7 +1793,7 @@ export default function AdminPanel({ bookings, onUpdateBooking, onDeleteBooking,
                 <div>
                   <label className="block text-[11px] text-bright-snow/60 mb-1 font-semibold uppercase">Time Slot</label>
                   <input type="text" value={editBookingData.timeSlot || ''} onChange={(e) => setEditBookingData({ ...editBookingData, timeSlot: e.target.value })}
-                    placeholder="e.g. 10:00 AM – 12:00 PM"
+                    placeholder="e.g. Morning"
                     className="w-full bg-black/40 border border-white/10 text-bright-snow rounded-lg p-2.5 text-sm focus:outline-none focus:border-racing-red" />
                 </div>
               </div>
