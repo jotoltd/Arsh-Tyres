@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Routes, Route, useNavigate, useLocation, useSearchParams, Navigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { Tyre, CartItem, Booking, SearchFilters } from './types';
 import { getUnitPrice } from './data';
 import { useSupabase } from './contexts/SupabaseContext';
@@ -41,15 +41,14 @@ import {
 export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [searchParams] = useSearchParams();
 
-  // Deep linking: derive activeTab from ?tab= query param
+  // Deep linking: derive activeTab from route path
   const validTabs = ['shop', 'bookings', 'cart', 'admin', 'account'] as const;
   type Tab = typeof validTabs[number];
-  const tabParam = searchParams.get('tab') as Tab | null;
-  const activeTab: Tab = tabParam && validTabs.includes(tabParam) ? tabParam : 'shop';
+  const pathSegment = location.pathname.replace('/', '') as Tab | '';
+  const activeTab: Tab = validTabs.includes(pathSegment as Tab) ? (pathSegment as Tab) : 'shop';
   const setActiveTab = useCallback((tab: Tab) => {
-    navigate(`/?tab=${tab}`);
+    navigate(`/${tab}`);
   }, [navigate]);
 
   // State variables
@@ -86,7 +85,7 @@ export default function App() {
     if (params.get('reset_password') === '1') {
       setActiveTab('account');
     }
-  }, [setActiveTab]);
+  }, [setActiveTab, location.pathname]);
 
   const {
     tyres,
@@ -347,7 +346,7 @@ export default function App() {
             <button
               onClick={() => { setActiveTab('shop'); setLastConfirmedBooking(null); }}
               className={`px-3 lg:px-5 py-2 text-sm lg:text-base font-bold rounded-lg transition whitespace-nowrap ${
-                activeTab === 'shop' && location.pathname === '/'
+                activeTab === 'shop' && location.pathname === '/shop'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
                   : 'text-bright-snow/60 hover:bg-bright-snow/5 hover:text-bright-snow'
               }`}
@@ -358,7 +357,7 @@ export default function App() {
             <button
               onClick={() => { setActiveTab('bookings'); setLastConfirmedBooking(null); }}
               className={`px-3 lg:px-5 py-2 text-sm lg:text-base font-bold rounded-lg transition flex items-center gap-1.5 whitespace-nowrap ${
-                activeTab === 'bookings' && location.pathname === '/'
+                activeTab === 'bookings' && location.pathname === '/bookings'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
                   : 'text-bright-snow/60 hover:bg-bright-snow/5 hover:text-bright-snow'
               }`}
@@ -376,7 +375,7 @@ export default function App() {
             <button
               onClick={() => { setActiveTab('cart'); setLastConfirmedBooking(null); }}
               className={`px-3 lg:px-5 py-2 text-sm lg:text-base font-bold rounded-lg transition flex items-center gap-1.5 whitespace-nowrap ${
-                activeTab === 'cart' && location.pathname === '/'
+                activeTab === 'cart' && location.pathname === '/cart'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
                   : 'text-bright-snow/60 hover:bg-bright-snow/5 hover:text-bright-snow'
               }`}
@@ -394,7 +393,7 @@ export default function App() {
             <button
               onClick={() => { setActiveTab('account'); setLastConfirmedBooking(null); }}
               className={`px-3 lg:px-5 py-2 text-sm lg:text-base font-bold rounded-lg transition flex items-center gap-1.5 whitespace-nowrap ${
-                activeTab === 'account' && location.pathname === '/'
+                activeTab === 'account' && location.pathname === '/account'
                   ? 'bg-racing-red text-bright-snow shadow-md font-extrabold'
                   : 'text-bright-snow/60 hover:bg-bright-snow/5 hover:text-bright-snow'
               }`}
@@ -499,7 +498,7 @@ export default function App() {
             <button
               onClick={() => { setActiveTab('shop'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
               className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition ${
-                activeTab === 'shop' && location.pathname === '/'
+                activeTab === 'shop' && location.pathname === '/shop'
                   ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/20'
                   : 'text-bright-snow/70 hover:bg-white/5 hover:text-bright-snow'
               }`}
@@ -511,7 +510,7 @@ export default function App() {
             <button
               onClick={() => { setActiveTab('bookings'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
               className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition ${
-                activeTab === 'bookings' && location.pathname === '/'
+                activeTab === 'bookings' && location.pathname === '/bookings'
                   ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/20'
                   : 'text-bright-snow/70 hover:bg-white/5 hover:text-bright-snow'
               }`}
@@ -529,7 +528,7 @@ export default function App() {
             <button
               onClick={() => { setActiveTab('cart'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
               className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition ${
-                activeTab === 'cart' && location.pathname === '/'
+                activeTab === 'cart' && location.pathname === '/cart'
                   ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/20'
                   : 'text-bright-snow/70 hover:bg-white/5 hover:text-bright-snow'
               }`}
@@ -547,7 +546,7 @@ export default function App() {
             <button
               onClick={() => { setActiveTab('account'); setLastConfirmedBooking(null); setMobileMenuOpen(false); }}
               className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition ${
-                activeTab === 'account' && location.pathname === '/'
+                activeTab === 'account' && location.pathname === '/account'
                   ? 'bg-racing-red text-bright-snow shadow-lg shadow-racing-red/20'
                   : 'text-bright-snow/70 hover:bg-white/5 hover:text-bright-snow'
               }`}
@@ -657,9 +656,10 @@ export default function App() {
         <Routes>
           <Route path="/search-results" element={<SearchResults />} />
           <Route path="/contact" element={<ContactPage />} />
-          <Route path="/manage" element={<Navigate to="/?tab=admin" replace />} />
-          <Route path="*" element={<NotFound />} />
-          <Route path="/" element={
+          <Route path="/manage" element={<Navigate to="/admin" replace />} />
+
+          {/* SHOP */}
+          <Route path="/shop" element={
             <>
               {/* SUCCESS CONFIRMATION RECEIPT SCREEN */}
               {lastConfirmedBooking && (
@@ -759,80 +759,8 @@ export default function App() {
                 </div>
               )}
 
-              {/* BOOKINGS TAB */}
-              {activeTab === 'bookings' && (
-                user ? (
-                  <BookingsList
-                    bookings={bookings.filter(b => b.customerEmail?.toLowerCase() === user.email?.toLowerCase())}
-                    onCancelBooking={handleCancelBooking}
-                    onUpdateBooking={async (id, updates) => { await updateBookingDetails(id, updates); }}
-                  />
-                ) : (
-                  <div className="max-w-md mx-auto my-12 px-4">
-                    <div className="bg-gradient-to-b from-[#1a1c1c] to-black rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
-                      <div className="h-1 w-full bg-gradient-to-r from-transparent via-racing-red to-transparent" />
-                      <div className="p-8 text-center">
-                        <div className="relative inline-block mb-4">
-                          <div className="absolute inset-0 bg-racing-red/30 blur-xl rounded-full" />
-                          <div className="relative w-20 h-20 bg-gradient-to-br from-racing-red/20 to-black rounded-2xl flex items-center justify-center mx-auto border border-racing-red/30">
-                            <Calendar className="w-10 h-10 text-racing-red" />
-                          </div>
-                        </div>
-                        <h2 className="font-display font-black text-bright-snow text-2xl mb-2">Sign In to View Your Bookings</h2>
-                        <p className="text-bright-snow/60 text-sm mb-4">
-                          Log in to see your fitting appointments, track orders, and manage your bookings.
-                        </p>
-                        <button
-                          onClick={() => setShowAccountInfo(!showAccountInfo)}
-                          className="text-xs text-racing-red font-bold hover:text-racing-red/80 transition mb-3"
-                        >
-                          Don't have an account yet?
-                        </button>
-                        {showAccountInfo && (
-                          <div className="bg-racing-red/5 border border-racing-red/10 rounded-xl p-4 mb-6 text-left animate-fade-in-up">
-                            <p className="text-xs text-bright-snow/80 leading-relaxed">
-                              No worries — an account is created automatically when you place your first order. We'll email you your login details so you can track and manage all your bookings online.
-                            </p>
-                          </div>
-                        )}
-                        <div className="flex flex-col gap-3">
-                          <button
-                            onClick={() => setActiveTab('account')}
-                            className="bg-racing-red hover:bg-racing-red/90 text-bright-snow font-extrabold text-sm px-6 py-3 rounded-xl transition shadow-lg shadow-racing-red/30 inline-flex items-center justify-center gap-2"
-                          >
-                            <User className="w-4 h-4" />
-                            Sign In
-                          </button>
-                          <button
-                            onClick={() => setActiveTab('shop')}
-                            className="text-bright-snow/60 hover:text-bright-snow font-semibold text-xs transition"
-                          >
-                            Browse tyres & place an order →
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )
-              )}
-
-              {/* ADMIN TAB */}
-              {activeTab === 'admin' && (
-                <AdminPanel
-                  bookings={bookings}
-                  onUpdateBooking={handleUpdateBookingStatus}
-                  onDeleteBooking={async (id) => { await deleteBooking(id); }}
-                  onUpdateBookingDetails={async (id, updates) => { await updateBookingDetails(id, updates); }}
-                />
-              )}
-
-              {/* ACCOUNT TAB */}
-              {activeTab === 'account' && (
-                <CustomerAccount onReorder={handleReorder} />
-              )}
-
-              {/* FIND & SHOP TAB */}
-              {activeTab === 'shop' && !lastConfirmedBooking && (
+              {/* SHOP CONTENT (hidden when receipt is showing) */}
+              {!lastConfirmedBooking && (
                 <div className="space-y-8">
                 {/* HERO */}
                 <section
@@ -1151,30 +1079,54 @@ export default function App() {
                       >
                         Clear filters
                       </button>
+                      <button
+                        onClick={() => setActiveTab('shop')}
+                        className="text-bright-snow/60 hover:text-bright-snow font-semibold text-xs transition"
+                      >
+                        Browse tyres & place an order →
+                      </button>
                     </div>
                   </div>
                 )}
               </section>
             )}
-
-          </div>
-        )}
-
-              {/* CART TAB */}
-              {activeTab === 'cart' && (
-                <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
-                  <CartSection
-                    cartItems={cartItems}
-                    onUpdateQuantity={handleUpdateCartQuantity}
-                    onRemoveItem={handleRemoveCartItem}
-                    onCompleteBooking={handleCompleteBooking}
-                    selectedReg={selectedReg}
-                    selectedMakeModel={selectedMakeModel}
-                  />
                 </div>
               )}
             </>
           } />
+
+          {/* ADMIN */}
+          <Route path="/admin" element={
+            <AdminPanel
+              bookings={bookings}
+              onUpdateBooking={handleUpdateBookingStatus}
+              onDeleteBooking={async (id) => { await deleteBooking(id); }}
+              onUpdateBookingDetails={async (id, updates) => { await updateBookingDetails(id, updates); }}
+            />
+          } />
+
+          {/* ACCOUNT */}
+          <Route path="/account" element={
+            <CustomerAccount onReorder={handleReorder} />
+          } />
+
+          {/* CART */}
+          <Route path="/cart" element={
+            <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
+              <CartSection
+                cartItems={cartItems}
+                onUpdateQuantity={handleUpdateCartQuantity}
+                onRemoveItem={handleRemoveCartItem}
+                onCompleteBooking={handleCompleteBooking}
+                selectedReg={selectedReg}
+                selectedMakeModel={selectedMakeModel}
+              />
+            </div>
+          } />
+
+          {/* ROOT REDIRECT */}
+          <Route path="/" element={<Navigate to="/shop" replace />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
         )}
       </main>
@@ -1328,7 +1280,7 @@ export default function App() {
           <button
             onClick={() => { setActiveTab('shop'); setLastConfirmedBooking(null); }}
             className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
-              activeTab === 'shop' && location.pathname === '/' ? 'text-racing-red' : 'text-bright-snow/40'
+              activeTab === 'shop' && location.pathname === '/shop' ? 'text-racing-red' : 'text-bright-snow/40'
             }`}
           >
             <Search className="w-4 h-4" />
@@ -1338,7 +1290,7 @@ export default function App() {
           <button
             onClick={() => { setActiveTab('bookings'); setLastConfirmedBooking(null); }}
             className={`relative flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
-              activeTab === 'bookings' && location.pathname === '/' ? 'text-racing-red' : 'text-bright-snow/40'
+              activeTab === 'bookings' && location.pathname === '/bookings' ? 'text-racing-red' : 'text-bright-snow/40'
             }`}
           >
             <Calendar className="w-4 h-4" />
@@ -1353,7 +1305,7 @@ export default function App() {
           <button
             onClick={() => { setActiveTab('cart'); setLastConfirmedBooking(null); }}
             className={`relative flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
-              activeTab === 'cart' && location.pathname === '/' ? 'text-racing-red' : 'text-bright-snow/40'
+              activeTab === 'cart' && location.pathname === '/cart' ? 'text-racing-red' : 'text-bright-snow/40'
             }`}
           >
             <ShoppingBag className="w-4 h-4" />
@@ -1378,7 +1330,7 @@ export default function App() {
           <button
             onClick={() => { setActiveTab('account'); setLastConfirmedBooking(null); }}
             className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition ${
-              activeTab === 'account' && location.pathname === '/' ? 'text-racing-red' : 'text-bright-snow/40'
+              activeTab === 'account' && location.pathname === '/account' ? 'text-racing-red' : 'text-bright-snow/40'
             }`}
           >
             <User className="w-4 h-4" />

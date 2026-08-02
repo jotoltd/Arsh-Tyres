@@ -107,7 +107,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const appUrl = process.env.VITE_APP_URL || 'https://www.arshtyres.com';
     const resetLink = actionLink.replace(
       /redirect_to=[^&]+/,
-      `redirect_to=${encodeURIComponent(appUrl + '/?reset_password=1')}`
+      `redirect_to=${encodeURIComponent(appUrl + '/account?reset_password=1')}`
     );
 
     // Send our own custom email via Resend

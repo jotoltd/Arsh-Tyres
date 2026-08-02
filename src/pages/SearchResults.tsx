@@ -41,7 +41,7 @@ export default function SearchResults() {
 
   const handleAddToCart = (tyre: Tyre, quantity: number) => {
     // Navigate back to home with cart action
-    navigate('/', { state: { addToCart: { tyre, quantity } } });
+    navigate('/cart', { state: { addToCart: { tyre, quantity } } });
   };
 
   const totalCartTyres = cartItems.reduce((acc, item) => acc + item.quantity, 0);
@@ -51,14 +51,14 @@ export default function SearchResults() {
     <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-black/95 backdrop-blur-lg border-t border-white/10 pb-safe">
       <div className="flex items-center justify-around h-14">
         <button
-          onClick={() => navigate('/?tab=shop')}
+          onClick={() => navigate('/shop')}
           className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition text-racing-red"
         >
           <Search className="w-4 h-4" />
           <span className="text-[9px] font-bold">Tyres</span>
         </button>
         <button
-          onClick={() => navigate('/?tab=bookings')}
+          onClick={() => navigate('/bookings')}
           className={`relative flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition text-bright-snow/40`}
         >
           <Calendar className="w-4 h-4" />
@@ -70,7 +70,7 @@ export default function SearchResults() {
           )}
         </button>
         <button
-          onClick={() => navigate('/?tab=cart')}
+          onClick={() => navigate('/cart')}
           className={`relative flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition text-bright-snow/40`}
         >
           <ShoppingBag className="w-4 h-4" />
@@ -89,7 +89,7 @@ export default function SearchResults() {
           <span className="text-[9px] font-bold">Contact</span>
         </button>
         <button
-          onClick={() => navigate('/?tab=account')}
+          onClick={() => navigate('/account')}
           className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition text-bright-snow/40"
         >
           <User className="w-4 h-4" />
