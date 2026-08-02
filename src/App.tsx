@@ -1160,6 +1160,63 @@ export default function App() {
             </>
           } />
 
+          {/* BOOKINGS */}
+          <Route path="/bookings" element={
+            user ? (
+              <BookingsList
+                bookings={bookings.filter(b => b.customerEmail?.toLowerCase() === user.email?.toLowerCase())}
+                onCancelBooking={handleCancelBooking}
+                onUpdateBooking={async (id, updates) => { await updateBookingDetails(id, updates); }}
+              />
+            ) : (
+              <div className="max-w-md mx-auto my-12 px-4">
+                <div className="bg-gradient-to-b from-[#1a1c1c] to-black rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+                  <div className="h-1 w-full bg-gradient-to-r from-transparent via-racing-red to-transparent" />
+                  <div className="p-8 text-center">
+                    <div className="relative inline-block mb-4">
+                      <div className="absolute inset-0 bg-racing-red/30 blur-xl rounded-full" />
+                      <div className="relative w-20 h-20 bg-gradient-to-br from-racing-red/20 to-black rounded-2xl flex items-center justify-center mx-auto border border-racing-red/30">
+                        <Calendar className="w-10 h-10 text-racing-red" />
+                      </div>
+                    </div>
+                    <h2 className="font-display font-black text-bright-snow text-2xl mb-2">Sign In to View Your Bookings</h2>
+                    <p className="text-bright-snow/60 text-sm mb-4">
+                      Log in to see your fitting appointments, track orders, and manage your bookings.
+                    </p>
+                    <button
+                      onClick={() => setShowAccountInfo(!showAccountInfo)}
+                      className="text-xs text-racing-red font-bold hover:text-racing-red/80 transition mb-3"
+                    >
+                      Don't have an account yet?
+                    </button>
+                    {showAccountInfo && (
+                      <div className="bg-racing-red/5 border border-racing-red/10 rounded-xl p-4 mb-6 text-left animate-fade-in-up">
+                        <p className="text-xs text-bright-snow/80 leading-relaxed">
+                          No worries — an account is created automatically when you place your first order. We'll email you your login details so you can track and manage all your bookings online.
+                        </p>
+                      </div>
+                    )}
+                    <div className="flex flex-col gap-3">
+                      <button
+                        onClick={() => setActiveTab('account')}
+                        className="bg-racing-red hover:bg-racing-red/90 text-bright-snow font-extrabold text-sm px-6 py-3 rounded-xl transition shadow-lg shadow-racing-red/30 inline-flex items-center justify-center gap-2"
+                      >
+                        <User className="w-4 h-4" />
+                        Sign In
+                      </button>
+                      <button
+                        onClick={() => setActiveTab('shop')}
+                        className="text-bright-snow/60 hover:text-bright-snow font-semibold text-xs transition"
+                      >
+                        Browse tyres & place an order →
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          } />
+
           {/* ADMIN */}
           <Route path="/admin" element={
             <AdminPanel
