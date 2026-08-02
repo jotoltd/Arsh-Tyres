@@ -858,9 +858,6 @@ export default function App() {
                         <br />
                         <span className="text-racing-red">fitted in London.</span>
                       </h2>
-                      <p className="text-base sm:text-lg text-white/80 max-w-lg leading-relaxed">
-                        Search our range, pick a time that works for you, pay online.
-                      </p>
                     </div>
 
                     {/* Stats row */}
@@ -891,17 +888,37 @@ export default function App() {
                       />
                     </div>
 
-                    {/* Trust signals — pill style */}
-                    <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
-                      <span className="flex items-center gap-1.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-3 py-1.5 text-xs text-white/90">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Fitting included
-                      </span>
-                      <span className="flex items-center gap-1.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-3 py-1.5 text-xs text-white/90">
-                        <Clock className="w-3.5 h-3.5 text-emerald-400" /> Pick your own slot
-                      </span>
-                      <span className="flex items-center gap-1.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-3 py-1.5 text-xs text-white/90">
-                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Online or in-shop payment
-                      </span>
+                    {/* Three steps */}
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-2 w-full max-w-2xl mx-auto">
+                      <div className="flex items-center gap-2.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl px-4 py-3 flex-1">
+                        <div className="w-9 h-9 bg-racing-red/20 rounded-xl flex items-center justify-center shrink-0">
+                          <Search className="w-4.5 h-4.5 text-racing-red" />
+                        </div>
+                        <div className="text-left">
+                          <p className="text-xs font-bold text-white">Search our range</p>
+                          <p className="text-[10px] text-white/50">Find your tyres by size</p>
+                        </div>
+                      </div>
+                      <div className="hidden sm:block text-white/20 text-lg font-bold">→</div>
+                      <div className="flex items-center gap-2.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl px-4 py-3 flex-1">
+                        <div className="w-9 h-9 bg-racing-red/20 rounded-xl flex items-center justify-center shrink-0">
+                          <Calendar className="w-4.5 h-4.5 text-racing-red" />
+                        </div>
+                        <div className="text-left">
+                          <p className="text-xs font-bold text-white">Pick a time</p>
+                          <p className="text-[10px] text-white/50">Choose a fitting slot</p>
+                        </div>
+                      </div>
+                      <div className="hidden sm:block text-white/20 text-lg font-bold">→</div>
+                      <div className="flex items-center gap-2.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl px-4 py-3 flex-1">
+                        <div className="w-9 h-9 bg-racing-red/20 rounded-xl flex items-center justify-center shrink-0">
+                          <CheckCircle2 className="w-4.5 h-4.5 text-racing-red" />
+                        </div>
+                        <div className="text-left">
+                          <p className="text-xs font-bold text-white">Pay online</p>
+                          <p className="text-[10px] text-white/50">Or pay in-shop</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
