@@ -383,6 +383,7 @@ export default function AdminPanel({ bookings, onUpdateBooking, onDeleteBooking,
         wet_grip: tyre.wetGrip, noise_level: tyre.noiseLevel,
         stock: tyre.stock, rating: tyre.rating, reviews_count: tyre.reviewsCount,
         image_url: tyre.imageUrl,
+        recommended_for: tyre.recommendedFor,
       }).then();
     }
     setShowAddForm(false);
@@ -1568,6 +1569,7 @@ export default function AdminPanel({ bookings, onUpdateBooking, onDeleteBooking,
                       noise_level: editingTyre.noiseLevel,
                       stock: editingTyre.stock,
                       image_url: editingTyre.imageUrl,
+                      recommended_for: editingTyre.recommendedFor,
                     }).eq('id', editingTyre.id).then();
                   }
                   setEditingTyre(null);
