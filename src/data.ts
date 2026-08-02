@@ -126,13 +126,17 @@ const COMMERCIAL: Row[] = [
   [225, 55, 17, 80, 75],
 ];
 
+const BRANDS = ['Sunfull', 'Fronway', 'Farroad', 'Banoz', 'Kuston'];
+let brandIndex = 0;
+
 const makeTyre = (row: Row, category: TyreCategory): Tyre => {
   const [width, profile, rim, price, price4] = row;
   const prefix = category === 'Runflat' ? 'rf' : category === 'Commercial' ? 'com' : 'std';
   const suffix = category === 'Runflat' ? ' Runflat' : category === 'Commercial' ? 'C' : '';
+  const brand = BRANDS[brandIndex++ % BRANDS.length];
   return {
     id: `${prefix}-${width}-${profile}-${rim}`,
-    brand: 'ARSH Tyres',
+    brand,
     model: `${width}/${profile} R${rim}${suffix}`,
     width,
     profile,

@@ -10,27 +10,6 @@ interface TyreCardProps {
   key?: string;
 }
 
-const BRAND_COLORS: Record<string, string> = {
-  Michelin: '#27509B',
-  Continental: '#E6B800',
-  Pirelli: '#FF1A1A',
-  Goodyear: '#003478',
-  Bridgestone: '#E60012',
-  Dunlop: '#003D7A',
-  Yokohama: '#E30613',
-  Hankook: '#002B5C',
-  Nexen: '#0066B3',
-  Kumho: '#E4002B',
-  Falken: '#00A0E0',
-  Autogreen: '#00843D',
-  Landspider: '#1A1A1A',
-  Goodride: '#0066CC',
-  Triangle: '#0088CC',
-  Sailun: '#E60012',
-  Radar: '#1A1A1A',
-  Infinity: '#E60012',
-};
-
 export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
   const { stockManagementEnabled, tyreDisplayFields } = useSupabase();
   const show = (field: string) => tyreDisplayFields.includes(field as any);
@@ -55,24 +34,18 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
     }
   };
 
-  const brandColor = BRAND_COLORS[tyre.brand] || '#888';
-
   return (
     <div className="group bg-[#1e2121] rounded-2xl border border-white/5 hover:border-white/20 shadow-lg hover:shadow-2xl hover:shadow-black/40 transition-all duration-300 flex flex-col h-full overflow-hidden hover:-translate-y-1">
-      {/* Brand color stripe */}
-      <div className="h-1 w-full" style={{ backgroundColor: brandColor }} />
-
       {/* Tyre Image Area */}
       <div className="relative h-40 w-full bg-gradient-to-br from-black/60 to-[#0d0e0e] overflow-hidden flex items-center justify-center border-b border-white/5">
         {!tyre.imageUrl || imageError ? (
           <div className="flex flex-col items-center text-gray-600 transition-transform duration-300 group-hover:scale-110">
             <Disc className="w-16 h-16 mb-1 opacity-30" />
-            <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: brandColor }}>{tyre.brand}</span>
           </div>
         ) : (
           <img
             src={tyre.imageUrl}
-            alt={`${tyre.brand} ${tyre.model}`}
+            alt={tyre.model}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             onError={() => setImageError(true)}
           />
@@ -107,9 +80,8 @@ export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
 
       {/* Card Body */}
       <div className="p-4 flex-1 flex flex-col">
-        {/* Brand + Model */}
+        {/* Model */}
         <div className="mb-3">
-          <span className="text-[11px] uppercase tracking-wider font-black block" style={{ color: brandColor }}>{tyre.brand}</span>
           <h3 className="font-display font-bold text-base text-bright-snow leading-snug">{tyre.model}</h3>
         </div>
 

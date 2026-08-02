@@ -157,7 +157,6 @@ export default function App() {
         totalPrice: bookingData.totalPrice,
         cartItems: bookingData.cartItems.map(item => ({
           tyre: {
-            brand: item.tyre.brand,
             model: item.tyre.model,
             width: item.tyre.width,
             profile: item.tyre.profile,
@@ -1104,7 +1103,7 @@ export default function App() {
         <div className="border-t border-white/5 py-4 px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center justify-center gap-2">
             <span className="text-[10px] uppercase tracking-wider text-gray-500 font-bold mr-2">Brands we fit:</span>
-            {['Michelin', 'Continental', 'Pirelli', 'Goodyear', 'Bridgestone', 'Dunlop', 'Yokohama', 'Hankook'].map(b => (
+            {['Sunfull', 'Fronway', 'Farroad', 'Banoz', 'Kuston'].map(b => (
               <span key={b} className="bg-white/5 text-bright-snow/85 text-[10px] font-bold px-2 py-0.5 rounded border border-gray-500/25">{b}</span>
             ))}
           </div>

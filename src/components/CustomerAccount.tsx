@@ -411,7 +411,7 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
                         {booking.cartItems.map((item, idx) => (
                           <div key={idx} className="flex items-center justify-between text-sm">
                             <div className="min-w-0">
-                              <p className="font-semibold text-bright-snow truncate">{item.tyre.brand} {item.tyre.model}</p>
+                              <p className="font-semibold text-bright-snow truncate">{item.tyre.model}</p>
                               <p className="text-xs text-gray-400">{item.tyre.width}/{item.tyre.profile} R{item.tyre.rim} · Qty: {item.quantity}</p>
                             </div>
                             <p className="font-bold text-bright-snow shrink-0 ml-2">£{(getUnitPrice(item.tyre, item.quantity) * item.quantity).toFixed(2)}</p>

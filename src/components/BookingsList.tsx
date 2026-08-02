@@ -228,7 +228,7 @@ export default function BookingsList({ bookings, onCancelBooking }: BookingsList
                       {booking.cartItems.map((item) => (
                         <div key={item.tyre.id} className="pt-2 flex justify-between items-start">
                           <div>
-                            <span className="font-bold text-bright-snow">{item.tyre.brand} {item.tyre.model}</span>
+                            <span className="font-bold text-bright-snow">{item.tyre.model}</span>
                             <span className="block text-[10px] text-gray-400/80 font-mono mt-0.5">
                               {item.tyre.width}/{item.tyre.profile} R{item.tyre.rim} {item.tyre.loadIndex}{item.tyre.speedRating} ({item.tyre.category})
                             </span>

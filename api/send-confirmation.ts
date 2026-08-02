@@ -10,14 +10,14 @@ interface BookingEmailData {
   date: string;
   timeSlot: string;
   totalPrice: number;
-  cartItems: { tyre: { brand: string; model: string; width: number; profile: number; rim: number }; quantity: number; unitPrice: number }[];
+  cartItems: { tyre: { model: string; width: number; profile: number; rim: number }; quantity: number; unitPrice: number }[];
 }
 
 function buildEmailHtml(data: BookingEmailData): string {
   const tyreRows = data.cartItems.map(item => `
     <tr>
       <td style="padding:8px 12px;border-bottom:1px solid #333;">
-        ${item.tyre.brand} ${item.tyre.model}
+        ${item.tyre.model}
       </td>
       <td style="padding:8px 12px;border-bottom:1px solid #333;color:#ddd;">
         ${item.tyre.width}/${item.tyre.profile} R${item.tyre.rim}

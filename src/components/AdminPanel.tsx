@@ -1079,7 +1079,7 @@ export default function AdminPanel({ bookings, onUpdateBooking }: AdminPanelProp
                     value={newTyre.brand}
                     onChange={(e) => setNewTyre({ ...newTyre, brand: e.target.value })}
                     className="w-full bg-[#1e2121] border border-white/10 text-bright-snow rounded px-3 py-2 text-sm focus:outline-none focus:border-racing-red"
-                    placeholder="e.g., Michelin"
+                    placeholder="e.g., Sunfull"
                   />
                 </div>
                 <div>
