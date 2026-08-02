@@ -67,6 +67,7 @@ export default function App() {
   const [sortBy, setSortBy] = useState<'price-low' | 'price-high' | 'size'>('price-low');
   const [lastConfirmedBooking, setLastConfirmedBooking] = useState<Booking | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showAccountInfo, setShowAccountInfo] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -781,11 +782,19 @@ export default function App() {
                         <p className="text-bright-snow/60 text-sm mb-4">
                           Log in to see your fitting appointments, track orders, and manage your bookings.
                         </p>
-                        <div className="bg-racing-red/5 border border-racing-red/10 rounded-xl p-4 mb-6 text-left">
-                          <p className="text-xs text-bright-snow/80 leading-relaxed">
-                            <span className="text-racing-red font-bold">Don't have an account yet?</span> No worries — an account is created automatically when you place your first order. We'll email you your login details so you can track and manage all your bookings online.
-                          </p>
-                        </div>
+                        <button
+                          onClick={() => setShowAccountInfo(!showAccountInfo)}
+                          className="text-xs text-racing-red font-bold hover:text-racing-red/80 transition mb-3"
+                        >
+                          Don't have an account yet?
+                        </button>
+                        {showAccountInfo && (
+                          <div className="bg-racing-red/5 border border-racing-red/10 rounded-xl p-4 mb-6 text-left animate-fade-in-up">
+                            <p className="text-xs text-bright-snow/80 leading-relaxed">
+                              No worries — an account is created automatically when you place your first order. We'll email you your login details so you can track and manage all your bookings online.
+                            </p>
+                          </div>
+                        )}
                         <div className="flex flex-col gap-3">
                           <button
                             onClick={() => setActiveTab('account')}

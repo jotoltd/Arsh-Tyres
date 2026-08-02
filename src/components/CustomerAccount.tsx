@@ -23,6 +23,7 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
   const [resetEmail, setResetEmail] = useState('');
   const [resetSent, setResetSent] = useState(false);
   const [showChangePass, setShowChangePass] = useState(false);
+  const [showAccountInfo, setShowAccountInfo] = useState(false);
   const [newPass, setNewPass] = useState('');
   const [passChanged, setPassChanged] = useState(false);
   const [resetMode, setResetMode] = useState(() => {
@@ -175,8 +176,19 @@ export default function CustomerAccount({ onReorder }: CustomerAccountProps) {
                 Sign In
               </button>
 
-              <div className="text-center text-xs text-bright-snow/60 pt-2 border-t border-white/5">
-                No account yet? An account is created automatically when you place your first order. We'll email you your login details.
+              <div className="text-center pt-2 border-t border-white/5">
+                <button
+                  type="button"
+                  onClick={() => setShowAccountInfo(!showAccountInfo)}
+                  className="text-xs text-racing-red font-bold hover:text-racing-red/80 transition"
+                >
+                  Don't have an account yet?
+                </button>
+                {showAccountInfo && (
+                  <p className="text-xs text-bright-snow/60 mt-2 animate-fade-in-up">
+                    An account is created automatically when you place your first order. We'll email you your login details.
+                  </p>
+                )}
               </div>
 
               {/* Forgot password toggle */}
