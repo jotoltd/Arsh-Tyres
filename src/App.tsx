@@ -316,10 +316,17 @@ export default function App() {
   useEffect(() => {
     const payload = location.state?.addToCart as { tyre: Tyre; quantity: number } | undefined;
     if (payload) {
-      handleAddToCart(payload.tyre, payload.quantity);
-      navigate(location.pathname, { replace: true, state: { ...location.state, addToCart: undefined } });
+      const updated = [...cartItems];
+      const existingIndex = updated.findIndex(item => item.tyre.id === payload.tyre.id);
+      if (existingIndex >= 0) {
+        updated[existingIndex].quantity += payload.quantity;
+      } else {
+        updated.push({ tyre: payload.tyre, quantity: payload.quantity });
+      }
+      setCartItems(updated);
+      navigate('/cart', { replace: true, state: {} });
     }
-  }, [location.state, location.pathname, navigate]);
+  }, [location.state, navigate]);
 
   // Get matching tyres from search parameters
   const filteredTyres = tyres.filter(tyre => {
