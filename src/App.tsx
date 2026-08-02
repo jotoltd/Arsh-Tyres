@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Routes, Route, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation, useSearchParams, Navigate } from 'react-router-dom';
 import { Tyre, CartItem, Booking, SearchFilters } from './types';
 import { getUnitPrice } from './data';
 import { useSupabase } from './contexts/SupabaseContext';
@@ -608,6 +608,7 @@ export default function App() {
         <Routes>
           <Route path="/search-results" element={<SearchResults />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/manage" element={<Navigate to="/?tab=admin" replace />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/" element={
             <>
