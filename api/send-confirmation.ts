@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { standardLimit } from './_lib/rateLimit';
+import { standardLimit } from './_lib/rateLimit.js';
 
 interface BookingEmailData {
   customerName: string;

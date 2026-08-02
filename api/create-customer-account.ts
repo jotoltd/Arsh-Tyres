@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { strictLimit } from './_lib/rateLimit';
+import { strictLimit } from './_lib/rateLimit.js';
 
 function generatePassword(): string {
   const chars = 'abcdefghjkmnpqrstuvwxyz23456789';

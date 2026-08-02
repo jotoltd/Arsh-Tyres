@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { relaxedLimit } from './_lib/rateLimit';
+import { relaxedLimit } from './_lib/rateLimit.js';
 import Stripe from 'stripe';
 
 const stripeTestKey = process.env.STRIPE_SECRET_KEY_TEST || process.env.STRIPE_SECRET_KEY;
