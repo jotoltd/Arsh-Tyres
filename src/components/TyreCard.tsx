@@ -34,7 +34,7 @@ const BRAND_COLORS: Record<string, string> = {
 export default function TyreCard({ tyre, onAddToCart }: TyreCardProps) {
   const { stockManagementEnabled, tyreDisplayFields } = useSupabase();
   const show = (field: string) => tyreDisplayFields.includes(field as any);
-  const [quantity, setQuantity] = useState(4);
+  const [quantity, setQuantity] = useState(1);
   const [isAdded, setIsAdded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
