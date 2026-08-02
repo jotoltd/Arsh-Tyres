@@ -1049,10 +1049,30 @@ export default function App() {
                 <span className="font-mono">Closed</span>
               </li>
             </ul>
-            <div className="mt-4 inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-3 py-1.5">
-              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-              <span className="text-emerald-400 font-bold text-[11px]">Open now — bookings from tomorrow</span>
-            </div>
+            {(() => {
+              const now = new Date();
+              const day = now.getDay();
+              const hours = now.getHours() + now.getMinutes() / 60;
+              const isWeekday = day >= 1 && day <= 6;
+              const isOpen = isWeekday && hours >= 8.5 && hours < 18;
+              const statusText = isOpen
+                ? 'Open now — bookings available'
+                : day === 0
+                  ? 'Closed Sundays — back Mon 8:30am'
+                  : hours < 8.5
+                    ? 'Closed — opens at 8:30am today'
+                    : 'Closed — back tomorrow at 8:30am';
+              return (
+                <div className={`mt-4 inline-flex items-center gap-2 rounded-full px-3 py-1.5 border ${
+                  isOpen ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-racing-red/10 border-racing-red/20'
+                }`}>
+                  <span className={`w-2 h-2 rounded-full animate-pulse ${isOpen ? 'bg-emerald-400' : 'bg-racing-red'}`} />
+                  <span className={`font-bold text-[11px] ${isOpen ? 'text-emerald-400' : 'text-racing-red'}`}>
+                    {statusText}
+                  </span>
+                </div>
+              );
+            })()}
           </div>
 
           {/* Address + contact */}
