@@ -648,17 +648,21 @@ export default function App() {
           <div className="min-h-screen flex items-center justify-center -mt-20">
             <div className="max-w-lg w-full text-center space-y-8 animate-fade-in-up">
               {/* Logo */}
-              <div className="relative inline-block">
-                <div className="absolute inset-0 bg-racing-red/20 blur-3xl rounded-full scale-110" />
-                <div className="relative bg-black/80 backdrop-blur-md rounded-3xl p-4 border border-white/10 shadow-2xl">
-                  <img src="/assets/logo.jpg" alt="Arsh Autos" className="w-40 h-40 rounded-2xl object-contain" />
+              <div className="flex justify-center">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-racing-red/20 blur-3xl rounded-full scale-110" />
+                  <div className="relative bg-black/80 backdrop-blur-md rounded-3xl p-4 border border-white/10 shadow-2xl">
+                    <img src="/assets/logo.jpg" alt="Arsh Autos" className="w-40 h-40 rounded-2xl object-contain" />
+                  </div>
                 </div>
               </div>
 
               {/* Status badge */}
-              <div className="inline-flex items-center gap-2 bg-racing-red/10 border border-racing-red/20 rounded-full px-4 py-2">
-                <span className="w-2 h-2 bg-racing-red rounded-full animate-pulse" />
-                <span className="text-racing-red text-xs font-bold uppercase tracking-wider">Under Maintenance</span>
+              <div className="flex justify-center">
+                <div className="inline-flex items-center gap-2 bg-racing-red/10 border border-racing-red/20 rounded-full px-4 py-2">
+                  <span className="w-2 h-2 bg-racing-red rounded-full animate-pulse" />
+                  <span className="text-racing-red text-xs font-bold uppercase tracking-wider">Under Maintenance</span>
+                </div>
               </div>
 
               {/* Message */}
