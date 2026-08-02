@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { Tyre, CartItem, Booking, SearchFilters } from './types';
 import { getUnitPrice } from './data';
 import { useSupabase } from './contexts/SupabaseContext';
 import TyreSearcher from './components/TyreSearcher';
 import TyreCard from './components/TyreCard';
-import CartSection from './components/CartSection';
-import BookingsList from './components/BookingsList';
-import AdminPanel from './components/AdminPanel';
-import CustomerAccount from './components/CustomerAccount';
-import SearchResults from './pages/SearchResults';
-import NotFound from './pages/NotFound';
-import ContactPage from './pages/ContactPage';
+const CartSection = lazy(() => import('./components/CartSection'));
+const BookingsList = lazy(() => import('./components/BookingsList'));
+const AdminPanel = lazy(() => import('./components/AdminPanel'));
+const CustomerAccount = lazy(() => import('./components/CustomerAccount'));
+const SearchResults = lazy(() => import('./pages/SearchResults'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
 import {
   Wrench,
   Truck,
@@ -730,6 +730,7 @@ export default function App() {
             </div>
           </div>
         ) : (
+        <Suspense fallback={<div className="min-h-[50vh] flex items-center justify-center"><div className="w-8 h-8 border-2 border-racing-red border-t-transparent rounded-full animate-spin" /></div>}>
         <Routes>
           <Route path="/search-results" element={<SearchResults />} />
           <Route path="/contact" element={<ContactPage />} />
@@ -1262,6 +1263,7 @@ export default function App() {
           <Route path="/" element={<Navigate to="/shop" replace />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </Suspense>
         )}
       </main>
 
