@@ -1288,16 +1288,6 @@ export default function App() {
                 Send us a message
               </button>
             </div>
-            {/* Map embed */}
-            <div className="mt-4 rounded-xl overflow-hidden border border-white/5 h-32">
-              <iframe
-                src="https://maps.google.com/maps?q=5%20Rowan%20Rd%20London%20SW16%205JF&t=&z=14&ie=UTF8&iwloc=&output=embed"
-                className="w-full h-full grayscale opacity-60"
-                loading="lazy"
-                allow="fullscreen"
-                title="Arsh Autos Location"
-              />
-            </div>
           </div>
         </div>
 
