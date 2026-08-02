@@ -360,7 +360,8 @@ export default function App() {
   return (
     <div className="min-h-screen bg-black text-bright-snow/90 font-sans antialiased pb-16 sm:pb-0">
 
-      {/* Top Banner Message */}
+      {/* Top Banner Message — hidden in maintenance mode */}
+      {showChrome && (
       <div className="bg-racing-red text-bright-snow text-xs py-2 px-4 text-center font-semibold border-b border-white/5">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-4">
           <span>📍 5 Rowan Rd, London, SW16 5JF</span>
@@ -370,8 +371,10 @@ export default function App() {
           <span className="text-yellow-300 font-black hidden md:inline">★ Next-day fitting slots available</span>
         </div>
       </div>
+      )}
 
-      {/* Main Brand Header */}
+      {/* Main Brand Header — hidden in maintenance mode */}
+      {showChrome && (
       <header className="bg-black/95 backdrop-blur-md border-b border-white/10 sticky top-0 z-40">
         <div className="w-full px-3 sm:px-4 lg:px-8 py-2 sm:py-3 flex items-center justify-between gap-2">
 
@@ -504,6 +507,7 @@ export default function App() {
           )}
         </div>
       </header>
+      )}
 
       {/* Mobile slide-down menu */}
       {mobileMenuOpen && showChrome && (
@@ -645,7 +649,7 @@ export default function App() {
       {/* Main Body Grid */}
       <main className="w-full px-4 sm:px-6 lg:px-8 py-8 pb-20 md:pb-8">
         {!showChrome ? (
-          <div className="min-h-screen flex items-center justify-center -mt-20">
+          <div className="min-h-screen flex items-center justify-center">
             <div className="max-w-lg w-full text-center space-y-8 animate-fade-in-up">
               {/* Logo */}
               <div className="flex justify-center">
