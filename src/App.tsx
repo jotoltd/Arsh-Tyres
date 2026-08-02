@@ -102,8 +102,39 @@ export default function App() {
     signOut,
     tyresError,
     maintenanceMode,
+    maintenanceEndTime,
+    setMaintenanceMode,
     refreshTyres
   } = useSupabase();
+
+  // Maintenance mode countdown + auto-disable
+  const [countdown, setCountdown] = useState<{ days: number; hours: number; minutes: number; seconds: number } | null>(null);
+  useEffect(() => {
+    if (!maintenanceMode || !maintenanceEndTime) {
+      setCountdown(null);
+      return;
+    }
+    const target = new Date(maintenanceEndTime).getTime();
+    if (isNaN(target)) { setCountdown(null); return; }
+
+    const tick = () => {
+      const diff = target - Date.now();
+      if (diff <= 0) {
+        setCountdown(null);
+        setMaintenanceMode(false);
+        return;
+      }
+      const days = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const minutes = Math.floor((diff % 3600000) / 60000);
+      const seconds = Math.floor((diff % 60000) / 1000);
+      setCountdown({ days, hours, minutes, seconds });
+    };
+
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, [maintenanceMode, maintenanceEndTime, setMaintenanceMode]);
 
   // Cart operations
   const handleAddToCart = (tyre: Tyre, quantity: number) => {
@@ -626,6 +657,33 @@ export default function App() {
                   Arsh Autos is undergoing scheduled maintenance to serve you better. We'll be back online shortly — thank you for your patience!
                 </p>
               </div>
+
+              {/* Countdown timer */}
+              {countdown && (
+                <div className="space-y-3">
+                  <p className="text-xs text-bright-snow/40 uppercase tracking-wider font-bold">Back online in</p>
+                  <div className="flex items-center justify-center gap-3 sm:gap-4">
+                    {countdown.days > 0 && (
+                      <div className="bg-black/50 border border-white/10 rounded-xl px-4 py-3 min-w-[70px]">
+                        <div className="font-display font-black text-2xl sm:text-3xl text-racing-red tabular-nums">{countdown.days}</div>
+                        <div className="text-[10px] uppercase tracking-wider text-bright-snow/40 font-bold mt-0.5">Days</div>
+                      </div>
+                    )}
+                    <div className="bg-black/50 border border-white/10 rounded-xl px-4 py-3 min-w-[70px]">
+                      <div className="font-display font-black text-2xl sm:text-3xl text-racing-red tabular-nums">{String(countdown.hours).padStart(2, '0')}</div>
+                      <div className="text-[10px] uppercase tracking-wider text-bright-snow/40 font-bold mt-0.5">Hours</div>
+                    </div>
+                    <div className="bg-black/50 border border-white/10 rounded-xl px-4 py-3 min-w-[70px]">
+                      <div className="font-display font-black text-2xl sm:text-3xl text-racing-red tabular-nums">{String(countdown.minutes).padStart(2, '0')}</div>
+                      <div className="text-[10px] uppercase tracking-wider text-bright-snow/40 font-bold mt-0.5">Mins</div>
+                    </div>
+                    <div className="bg-black/50 border border-white/10 rounded-xl px-4 py-3 min-w-[70px]">
+                      <div className="font-display font-black text-2xl sm:text-3xl text-racing-red tabular-nums">{String(countdown.seconds).padStart(2, '0')}</div>
+                      <div className="text-[10px] uppercase tracking-wider text-bright-snow/40 font-bold mt-0.5">Secs</div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Contact info */}
               <div className="bg-black/50 border border-white/5 rounded-2xl p-6 space-y-3 text-left">

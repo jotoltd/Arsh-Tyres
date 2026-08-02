@@ -31,7 +31,7 @@ interface Staff {
 }
 
 export default function AdminPanel({ bookings, onUpdateBooking, onDeleteBooking, onUpdateBookingDetails }: AdminPanelProps) {
-  const { stockManagementEnabled, setStockManagementEnabled: setStockManagementSupabase, maintenanceMode, setMaintenanceMode, tyreDisplayFields, setTyreDisplayFields } = useSupabase();
+  const { stockManagementEnabled, setStockManagementEnabled: setStockManagementSupabase, maintenanceMode, setMaintenanceMode, maintenanceEndTime, setMaintenanceEndTime, tyreDisplayFields, setTyreDisplayFields } = useSupabase();
   const [authed, setAuthed] = useState(isAdminAuthed());
   const [currentAdminUser, setCurrentAdminUser] = useState(getCurrentAdminUser());
   const [loginUser, setLoginUser] = useState('');
@@ -2358,9 +2358,42 @@ export default function AdminPanel({ bookings, onUpdateBooking, onDeleteBooking,
                 </button>
               </div>
               {maintenanceMode && (
-                <div className="mt-4 bg-racing-red/10 border border-racing-red/20 rounded-lg p-3 text-xs text-racing-red font-semibold flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 shrink-0" />
-                  Maintenance mode is active. Customers cannot browse or place orders.
+                <div className="mt-4 space-y-3">
+                  <div className="bg-racing-red/10 border border-racing-red/20 rounded-lg p-3 text-xs text-racing-red font-semibold flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 shrink-0" />
+                    Maintenance mode is active. Customers cannot browse or place orders.
+                  </div>
+                  <div>
+                    <label className="block text-[11px] text-bright-snow/60 mb-1 font-semibold uppercase">Auto-off Date & Time</label>
+                    <div className="flex gap-2">
+                      <input
+                        type="datetime-local"
+                        value={maintenanceEndTime ? new Date(maintenanceEndTime).toISOString().slice(0, 16) : ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val) {
+                            setMaintenanceEndTime(new Date(val).toISOString());
+                          } else {
+                            setMaintenanceEndTime(null);
+                          }
+                        }}
+                        className="flex-1 bg-black/40 border border-white/10 text-bright-snow rounded-lg p-2.5 text-sm focus:outline-none focus:border-racing-red"
+                      />
+                      {maintenanceEndTime && (
+                        <button
+                          onClick={() => setMaintenanceEndTime(null)}
+                          className="px-3 bg-white/5 hover:bg-white/10 border border-white/10 text-bright-snow/60 text-xs rounded-lg transition"
+                        >
+                          Clear
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-[10px] text-bright-snow/40 mt-1">
+                      {maintenanceEndTime
+                        ? `Maintenance auto-disables at ${new Date(maintenanceEndTime).toLocaleString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}`
+                        : 'Set a date/time to automatically turn off maintenance mode.'}
+                    </p>
+                  </div>
                 </div>
               )}
             </div>

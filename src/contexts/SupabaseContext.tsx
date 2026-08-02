@@ -57,6 +57,8 @@ interface SupabaseContextType {
   setStockManagementEnabled: (enabled: boolean) => Promise<void>;
   maintenanceMode: boolean;
   setMaintenanceMode: (enabled: boolean) => Promise<void>;
+  maintenanceEndTime: string | null;
+  setMaintenanceEndTime: (endTime: string | null) => Promise<void>;
   tyreDisplayFields: TyreDisplayField[];
   setTyreDisplayFields: (fields: TyreDisplayField[]) => Promise<void>;
   settingsLoading: boolean;
@@ -132,6 +134,7 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
   const [bookings, setBookingsState] = useState<Booking[]>([]);
   const [stockManagementEnabled, setStockManagementEnabledState] = useState(false);
   const [maintenanceMode, setMaintenanceModeState] = useState(false);
+  const [maintenanceEndTime, setMaintenanceEndTimeState] = useState<string | null>(null);
   const [tyreDisplayFields, setTyreDisplayFieldsState] = useState<TyreDisplayField[]>(DEFAULT_TYRE_DISPLAY_FIELDS);
   const [settingsLoading, setSettingsLoading] = useState(false);
 
@@ -229,6 +232,8 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
           setStockManagementEnabledState(stockEnabled);
           const maintMode = settingsMap['maintenance_mode'] === 'true';
           setMaintenanceModeState(maintMode);
+          const maintEndTime = settingsMap['maintenance_end_time'] || null;
+          setMaintenanceEndTimeState(maintEndTime);
           try {
             const fields = JSON.parse(settingsMap['tyre_display_fields'] || 'null');
             if (Array.isArray(fields)) setTyreDisplayFieldsState(fields);
@@ -283,6 +288,30 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
       await supabase
         .from('settings')
         .insert({ key: 'maintenance_mode', value: String(enabled) });
+    }
+  }, [configured]);
+
+  const setMaintenanceEndTime = useCallback(async (endTime: string | null) => {
+    setMaintenanceEndTimeState(endTime);
+
+    if (!configured) return;
+
+    const value = endTime || '';
+    const { data: existing } = await supabase
+      .from('settings')
+      .select('id')
+      .eq('key', 'maintenance_end_time')
+      .single();
+
+    if (existing) {
+      await supabase
+        .from('settings')
+        .update({ value, updated_at: new Date().toISOString() })
+        .eq('key', 'maintenance_end_time');
+    } else {
+      await supabase
+        .from('settings')
+        .insert({ key: 'maintenance_end_time', value });
     }
   }, [configured]);
 
@@ -624,6 +653,8 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
         setStockManagementEnabled,
         maintenanceMode,
         setMaintenanceMode,
+        maintenanceEndTime,
+        setMaintenanceEndTime,
         tyreDisplayFields,
         setTyreDisplayFields,
         settingsLoading,
